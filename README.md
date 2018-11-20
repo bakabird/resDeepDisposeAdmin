@@ -1,0 +1,16 @@
+数据结构设计:
+  综艺:
+    综艺编号:
+      (primay)
+    EP:
+      (primay)
+    综艺名:
+    DATE:
+  综艺资源:
+    综艺编号:
+      (primay)
+    EP:
+      (primay)
+    UPDATE
+    URL:
+    UP:
