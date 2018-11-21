@@ -6,11 +6,11 @@
       (primay)
     综艺名:
     DATE:
-  综艺资源:
+    mainUrl:
+  其他综艺资源:
     综艺编号:
       (primay)
     EP:
       (primay)
-    UPDATE
     URL:
-    UP:
+    Name:
