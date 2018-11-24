@@ -28,7 +28,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
       return this.$store.state.rdd
     },
     memberStr() {
-      let arr = this.$props.members.split('&')
+      const arr = this.$props.members.split('&')
       // arr = arr.sort( () => {
       //   return Math.random() > 0.5 ? -1 : 1
       // })

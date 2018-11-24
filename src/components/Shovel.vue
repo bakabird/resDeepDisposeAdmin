@@ -1,5 +1,6 @@
 <template>
-  <div v-if="rdd">
+  <div class='shovel' :class="{'shovel-retract': !shovelUp}" v-if="rdd">
+    <div class='handle' @click="shovelUp = !shovelUp">把手</div>
     <div><input type="button" value="添加一个默认项" @click="addItem"></div>
     <div v-if="revising">
       <div>
@@ -34,7 +35,6 @@
         </template>
         <input type="button" value="全选" @click="members = ['圆','樱','柔','椰','安','奈','权','惠','仁','彩','珉','燕']">
       </div>
-      
       <div><input type="button" value="修改" @click="revise"></div>
     </div>
   </div>
@@ -51,7 +51,8 @@ import cloneDeep from 'lodash.clonedeep';
     return {
       rock: {},
       members: [],
-      membersInfo: Vue.members
+      membersInfo: Vue.members,
+      shovelUp: true
     }
   },
   watch: {
@@ -90,9 +91,9 @@ import cloneDeep from 'lodash.clonedeep';
       try {
         const rock: Rock = {
           mainUrl: '/izone/',
-          name: '爱上IZONE',
-          date: '99-99-99',
-          members: '圆&樱&柔&椰&安&奈&权&惠&仁&彩&珉&燕',
+          name: '施工中',
+          date: '18-00-00',
+          members: '',
           tag: '其他'
         }
         const response = await axios.post(Vue.rootPath + '/izone/add', rock);
@@ -111,6 +112,25 @@ export default class Shovel extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.shovel{
+  position: fixed;
+  bottom: 0;
+  background: #fff;
+  width: 100vw;
+}
+.handle{
+  background: yellow;
+  width: 100vw;
+  height:30px;
+  line-height: 30px;
+  position: absolute;
+  top:-30px;
+  left: 0;
+}
+.shovel-retract{
+  top: 100vh;
+  bottom: auto;
+}
 .longInput{
   width: 400px;
 }
