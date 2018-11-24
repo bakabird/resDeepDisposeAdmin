@@ -7,6 +7,7 @@
     <header>
       <img class="logo" @click="knock()" width="250" src="./assets/iz-one-logo.png">
       <div>收集各种IZONE中字视频资源</div>
+      <div>- 持续更新中 -</div>
     </header>
     <Mine/>
     <footer>- 暂由RDD个人维护 -</footer>
@@ -29,7 +30,7 @@ import Mine from './components/Mine.vue';
       if (this.$data.voice < 10) { this.$data.voice++; }
     },
     veritify() {
-      if ( this.$data.word === 'ROSE' || this.$data.word === 'RDD' ) {
+      if ( this.$data.word === 'LoviRose123' || (this.$data.word === 'RDD' && Vue.isDev) ) {
         this.$store.commit('rddIsGod')
       }
       this.$data.voice++;
@@ -42,13 +43,13 @@ export default class App extends Vue {
 
 <style lang="scss">
 html{
-  background: #fff5f2;
+  background: #fffcfc;
   color: rgb(243, 211, 213);
 }
 header,{
   color: #e6afb1;
   font-size: 12px;
-  margin-bottom: 30px;
+  // margin-bottom: 30px;
 }
 footer{
   margin-top: 30px;
@@ -64,6 +65,6 @@ footer{
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #E4555B;
-  margin-top: 60px;
+  margin-top: 20px;
 }
 </style>

@@ -1,15 +1,25 @@
 export interface Rock {
-    from: string;
-    name: string;
-    date: string;
-    mainUrl: string;
-    ep?: number;
+  mainUrl: string;
+  name: string;
+  date: string;
+  tag?: string;
+  site?: string;
+  up?: string;
+  members?: string;
+  ep?: number;
+  part?: number;
+  isNew?: boolean;
 }
 export interface WipedGold {
   id: number;
-  from: string;
+  mainUrl: string;
   name: string;
   date: string;
-  mainUrl: string;
+  tag?: string;
+  site?: string;
+  up?: string;
+  members?: string;
   ep?: number;
+  part?: number;
+  isNew?: boolean;
 }

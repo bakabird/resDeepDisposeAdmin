@@ -14,11 +14,11 @@ export default new Vuex.Store({
     rddIsGod(state) {
       state.rdd = true
     },
-    revising(state,payload){
+    revising(state, payload) {
       state.revising = true
       state.revisingObj = payload
     },
-    overRevise(state){
+    overRevise(state) {
       state.revising = false
     }
   },
