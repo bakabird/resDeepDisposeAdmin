@@ -21,6 +21,7 @@
         综艺<input type="radio" value="综艺" v-model="rock.tag">
         直播<input type="radio" value="直播" v-model="rock.tag">
         其他<input type="radio" value="其他" v-model="rock.tag">
+        <input type="text" v-model="rock.tag">
       </div>
       <div>ep <input type="text" v-model="rock.ep"></div>
       <div>part <input type="text" v-model="rock.part"></div>

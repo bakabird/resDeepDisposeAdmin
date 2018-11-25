@@ -1,7 +1,9 @@
 <template>
   <div class="set">
     <div v-for="GoldenBall in GoldenChains" :key="GoldenBall[0].date">
-      <div class="date">{{GoldenBall[0].date === "66-66-66" ? '置顶' : GoldenBall[0].date}}</div>
+      <div class="date" >
+        {{GoldenBall[0].date === '66-66-66' ? '置顶' : (GoldenBall[0].date === '00-00-00' ? '等待中字中' : GoldenBall[0].date)}}
+      </div>
       <Gold v-for="i in GoldenBall" 
       :key="i.id" 
       :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
@@ -101,8 +103,8 @@ export default class Mine extends Vue {
   margin: 0 auto;
 }
 .date{
-  margin-top: 0.5em;
-  margin-bottom: 1em; 
+  margin-top: 0.7em;
+  margin-bottom: 1.0em; 
   text-align: left;
   font-size: 12px;
   color: #da4c4d;
