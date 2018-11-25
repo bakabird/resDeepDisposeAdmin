@@ -1,15 +1,22 @@
 <template>
   <div class="set">
-    <div v-for="GoldenBall in GoldenChains" :key="GoldenBall[0].date">
+    <div class='dateCard' v-for="(GoldenBall,ballIdx) in GoldenChains" :key="GoldenBall[0].date">
       <div class="date" >
         {{GoldenBall[0].date === '66-66-66' ? '置顶' : (GoldenBall[0].date === '00-00-00' ? '等待中字中' : GoldenBall[0].date)}}
       </div>
-      <Gold v-for="i in GoldenBall" 
+      <Gold v-for="i in BallLimter(GoldenBall,GoldenBallHideMarks[ballIdx])" 
       :key="i.id" 
       :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
       :site="i.site" :up="i.up" 
       :ep="i.ep" :part="i.part" 
       :tag="i.tag" :members="i.members" :isNew="i.isNew"/>
+      <div 
+        class="handle"
+        :class="{'handle-In': GoldenBallHideMarks[ballIdx] < 0 }" 
+        v-if="GoldenBallHideMarks[ballIdx] !== 0" 
+        @click="switchMark(ballIdx)">
+        {{GoldenBallHideMarks[ballIdx] > 0 ? `展(${GoldenBallHideMarks[ballIdx]})` : `叠`}}
+        </div>
     </div>
     <Shovel :ups="Ups" :sites="Sites" @flash="flashData"/>
   </div>
@@ -44,14 +51,28 @@ function sortMethod(a: any, b: any) {
     return {
       Golds: [],
       GoldenChains: [],
+      GoldenBallHideMarks: [],
       Ups: [],
       Sites: []
+    }
+  },
+  methods: {
+    BallLimter(ball, hide) {
+      if (hide > 0) {
+        return ball.slice( 0 , ball.length - hide )
+      } else {
+        return ball;
+      }
+    },
+    switchMark(ballIdx){
+      Vue.set(this.$data.GoldenBallHideMarks,ballIdx,-this.$data.GoldenBallHideMarks[ballIdx])
     }
   },
   watch: {
     Golds(nVal) {
       // split by the date
       const newChains: any = []
+      const newHideMarks: any = []
       let i = -1;
       let lastDate = ''
       nVal.map( (a: any) => {
@@ -63,7 +84,11 @@ function sortMethod(a: any, b: any) {
           newChains[i] = [a]
         }
       })
+      newChains.map( (a: any, idx: number) => {
+        newHideMarks[idx] = a.length > 3 ? (a.length - 3 - Math.floor(( a.length - 3 ) * 0.3)) : 0;
+      })
       this.$data.GoldenChains = newChains;
+      this.$data.GoldenBallHideMarks = newHideMarks;
 
       // Ups and Sites
       const upSet = new Set()
@@ -105,9 +130,27 @@ export default class Mine extends Vue {
 .date{
   margin-top: 0.7em;
   margin-bottom: 1.0em; 
-  text-align: left;
+  // text-align: left;
   font-size: 12px;
   color: #da4c4d;
   text-indent: 1em;
+}
+.handle{
+  width: 90%;
+  height: 20px;
+  margin: 0 auto;
+  border-bottom: 3px dashed #fffcfc;
+  color: #bba3a4;
+  line-height: 20px;
+  box-shadow: inset 0px 1px 2px #5c6a5745;
+  font-size: 12px;
+  background: rgba(212, 183, 183, 0.49019607843137253);
+}
+.handle-In{
+  opacity: 0.5;
+  border: none;
+}
+.dateCard{
+  // border-bottom: 1px solid #ccc;
 }
 </style>

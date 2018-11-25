@@ -74,7 +74,9 @@ export default class Gold extends Vue {
   // margin-bottom: 0.5em;
   color: #E4555B;
   background: #FAFAFA;
+  border-bottom: 1px solid #c9bccc;
 }
+
 .link{
   display: flex;
   height: 2em;
@@ -110,7 +112,8 @@ export default class Gold extends Vue {
   background: #ffc7c7;
 }
 .tag{
-  flex: 1;
+  min-width: 60px;
+  flex: 0.5;
 }
 .part,.ep{
   font-size: 12px;
