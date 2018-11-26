@@ -2,7 +2,7 @@
   <div class="set">
     <div class='dateCard' v-for="(GoldenBall,ballIdx) in GoldenChains" :key="GoldenBall[0].date">
       <div class="date" >
-        {{GoldenBall[0].date === '66-66-66' ? '置顶' : (GoldenBall[0].date === '00-00-00' ? '等待中字中' : GoldenBall[0].date)}}
+        {{GoldenBall[0].date === '66-66-66' ? '置顶' : (GoldenBall[0].date === '00-00-00' ? '生肉' : GoldenBall[0].date)}}
       </div>
       <Gold v-for="i in BallLimter(GoldenBall,GoldenBallHideMarks[ballIdx])" 
       :key="i.id" 
@@ -64,8 +64,8 @@ function sortMethod(a: any, b: any) {
         return ball;
       }
     },
-    switchMark(ballIdx){
-      Vue.set(this.$data.GoldenBallHideMarks,ballIdx,-this.$data.GoldenBallHideMarks[ballIdx])
+    switchMark(ballIdx) {
+      Vue.set(this.$data.GoldenBallHideMarks, ballIdx, -this.$data.GoldenBallHideMarks[ballIdx])
     }
   },
   watch: {
@@ -128,11 +128,11 @@ export default class Mine extends Vue {
   margin: 0 auto;
 }
 .date{
-  margin-top: 0.7em;
-  margin-bottom: 1.0em; 
-  // text-align: left;
+  margin-top: .7em;
+  margin-bottom: 1em;
   font-size: 12px;
   color: #da4c4d;
+  background: #ffc6e44a;
   text-indent: 1em;
 }
 .handle{

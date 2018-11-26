@@ -7,6 +7,7 @@
     <header>
       <img class="logo" @click="knock()" width="250" src="./assets/iz-one-logo.png">
       <div>收集各种IZONE中字视频资源</div>
+      <div style="color: #ee7272">生肉统一放在最底部</div>
       <!-- <div>比起弹幕数量更关注弹幕的友善度</div> -->
     </header>
     <Mine/>
