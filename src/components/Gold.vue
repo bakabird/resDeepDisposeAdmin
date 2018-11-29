@@ -1,14 +1,15 @@
 <template>
-  <div class="gold">
+  <div class="gold" :class="{ new:!!isNew, raw:!!isRaw}">
     <a class="link" :href="mainUrl" target="_blank">
-      <div class='cell new' v-if='!!isNew'></div>
-      <div class="cell name">{{name}}
+      <div class="cell name">
+        {{name}}
+        <span class='cut' v-if="!!isCut">[cut]</span>
         <span class='part' v-if="!!part">Part {{part}}</span>
         <span class='ep' v-else-if="!!ep">EP {{ep}}</span>
         <span v-else></span>
       </div>
     </a>
-    <div class="meta">
+    <div v-if="!noShell" class="meta">
       <div class="cell tag">{{tag}}</div>
       <div class="cell from">【{{site}}】{{up}}</div>
       <div class="cell members">{{memberStr}}</div>
@@ -21,6 +22,9 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import moment from 'moment'
+
+const now = moment();
 
 @Component({
   computed: {
@@ -28,15 +32,18 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
       return this.$store.state.rdd
     },
     memberStr() {
-      const arr = this.$props.members.split('&')
-      // arr = arr.sort( () => {
-      //   return Math.random() > 0.5 ? -1 : 1
-      // })
+      let arr = this.$props.members.split('&')
+      arr = arr.sort( () => {
+        return Math.random() > 0.5 ? -1 : 1
+      })
       let re = ''
       arr.forEach( (i: string) => {
         re += Vue.members[i]
       })
       return re
+    },
+    isNew() {
+      return !this.$props.isRaw && now.diff(this.$props.bakedTime , 'hour') < 36
     }
   },
   methods: {
@@ -57,13 +64,20 @@ export default class Gold extends Vue {
 
   @Prop() private site!: string;
   @Prop() private up!: string;
+  @Prop() private bakedTime!: string;
 
   @Prop() private ep!: number;
   @Prop() private part!: number;
+  @Prop() private index!: number;
 
   @Prop() private tag!: string;
   @Prop() private members!: string;
-  @Prop() private isNew!: any;
+
+  @Prop() private isRaw!: boolean;
+  @Prop() private isCut!: boolean;
+
+// setting
+  @Prop() private noShell!: boolean;
 }
 </script>
 
@@ -74,8 +88,13 @@ export default class Gold extends Vue {
   // margin-bottom: 0.5em;
   color: #E4555B;
   background: #FAFAFA;
+  // border-bottom: 1px solid #c9bccc;
+  position: relative;
+}
+.gold:last-of-type{
   border-bottom: 1px solid #c9bccc;
 }
+
 
 .link{
   display: flex;
@@ -87,6 +106,7 @@ export default class Gold extends Vue {
   font-weight: bold;
   text-decoration: none;
 }
+
 .meta{
   display: flex;
   // color: #efa8ab;
@@ -97,9 +117,6 @@ export default class Gold extends Vue {
 .link:hover{
   cursor: pointer;
 }
-// .link:visited{
-//   color: #E4555B;
-// }
 .cell{
   // background: #efe;
 }
@@ -108,14 +125,26 @@ export default class Gold extends Vue {
   // background: #FAFAFA;
 }
 .new{
-  width: 10px;
-  background: #ffc7c7;
+  .cell{
+    color: #dc4c65;
+    background: #fdebea;
+  }
+}
+.raw{
+  .cell{
+    background: #f0f4ee;
+    color: #9cb599;
+    .part, .ep, .cut{
+      background: #f0f4ee;
+      color: #9cb599;
+    }
+  }
 }
 .tag{
   min-width: 60px;
   flex: 0.5;
 }
-.part,.ep{
+.part,.ep,.cut{
   font-size: 12px;
   color: #de7579;
 }

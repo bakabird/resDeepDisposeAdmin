@@ -6,8 +6,9 @@
     </div>
     <header>
       <img class="logo" @click="knock()" width="250" src="./assets/iz-one-logo.png">
-      <div>收集各种IZONE中字视频资源</div>
-      <div style="color: #ee7272">生肉统一放在最底部</div>
+      <div class="new">刚出炉的熟肉呈浅珊瑚色</div>
+      <div class="raw">较难食用的生肉呈墨绿色</div>
+      <div >个人维护，更新不及时见谅</div>
       <!-- <div>比起弹幕数量更关注弹幕的友善度</div> -->
     </header>
     <Mine/>
@@ -43,8 +44,16 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
+.new{
+  color: #dc4c65;
+  background: #fdebea;
+}
+.raw{
+  background: #f0f4ee;
+  color: #9cb599;
+}
 html{
-  background: #fffcfc;
+  background: #fcfffd;
   color: rgb(243, 211, 213);
 }
 header,{

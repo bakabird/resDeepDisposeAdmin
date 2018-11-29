@@ -18,8 +18,9 @@ export default new Vuex.Store({
       state.revising = true
       state.revisingObj = payload
     },
-    overRevise(state) {
+    reviseOver(state) {
       state.revising = false
+      state.revisingObj = {}
     }
   },
   actions: {

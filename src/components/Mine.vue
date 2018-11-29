@@ -2,23 +2,26 @@
   <div class="set">
     <div class='dateCard' v-for="(GoldenBall,ballIdx) in GoldenChains" :key="GoldenBall[0].date">
       <div class="date" >
-        {{GoldenBall[0].date === '66-66-66' ? '置顶' : (GoldenBall[0].date === '00-00-00' ? '生肉' : GoldenBall[0].date)}}
+        {{GoldenBall[0].date === '66-66-66' ? '置顶' : GoldenBall[0].date}}
       </div>
-      <Gold v-for="i in BallLimter(GoldenBall,GoldenBallHideMarks[ballIdx])" 
-      :key="i.id" 
-      :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
-      :site="i.site" :up="i.up" 
-      :ep="i.ep" :part="i.part" 
-      :tag="i.tag" :members="i.members" :isNew="i.isNew"/>
-      <div 
+        <Gold v-for="(i,idx) in GoldenBall"
+        v-if="GoldenBallHideMarks[ballIdx] <= 0 || idx <= 2"
+        :noShell="GoldenBall[0].date === '66-66-66'"
+        :key="i.id" 
+        :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
+        :site="i.site" :up="i.up" :tag="i.tag"
+        :ep="i.ep" :part="i.part" :index="i.index"
+        :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut"
+        :members="i.members" />
+      <span 
         class="handle"
-        :class="{'handle-In': GoldenBallHideMarks[ballIdx] < 0 }" 
+        :class="{'handle-In': GoldenBallHideMarks[ballIdx] === -1 }" 
         v-if="GoldenBallHideMarks[ballIdx] !== 0" 
         @click="switchMark(ballIdx)">
-        {{GoldenBallHideMarks[ballIdx] > 0 ? `展(${GoldenBallHideMarks[ballIdx]})` : `叠`}}
-        </div>
+        {{GoldenBallHideMarks[ballIdx] == 1  ? `展开纸条(${ GoldenBall.length - 3})` : `叠回去`}}
+      </span>
     </div>
-    <Shovel :ups="Ups" :sites="Sites" @flash="flashData"/>
+    <Shovel :ups="Ups" :sites="Sites" :tags="Tags" @flash="flashData"/>
   </div>
 </template>
 
@@ -27,6 +30,9 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import axios from 'axios'
 import Gold from './Gold.vue';
 import Shovel from './Shovel.vue';
+import _keys from 'lodash.keys';
+import moment from 'moment'
+
 
 function strSum(str: string) {
   const strarr = str.split('')
@@ -42,8 +48,16 @@ function sortMethod(a: any, b: any) {
   const Bdate = parseInt( b.date.split('-').join('') , 10 ) * 1000
   const Astr = strSum(a.name) / 1000
   const Bstr = strSum(b.name) / 1000
-  return Bdate + Bstr + b.ep + b.part
-       - Adate - Astr - a.ep - a.part;
+  const AScore = Adate + Astr + a.ep + a.part
+  const BScore = Bdate + Bstr + b.ep + b.part
+  return BScore - AScore;
+}
+
+function sortIndex(a: any, b: any) {
+  return a.index - b.index
+}
+function sortRaw(a: any, b: any) {
+  return a.raw - b.raw
 }
 
 @Component({
@@ -53,7 +67,8 @@ function sortMethod(a: any, b: any) {
       GoldenChains: [],
       GoldenBallHideMarks: [],
       Ups: [],
-      Sites: []
+      Sites: [],
+      Tags: []
     }
   },
   methods: {
@@ -66,13 +81,15 @@ function sortMethod(a: any, b: any) {
     },
     switchMark(ballIdx) {
       Vue.set(this.$data.GoldenBallHideMarks, ballIdx, -this.$data.GoldenBallHideMarks[ballIdx])
-    }
+    },
   },
   watch: {
     Golds(nVal) {
       // split by the date
+      // group the new meat
       const newChains: any = []
       const newHideMarks: any = []
+      const now = moment();
       let i = -1;
       let lastDate = ''
       nVal.map( (a: any) => {
@@ -84,21 +101,47 @@ function sortMethod(a: any, b: any) {
           newChains[i] = [a]
         }
       })
+
+      // sort by index & isRaw
+      // hideMark setting
       newChains.map( (a: any, idx: number) => {
-        newHideMarks[idx] = a.length > 3 ? (a.length - 3 - Math.floor(( a.length - 3 ) * 0.3)) : 0;
+        a.sort(sortIndex)
+        a.sort(sortRaw)
+        // <0 代表不隐藏
+        // >0 代表隐藏
+        if (idx <= 2) {
+          newHideMarks[idx] = 0
+        } else {
+          newHideMarks[idx] = a.length > 3 ? 1 : 0;
+        }
       })
       this.$data.GoldenChains = newChains;
       this.$data.GoldenBallHideMarks = newHideMarks;
 
       // Ups and Sites
-      const upSet = new Set()
-      const siteSet = new Set()
+      const upCounter = new Object();
+      const siteCounter = new Object();
+      const tagCounter = new Object();
       nVal.map( (a: any) => {
-        upSet.add(a.up)
-        siteSet.add(a.site)
+        if (upCounter.hasOwnProperty(a.up)) { upCounter[a.up]++ } else { upCounter[a.up] = 0; }
+        if (siteCounter.hasOwnProperty(a.site)) { siteCounter[a.site]++ } else { siteCounter[a.site] = 0; }
+        if (tagCounter.hasOwnProperty(a.tag)) { tagCounter[a.tag]++ } else { tagCounter[a.tag] = 0; }
       })
-      this.$data.Ups = Array.from(upSet)
-      this.$data.Sites = Array.from(siteSet)
+      const ups = _keys(upCounter)
+      const sites = _keys(siteCounter)
+      const tags = _keys(tagCounter)
+      ups.sort((a: string, b: string) => {
+        return upCounter[b] - upCounter[a]
+      })
+      sites.sort((a: string, b: string) => {
+        return siteCounter[b] - siteCounter[a]
+      })
+      tags.sort((a: string, b: string) => {
+        return tagCounter[b] - tagCounter[a]
+      })
+      this.$data.Ups = ups
+      this.$data.Sites = sites
+      this.$data.Tags = tags
     }
   },
   components: {
@@ -128,29 +171,29 @@ export default class Mine extends Vue {
   margin: 0 auto;
 }
 .date{
-  margin-top: .7em;
-  margin-bottom: 1em;
   font-size: 12px;
-  color: #da4c4d;
-  background: #ffc6e44a;
-  text-indent: 1em;
+  color: #a58a78;
+  width: 30%;
+  margin: .7em auto 1em;
+  background: #f5eee887;
 }
 .handle{
   width: 90%;
   height: 20px;
   margin: 0 auto;
-  border-bottom: 3px dashed #fffcfc;
-  color: #bba3a4;
+  display: block;
+  border-bottom: 3px dashed #fcfffd;
+  color: #d1b8a9;
   line-height: 20px;
   box-shadow: inset 0px 1px 2px #5c6a5745;
   font-size: 12px;
-  background: rgba(212, 183, 183, 0.49019607843137253);
+  background: rgba(241, 229, 221, 0.64);
 }
 .handle-In{
   opacity: 0.5;
   border: none;
 }
 .dateCard{
-  // border-bottom: 1px solid #ccc;
+  // border-bottom: 1px solid #c9bccc;
 }
 </style>
