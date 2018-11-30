@@ -43,8 +43,9 @@ izoneVue.install = (Vue: any, options: any) => {
   // })
 
   // // 4. 添加实例方法
-  // Vue.prototype.$myMethod = function (methodOptions) {
-  //   // 逻辑...
-  // }
+  Vue.prototype.$record = (a, b, c, d) => {
+    const _hmt: any = (window as any)._hmt;
+    _hmt.push(['_trackEvent', a, b, c, d]);
+  }
 }
 export default izoneVue;
