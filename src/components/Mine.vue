@@ -85,7 +85,6 @@ function sortRaw(a: any, b: any) {
       } else {
         this.$record('过量折叠', ballDate, 'close')
       }
-
       Vue.set(this.$data.GoldenBallHideMarks, ballIdx, -this.$data.GoldenBallHideMarks[ballIdx])
     },
   },
