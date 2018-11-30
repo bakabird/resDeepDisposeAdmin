@@ -17,7 +17,7 @@
         class="handle"
         :class="{'handle-In': GoldenBallHideMarks[ballIdx] === -1 }" 
         v-if="GoldenBallHideMarks[ballIdx] !== 0" 
-        @click="switchMark(ballIdx)">
+        @click="switchMark(ballIdx,GoldenBall[0].date)">
         {{GoldenBallHideMarks[ballIdx] == 1  ? `展开纸条(${ GoldenBall.length - 3})` : `叠回去`}}
       </span>
     </div>
@@ -79,7 +79,13 @@ function sortRaw(a: any, b: any) {
         return ball;
       }
     },
-    switchMark(ballIdx) {
+    switchMark(ballIdx, ballDate) {
+      if (this.$data.GoldenBallHideMarks === 1) {
+        _hmt.push(['_trackEvent', '过量折叠', ballDate, 'open']);
+      } else {
+        _hmt.push(['_trackEvent', '过量折叠', ballDate, 'close']);
+      }
+
       Vue.set(this.$data.GoldenBallHideMarks, ballIdx, -this.$data.GoldenBallHideMarks[ballIdx])
     },
   },
