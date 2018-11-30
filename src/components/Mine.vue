@@ -81,9 +81,9 @@ function sortRaw(a: any, b: any) {
     },
     switchMark(ballIdx, ballDate) {
       if (this.$data.GoldenBallHideMarks === 1) {
-        Vue.$record('过量折叠', ballDate, 'open')
+        this.$record('过量折叠', ballDate, 'open')
       } else {
-        Vue.$record('过量折叠', ballDate, 'close')
+        this.$record('过量折叠', ballDate, 'close')
       }
 
       Vue.set(this.$data.GoldenBallHideMarks, ballIdx, -this.$data.GoldenBallHideMarks[ballIdx])

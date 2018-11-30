@@ -51,7 +51,7 @@ const now = moment();
       this.$store.commit('revising', this.$props)
     },
     jumpTo(url) {
-      Vue.$record('跳转', this.$props.name, url, this.$props.sqlId)
+      this.$record('跳转', this.$props.name, url, this.$props.sqlId)
       window.location.assign(url)
     }
   }
