@@ -54,10 +54,10 @@ function sortMethod(a: any, b: any) {
 }
 
 function sortIndex(a: any, b: any) {
-  return a.index - b.index
+  return b.index - a.index
 }
 function sortRaw(a: any, b: any) {
-  return a.raw - b.raw
+  return a.isRaw - b.isRaw
 }
 
 @Component({
