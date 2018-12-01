@@ -18,7 +18,7 @@
         :class="{'handle-In': GoldenBallHideMarks[ballIdx] === -1 }" 
         v-if="GoldenBallHideMarks[ballIdx] !== 0" 
         @click="switchMark(ballIdx,GoldenBall[0].date)">
-        {{GoldenBallHideMarks[ballIdx] == 1  ? `展开纸条(${ GoldenBall.length - 3})` : `叠回去`}}
+        {{GoldenBallHideMarks[ballIdx] == 1  ? `展开纸条(${ GoldenBall.length - limitLength})` : `叠回去`}}
       </span>
     </div>
     <Shovel :ups="Ups" :sites="Sites" :tags="Tags" @flash="flashData"/>
@@ -68,7 +68,8 @@ function sortRaw(a: any, b: any) {
       GoldenBallHideMarks: [],
       Ups: [],
       Sites: [],
-      Tags: []
+      Tags: [],
+      limitLength: 8
     }
   },
   methods: {
@@ -80,7 +81,7 @@ function sortRaw(a: any, b: any) {
       }
     },
     switchMark(ballIdx, ballDate) {
-      if (this.$data.GoldenBallHideMarks === 1) {
+      if (this.$data.GoldenBallHideMarks[ballIdx] === 1) {
         this.$record('过量折叠', ballDate, 'open')
       } else {
         this.$record('过量折叠', ballDate, 'close')
@@ -117,7 +118,7 @@ function sortRaw(a: any, b: any) {
         if (idx <= 2) {
           newHideMarks[idx] = 0
         } else {
-          newHideMarks[idx] = a.length > 3 ? 1 : 0;
+          newHideMarks[idx] = a.length > this.$data.limitLength ? 1 : 0;
         }
       })
       this.$data.GoldenChains = newChains;

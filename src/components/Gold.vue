@@ -1,6 +1,6 @@
 <template>
   <div class="gold" :class="{ new:!!isNew, raw:!!isRaw}">
-    <a class="link" :href="mainUrl" target="_blank">
+    <a class="link" @click="record(mainUrl)" :href="mainUrl" target="_blank">
       <div class="cell name">
         {{name}}
         <span class='cut' v-if="!!isCut">[cut]</span>
@@ -50,9 +50,8 @@ const now = moment();
     revise() {
       this.$store.commit('revising', this.$props)
     },
-    jumpTo(url) {
+    record(url) {
       this.$record('跳转', this.$props.name, url, this.$props.sqlId)
-      window.location.assign(url)
     }
   }
 })
