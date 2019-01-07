@@ -9,13 +9,6 @@
       <div class="new">刚出炉的熟肉呈浅珊瑚色</div>
       <div class="raw">较难食用的生肉呈墨绿色</div>
       <div>个人维护，更新不及时见谅</div>
-      <div>
-        <template  v-if="!hasComforted">
-          考砸回来了，求安慰QAQ
-          <button class="toConfort" @click="hasComforted = true">安慰</button>
-        </template>
-        <span v-else>谢谢你喵呜！</span>
-      </div>
       <!-- <div>比起弹幕数量更关注弹幕的友善度</div> -->
     </header>
     <Mine/>
@@ -47,9 +40,6 @@ import Mine from './components/Mine.vue';
         this.$store.commit('rddIsGod')
       }
       this.$data.voice++;
-    },
-    comfort(){
-      this.$record('安慰', '感谢', 'confort')
     }
   }
 })
