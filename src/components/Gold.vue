@@ -135,6 +135,7 @@ export default class Gold extends Vue {
   // background: #bf9e9e;
   flex-wrap: wrap;
   color: #de7579;
+  overflow: hidden;
 }
 .link:hover{
   cursor: pointer;
