@@ -26,10 +26,14 @@ import moment from 'moment'
 
 const now = moment();
 
+
 @Component({
   computed: {
     rdd() {
       return this.$store.state.rdd
+    },
+    singleLineHeight(){
+      return this.$store.state.singleLineHeight
     },
     memberStr() {
       let arr = this.$props.members.split('&')
@@ -37,6 +41,7 @@ const now = moment();
         return Math.random() > 0.5 ? -1 : 1
       })
       let re = ''
+      
       arr.forEach( (i: string) => {
         re += Vue.members[i]
       })
@@ -44,6 +49,23 @@ const now = moment();
     },
     isNew() {
       return !this.$props.isRaw && now.diff(this.$props.bakedTime , 'hour') < 36
+    }
+  },
+  watch: {
+    async singleLineHeight(nVal){
+      if(nVal != 0){
+        const updateFontSize = ()=>{
+          const height = this.$el.querySelector('.cell').clientHeight
+          if(height > nVal*1.4){
+            const size = parseInt( getComputedStyle(this.$el.querySelector('.cell'))['font-size']  )
+            if(size > 12){
+              this.$el.querySelector('.cell').style.fontSize = `${size - 1}px`
+              setTimeout(updateFontSize, 200)
+            }
+          }
+        }
+        updateFontSize.bind(this)()
+      }
     }
   },
   methods: {
@@ -98,7 +120,7 @@ export default class Gold extends Vue {
 
 .link{
   display: flex;
-  height: 2em;
+  // height: 2em;
   line-height: 2em;
   font-size: 1.3em;
   color: #E4555B;

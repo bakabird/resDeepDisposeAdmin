@@ -8,7 +8,8 @@ export default new Vuex.Store({
     rdd: false,
     revising: false,
     revisingObj: {
-    }
+    },
+    singleLineHeight: 0
   },
   mutations: {
     rddIsGod(state) {
@@ -21,6 +22,9 @@ export default new Vuex.Store({
     reviseOver(state) {
       state.revising = false
       state.revisingObj = {}
+    },
+    updateSingleLH(state, payload) {
+      state.singleLineHeight = payload
     }
   },
   actions: {
