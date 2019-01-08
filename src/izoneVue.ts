@@ -2,11 +2,11 @@ const izoneVue: any = {};
 izoneVue.install = (Vue: any, options: any) => {
   // 1. 添加全局方法或属性
   Vue.isDev = false
-  Vue.isDev = true
+  // Vue.isDev = true
   // production
   Vue.rootPath = '';
   // dev
-  Vue.rootPath = 'http://localhost:8360'
+  // Vue.rootPath = 'http://localhost:8360'
   // Vue.myGlobalMethod = function () {
   //   // 逻辑...
   // }
