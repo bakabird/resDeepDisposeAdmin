@@ -4,8 +4,7 @@
       <div class="date" >
         {{GoldenBall[0].date === '66-66-66' ? '置顶' : GoldenBall[0].date}}
       </div>
-        <Gold v-for="(i,idx) in GoldenBall"
-        v-if="GoldenBallHideMarks[ballIdx] <= 0 || idx <= 2"
+        <Gold v-for="(i,idx) in (GoldenBallHideMarks[ballIdx] <= 0 || idx <= 3 ? GoldenBall : GoldenBall.slice(0,3))"
         :noShell="GoldenBall[0].date === '66-66-66'"
         :key="i.id" 
         :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
@@ -18,7 +17,7 @@
         :class="{'handle-In': GoldenBallHideMarks[ballIdx] === -1 }" 
         v-if="GoldenBallHideMarks[ballIdx] !== 0" 
         @click="switchMark(ballIdx,GoldenBall[0].date)">
-        {{GoldenBallHideMarks[ballIdx] == 1  ? `展开纸条(${ GoldenBall.length - limitLength})` : `叠回去`}}
+        {{GoldenBallHideMarks[ballIdx] == 1  ? `展开纸条(${ GoldenBall.length - 3})` : `叠回去`}}
       </span>
     </div>
     <Shovel :ups="Ups" :sites="Sites" :tags="Tags" @flash="flashData"/>
@@ -115,7 +114,7 @@ function sortRaw(a: any, b: any) {
         a.sort(sortRaw)
         // <0 代表不隐藏
         // >0 代表隐藏
-        if (idx <= 2) {
+        if (idx <= 3) {
           newHideMarks[idx] = 0
         } else {
           newHideMarks[idx] = a.length > this.$data.limitLength ? 1 : 0;

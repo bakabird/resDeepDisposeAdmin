@@ -145,6 +145,7 @@ export default class Gold extends Vue {
 }
 .name{
   flex: 2;
+  padding: 0 5px;
   // background: #FAFAFA;
 }
 .new{
@@ -172,7 +173,7 @@ export default class Gold extends Vue {
   color: #de7579;
 }
 .members{
-  min-width: 320px;
+  min-width: 290px;
   flex:1;
 }
 .from{
