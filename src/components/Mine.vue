@@ -165,23 +165,21 @@ export default class Mine extends Vue {
   }
   public mounted() {
     this.flashData();
-    
-    const updateSingleLH = ()=>{
+
+    const updateSingleLH = () => {
       const firstGoldCell = document.querySelector('.gold .cell')
-      if(firstGoldCell.textContent.trim() == "打歌舞台合集"){
-        if(firstGoldCell.clientHeight != 0){
+      if (firstGoldCell.textContent.trim() == '打歌舞台合集') {
+        if (firstGoldCell.clientHeight != 0) {
           this.$store.commit('updateSingleLH', firstGoldCell.clientHeight)
         }
-      }else{
-        setTimeout(updateSingleLH,1000)
+      } else {
+        setTimeout(updateSingleLH, 1000)
       }
     }
 
-    setTimeout(updateSingleLH.bind(this),1000)
+    setTimeout(updateSingleLH.bind(this), 1000)
   }
 }
-
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

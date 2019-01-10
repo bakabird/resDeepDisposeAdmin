@@ -32,7 +32,7 @@ const now = moment();
     rdd() {
       return this.$store.state.rdd
     },
-    singleLineHeight(){
+    singleLineHeight() {
       return this.$store.state.singleLineHeight
     },
     memberStr() {
@@ -41,7 +41,7 @@ const now = moment();
         return Math.random() > 0.5 ? -1 : 1
       })
       let re = ''
-      
+
       arr.forEach( (i: string) => {
         re += Vue.members[i]
       })
@@ -52,13 +52,13 @@ const now = moment();
     }
   },
   watch: {
-    async singleLineHeight(nVal){
-      if(nVal != 0){
-        const updateFontSize = ()=>{
+    async singleLineHeight(nVal) {
+      if (nVal != 0) {
+        const updateFontSize = () => {
           const height = this.$el.querySelector('.cell').clientHeight
-          if(height > nVal*1.4){
+          if (height > nVal * 1.4) {
             const size = parseInt( getComputedStyle(this.$el.querySelector('.cell'))['font-size']  )
-            if(size > 12){
+            if (size > 12) {
               this.$el.querySelector('.cell').style.fontSize = `${size - 1}px`
               setTimeout(updateFontSize, 200)
             }

@@ -168,7 +168,7 @@ function newTrueGold(rock: any) {
         console.error(error);
       }
     },
-    async fetchInfo(){
+    async fetchInfo() {
       axios.get(Vue.rootPath + '/izone/biliInfo?url=' + this.$data.mainUrl)
       .then(res => {
         this.$data.name = res.data.data.title

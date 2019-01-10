@@ -35,8 +35,8 @@ import axios from 'axios'
 
 @Component({
   data() {
-    return { 
-      voice: 0 , 
+    return {
+      voice: 0 ,
       word: '',
       hasComforted: false,
       mongolia: false,
@@ -59,18 +59,18 @@ import axios from 'axios'
     startMogolia() {
       this.$data.mongolia = true
     },
-    closeMogolia(){
+    closeMogolia() {
       this.$data.mongolia = false
     },
-    submitFeedback(){
-      axios.post(Vue.rootPath + '/izone/feedback',{
+    submitFeedback() {
+      axios.post(Vue.rootPath + '/izone/feedback', {
         from: 'izoni',
         feedback: this.$data.feedbackValue
-      }).then((res)=>{
+      }).then((res) => {
         console.log(res)
         this.$data.feedbackValue = ''
         this.$data.mongolia = false
-      }).catch((err)=>{
+      }).catch((err) => {
         console.error(err)
         this.$data.mongolia = false
       })
