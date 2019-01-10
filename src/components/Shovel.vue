@@ -6,7 +6,7 @@
       <div>name* <input type="text" v-model="name"></div>
       <div>
         mainUrl* <input type="text" v-model="mainUrl">
-        <button class='taijiBtn'>☯️</button>
+        <button class='taijiBtn' @click="fetchInfo">☯️</button>
       </div>
       <div>date* <input type="date" v-model="date"></div>
 
@@ -167,6 +167,16 @@ function newTrueGold(rock: any) {
       } catch (error) {
         console.error(error);
       }
+    },
+    async fetchInfo(){
+      axios.get(Vue.rootPath + '/izone/biliInfo?url=' + this.$data.mainUrl)
+      .then(res => {
+        this.$data.name = res.data.data.title
+        this.$data.up = res.data.data.up
+      })
+      .catch(err => {
+        console.error(err)
+      })
     },
     changeUp(nVal) {
       this.$data.up = nVal
