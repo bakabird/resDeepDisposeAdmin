@@ -9,7 +9,7 @@
       </div>
     </div>
   </div>
-  <div id="app" :style="{filter:mongolia ? 'blur(2px)' : 'blur(0px)'}">
+  <div id="app" :class="{blur: mongolia}">
     <div v-show="voice == 10">
       <input v-model="word"></input>
       <input type="button" value="YES" @click="veritify()">
@@ -130,10 +130,10 @@ footer{
 .feedback{
   background: #fcfffd;
   position: absolute;
-  top: 0px;
+  top: 10px;
   border-radius: 20px;
   color: #e36b7f;
-  right: 0px;
+  right: 10px;
   border: 1px solid #e77e8f;
 }
 #feedbackCnt{
@@ -175,5 +175,8 @@ footer{
   position: absolute;
   top: 0;
   left: 0;
+}
+.blur{
+  filter: blur(2px);
 }
 </style>
