@@ -1,7 +1,6 @@
 <template>
-  <div class='shovel' :class="{'shovel-retract': !shovelUp}" v-if="rdd">
+  <div class='shovel' v-if="rdd">
     <!-- 你正在修改这个条目 -->
-    <div class='handle' @click="shovelUp = !shovelUp">把手</div>
     <div><input type="button" value="添加一个默认项" @click="addItem"></div>
     <div v-if="revising">
       <div>name* <input type="text" v-model="name"></div>
@@ -92,8 +91,7 @@ function newTrueGold(rock: any) {
 
       sqlId: -1,
       membersArr: [],
-      membersInfo: Vue.members,
-      shovelUp: true,
+      membersInfo: Vue.members
     }
   },
   watch: {
@@ -211,10 +209,6 @@ export default class Shovel extends Vue {
   position: absolute;
   top:-30px;
   left: 0;
-}
-.shovel-retract{
-  top: 100vh;
-  bottom: auto;
 }
 input[type='text']{
   max-width: 400px;
