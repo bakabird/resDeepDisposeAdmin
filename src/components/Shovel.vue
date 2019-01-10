@@ -7,6 +7,7 @@
       <div>name* <input type="text" v-model="name"></div>
       <div>
         mainUrl* <input type="text" v-model="mainUrl">
+        <button class='taijiBtn'>☯️</button>
       </div>
       <div>date* <input type="date" v-model="date"></div>
 
@@ -196,6 +197,8 @@ export default class Shovel extends Vue {
   position: fixed;
   bottom: 0;
   left: 0;
+  max-height: 200px;
+  overflow: auto;
   // text-align: left;
   background: #fff;
   width: 100vw;
@@ -219,5 +222,9 @@ input[type='text']{
 }
 .longInput{
   width: 400px;
+}
+.taijiBtn{
+  background: none;
+  border:none;
 }
 </style>
