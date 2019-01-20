@@ -1,6 +1,7 @@
 <template>
   <div class='shovel' v-if="rdd">
     <!-- 你正在修改这个条目 -->
+    <button @click="wholeInspection">🐞全体检查！</button>
     <div><input type="button" value="添加一个默认项" @click="addItem"></div>
     <div v-if="revising">
       <div>name* <input type="text" v-model="name"></div>
@@ -173,6 +174,15 @@ function newTrueGold(rock: any) {
       .then(res => {
         this.$data.name = res.data.data.title
         this.$data.up = res.data.data.up
+      })
+      .catch(err => {
+        console.error(err)
+      })
+    },
+    async wholeInspection(){
+      axios.get(Vue.rootPath + '/izone/wholeInspection')
+      .then(res => {
+        console.log(res)
       })
       .catch(err => {
         console.error(err)
