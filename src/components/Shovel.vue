@@ -180,7 +180,9 @@ function newTrueGold(rock: any) {
       })
     },
     async wholeInspection(){
-      axios.get(Vue.rootPath + '/izone/wholeInspection')
+      axios.get(Vue.rootPath + '/izone/wholeInspection',{
+        timeout: 250000
+      })
       .then(res => {
         console.log(res)
       })
