@@ -15,6 +15,7 @@
       <input type="button" value="YES" @click="veritify()">
     </div>
     <header>
+      <button class='removeSkin' :class="{skinOn: noShell}" @click="noShell = !noShell">去皮</button>
       <button class='feedback' @click="startMogolia">反馈</button>
       <img class="logo" @click="knock()" width="250" src="./assets/iz-one-logo.png">
       <div class="new">刚出炉的熟肉呈浅珊瑚色</div>
@@ -22,7 +23,7 @@
       <div>个人维护，更新不及时见谅</div>
       <!-- <div>比起弹幕数量更关注弹幕的友善度</div> -->
     </header>
-    <Mine/>
+    <Mine :noShell='noShell'/>
     <footer>- 暂由RDD个人维护 -</footer>
   </div>
 </div>
@@ -40,7 +41,8 @@ import axios from 'axios'
       word: '',
       hasComforted: false,
       mongolia: false,
-      feedbackValue: ''
+      feedbackValue: '',
+      noShell: false
     }
   },
   components: {
@@ -127,6 +129,22 @@ footer{
   text-align: center;
   color: #E4555B;
 }
+
+// button
+.removeSkin{
+  position: absolute;
+  top: 10px;
+  border-radius: 20px;
+  color: #e36b7f;
+  background: #fff;
+  left: 10px;
+  border: 1px solid #e77e8f;
+}
+.skinOn{
+  color: #e4687c;
+  background: #fdebea;
+  border: 1px solid #e46378;
+}
 .feedback{
   background: #fcfffd;
   position: absolute;
@@ -136,6 +154,8 @@ footer{
   right: 10px;
   border: 1px solid #e77e8f;
 }
+
+
 #feedbackCnt{
   resize: none;
 }

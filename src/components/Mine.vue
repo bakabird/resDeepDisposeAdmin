@@ -4,9 +4,9 @@
       <div class="date" >
         {{GoldenBall[0].date === '66-66-66' ? '置顶' : GoldenBall[0].date}}
       </div>
-        <Gold v-for="(i,idx) in (GoldenBallHideMarks[ballIdx] <= 0 || idx <= 3 ? GoldenBall : GoldenBall.slice(0,3))"
-        :noShell="GoldenBall[0].date === '66-66-66'"
-        :key="i.id" 
+        <Gold v-for="(i,idx) in (GoldenBallHideMarks[ballIdx] <= 0 ? GoldenBall : GoldenBall.slice(0,3))"
+        :noShell="noShell || GoldenBall[0].date === '66-66-66'"
+        :key="i.id + '_gold_' + idx" 
         :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
         :site="i.site" :up="i.up" :tag="i.tag"
         :ep="i.ep" :part="i.part" :index="i.index"
@@ -154,6 +154,7 @@ function sortRaw(a: any, b: any) {
   },
 })
 export default class Mine extends Vue {
+  @Prop() private noShell!: boolean;
   public flashData() {
     axios.get(Vue.rootPath + '/izone/all')
     .then((golds) => {
@@ -168,7 +169,7 @@ export default class Mine extends Vue {
 
     const updateSingleLH = () => {
       const firstGoldCell = document.querySelector('.gold .cell')
-      if (firstGoldCell.textContent.trim() == '打歌舞台合集') {
+      if (firstGoldCell.textContent.trim() == 'PD48') {
         if (firstGoldCell.clientHeight != 0) {
           this.$store.commit('updateSingleLH', firstGoldCell.clientHeight)
         }
