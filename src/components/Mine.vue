@@ -1,6 +1,6 @@
 <template>
   <div class="set">
-    <div class='dateCard' v-for="(GoldenBall,ballIdx) in GoldenChains" :key="GoldenBall[0].date">
+    <div class='dateCard' v-for="(GoldenBall,ballIdx) in GoldenChainsShow" :key="GoldenBall[0].date">
       <div class="date" >
         {{GoldenBall[0].date === '66-66-66' ? '置顶' : GoldenBall[0].date}}
       </div>
@@ -29,7 +29,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import axios from 'axios'
 import Gold from './Gold.vue';
 import Shovel from './Shovel.vue';
-import _keys from 'lodash.keys';
 import moment from 'moment'
 
 
@@ -59,6 +58,34 @@ function sortRaw(a: any, b: any) {
   return a.isRaw - b.isRaw
 }
 
+function attrStatistics(sample, attrName){
+  // 将某个由多个对象组成数组，对该数组中对象的某个属性的值进行数量统计
+  const statistics = {}
+  for(let i = 0;i < sample.length;i++){
+    const itm = sample[i]
+    const itmAttrValue = itm[attrName]
+    if(statistics.hasOwnProperty(itmAttrValue)){
+      statistics[itmAttrValue]++
+    }else{
+      statistics[itmAttrValue] = 0
+    }
+  }
+  return statistics
+}
+
+function statisticsSort(stat){
+  // 按照数量统计进行排序，返回一个有顺序的值数组
+  const sort = Object.keys(stat)  
+  sort.sort((a: string, b: string) => {
+    return stat[b] - stat[a]
+  })
+  return sort
+}
+
+function shouldPlacedAtTheTop(gold){
+  return gold.date === '66-66-66'
+}
+
 @Component({
   data() {
     return {
@@ -68,7 +95,7 @@ function sortRaw(a: any, b: any) {
       Ups: [],
       Sites: [],
       Tags: [],
-      limitLength: 8
+      limitLength: 8,
     }
   },
   methods: {
@@ -93,7 +120,6 @@ function sortRaw(a: any, b: any) {
       // split by the date
       // group the new meat
       const newChains: any = []
-      const newHideMarks: any = []
       const now = moment();
       let i = -1;
       let lastDate = ''
@@ -106,10 +132,47 @@ function sortRaw(a: any, b: any) {
           newChains[i] = [a]
         }
       })
+      this.$data.GoldenChains = newChains;
 
+      // Ups and Sites
+      // 将某个由多个对象组成数组，对该数组中对象的某个属性进行数量统计
+      this.$data.Ups = statisticsSort(attrStatistics(nVal,'up'))
+      this.$data.Sites = statisticsSort(attrStatistics(nVal,'site'))
+      this.$data.Tags = statisticsSort(attrStatistics(nVal,'tag'))
+    }
+  },
+  computed: {
+    GoldenChainsShow(){
+      // 预先添加日期为66-66-66的条目
+      let chain = []
+      switch(this.filter){
+        case 'GroupVariety':
+          this.GoldenChains.map(gc => {
+            let gcF = gc.filter(i => i.tag === '团综' || i.tag === '小团综' || shouldPlacedAtTheTop(i))
+            if(gcF.length !== 0){ chain.push(gcF) }
+          })
+          break
+        case 'Variety':
+          this.GoldenChains.map(gc => {
+            let gcF = gc.filter(i => i.tag === '综艺' || shouldPlacedAtTheTop(i))
+            if(gcF.length !== 0){ chain.push(gcF) }
+          })
+          break
+        case 'Vlive':
+          this.GoldenChains.map(gc => {
+            let gcF = gc.filter(i => i.tag === 'Vlive直播' || shouldPlacedAtTheTop(i))
+            if(gcF.length !== 0){ chain.push(gcF) }
+          })
+          break
+        case 'No':
+          chain = this.GoldenChains
+          break
+      }
+
+      const newHideMarks: any = []
       // sort by index & isRaw
       // hideMark setting
-      newChains.map( (a: any, idx: number) => {
+      chain.map( (a: any, idx: number) => {
         a.sort(sortIndex)
         a.sort(sortRaw)
         // <0 代表不隐藏
@@ -120,33 +183,9 @@ function sortRaw(a: any, b: any) {
           newHideMarks[idx] = a.length > this.$data.limitLength ? 1 : 0;
         }
       })
-      this.$data.GoldenChains = newChains;
       this.$data.GoldenBallHideMarks = newHideMarks;
 
-      // Ups and Sites
-      const upCounter = new Object();
-      const siteCounter = new Object();
-      const tagCounter = new Object();
-      nVal.map( (a: any) => {
-        if (upCounter.hasOwnProperty(a.up)) { upCounter[a.up]++ } else { upCounter[a.up] = 0; }
-        if (siteCounter.hasOwnProperty(a.site)) { siteCounter[a.site]++ } else { siteCounter[a.site] = 0; }
-        if (tagCounter.hasOwnProperty(a.tag)) { tagCounter[a.tag]++ } else { tagCounter[a.tag] = 0; }
-      })
-      const ups = _keys(upCounter)
-      const sites = _keys(siteCounter)
-      const tags = _keys(tagCounter)
-      ups.sort((a: string, b: string) => {
-        return upCounter[b] - upCounter[a]
-      })
-      sites.sort((a: string, b: string) => {
-        return siteCounter[b] - siteCounter[a]
-      })
-      tags.sort((a: string, b: string) => {
-        return tagCounter[b] - tagCounter[a]
-      })
-      this.$data.Ups = ups
-      this.$data.Sites = sites
-      this.$data.Tags = tags
+      return chain
     }
   },
   components: {
@@ -155,6 +194,8 @@ function sortRaw(a: any, b: any) {
 })
 export default class Mine extends Vue {
   @Prop() private noShell!: boolean;
+  @Prop() private filter!: string;
+  
   public flashData() {
     axios.get(Vue.rootPath + '/izone/all')
     .then((golds) => {

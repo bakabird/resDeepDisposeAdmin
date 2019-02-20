@@ -22,8 +22,14 @@
       <div class="raw">较难食用的生肉呈墨绿色</div>
       <div>个人维护，更新不及时见谅</div>
       <!-- <div>比起弹幕数量更关注弹幕的友善度</div> -->
+      <form class='filter'>
+        <label><input name='filter' v-model="filter" type='radio' value='No'/>全部</label>
+        <label><input name='filter' v-model="filter" type='radio' value='Variety'/>综艺</label>
+        <label><input name='filter' v-model="filter" type='radio' value='GroupVariety'/>团综</label>
+        <label><input name='filter' v-model="filter" type="radio" value='Vlive'/>Vlive</label>
+      </form>
     </header>
-    <Mine :noShell='noShell'/>
+    <Mine :noShell='noShell' :filter='filter'/>
     <footer>- 暂由RDD个人维护 -</footer>
   </div>
 </div>
@@ -42,7 +48,8 @@ import axios from 'axios'
       hasComforted: false,
       mongolia: false,
       feedbackValue: '',
-      noShell: false
+      noShell: false,
+      filter: 'No'
     }
   },
   components: {
@@ -111,6 +118,7 @@ footer{
   font-size: 12px;
   color: #e6afb1;
 }
+
 .toConfort{
   border: none;
   background: #eeeef4;
@@ -199,5 +207,39 @@ footer{
 }
 .blur{
   filter: blur(2px);
+}
+
+// filter
+.filter input[type='radio'] {
+    outline: none;
+    margin: -2px 5px 1px 20px;
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    font-family: PingFangSC-Regular;
+    color: rgba(56, 71, 68, 1);
+    -webkit-appearance: none;
+    border: 1px solid #ddd;
+    display: inline-block;
+    border-radius: 50%;
+}
+
+.filter input[type='radio']:checked:before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #e65357;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+}
+
+.filter input[type='radio']:checked {
+    display: inline-block;
+    border: 1px solid #e65357;
+    border-radius: 50%;
+    position: relative;
 }
 </style>
