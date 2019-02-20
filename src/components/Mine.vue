@@ -164,8 +164,20 @@ export default class Mine extends Vue {
       console.error(err)
     })
   }
+  public headData(){
+    axios.get(Vue.rootPath + '/izone/head')
+    .then((golds) => {
+      this.$data.Golds = golds.data.data.sort(sortMethod)
+      setTimeout(()=>{
+        this.flashData()
+      },4200)
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+  }
   public mounted() {
-    this.flashData();
+    this.headData();
 
     const updateSingleLH = () => {
       const firstGoldCell = document.querySelector('.gold .cell')
