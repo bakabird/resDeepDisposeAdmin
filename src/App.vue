@@ -1,22 +1,12 @@
 <template>
 <div>
-  <div class='dashboard' >
-    <div class='mogolia' v-if='mongolia' @click.self="closeMogolia">
-      <textarea name="feedbackCnt" id="feedbackCnt" cols="30" rows="10" placeholder="填写你的反馈" v-model="feedbackValue"></textarea>
-      <div class='btnBox'>
-        <button @click="closeMogolia">取消</button>
-        <button @click="submitFeedback">提交</button>
-      </div>
-    </div>
-  </div>
-  <div id="app" :class="{blur: mongolia}">
+  <div id="app">
     <div v-show="voice == 10">
-      <input v-model="word"></input>
+      <input v-model="word"/>
       <input type="button" value="YES" @click="veritify()">
     </div>
     <header>
-      <button class='removeSkin' :class="{skinOn: noShell}" @click="noShell = !noShell">去皮</button>
-      <button class='feedback' @click="startMogolia">反馈</button>
+      <button class='removeSkin' :class="{skinOn: noShell}" @click="switchShell">去皮</button>
       <img class="logo" @click="knock()" width="250" src="./assets/iz-one-logo.png">
       <div class="new">刚出炉的熟肉呈浅珊瑚色</div>
       <div class="raw">较难食用的生肉呈墨绿色</div>
@@ -46,8 +36,6 @@ import axios from 'axios'
       voice: 0 ,
       word: '',
       hasComforted: false,
-      mongolia: false,
-      feedbackValue: '',
       noShell: false,
       filter: 'No'
     }
@@ -66,24 +54,9 @@ import axios from 'axios'
       }
       this.$data.voice++;
     },
-    startMogolia() {
-      this.$data.mongolia = true
-    },
-    closeMogolia() {
-      this.$data.mongolia = false
-    },
-    submitFeedback() {
-      axios.post(Vue.rootPath + '/izone/feedback', {
-        from: 'izoni',
-        feedback: this.$data.feedbackValue
-      }).then((res) => {
-        console.log(res)
-        this.$data.feedbackValue = ''
-        this.$data.mongolia = false
-      }).catch((err) => {
-        console.error(err)
-        this.$data.mongolia = false
-      })
+    switchShell(){
+      this.$record('去皮', 'blaba', 'blaba', 'blaba')
+      this.$data.noShell = !this.$data.noShell
     }
   }
 })
@@ -153,57 +126,6 @@ footer{
   color: #e4687c;
   background: #fdebea;
   border: 1px solid #e46378;
-}
-.feedback{
-  background: #fcfffd;
-  position: absolute;
-  top: 10px;
-  border-radius: 20px;
-  color: #e36b7f;
-  right: 10px;
-  border: 1px solid #e77e8f;
-}
-
-
-#feedbackCnt{
-  resize: none;
-}
-.mogolia{
-  position: fixed;
-  top: 0;
-  z-index: 2;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  background: rgba(0, 0, 0, 0.29);
-}
-.mogolia textarea{
-  background: #fffaf7;
-  width: calc(100vw - 80px);
-  color: #a23c41;
-  margin-left: 20px;
-  padding: 20px;
-  margin-top: 40px;
-  border: 1px solid #c69da5;
-  border-radius: 10px;
-}
-
-.mogolia button{
-  border-radius: 5px;
-  color: #a9676b;
-  border: none;
-  flex: 1;
-  margin: 0 50px;
-  background: #fffaf7;
-}
-.mogolia .btnBox{
-  display: flex;
-}
-.dashboard{
-  display: bloack;
-  position: absolute;
-  top: 0;
-  left: 0;
 }
 .blur{
   filter: blur(2px);
