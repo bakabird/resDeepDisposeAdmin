@@ -48,6 +48,11 @@ import axios from 'axios'
   components: {
     Mine,
   },
+  watch:{
+    filter(to,from){
+      this.$record('过滤器切换',to,from)
+    }
+  },
   methods: {
     knock() {
       if (this.$data.voice < 10) { this.$data.voice++; }
