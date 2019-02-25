@@ -32,6 +32,7 @@ import Shovel from './Shovel.vue';
 import moment from 'moment'
 
 
+// 排序
 function strSum(str: string) {
   const strarr = str.split('')
   let i = 0
@@ -40,7 +41,6 @@ function strSum(str: string) {
   })
   return i;
 }
-
 function sortMethod(a: any, b: any) {
   const Adate = parseInt( a.date.split('-').join('') , 10 ) * 1000
   const Bdate = parseInt( b.date.split('-').join('') , 10 ) * 1000
@@ -50,14 +50,17 @@ function sortMethod(a: any, b: any) {
   const BScore = Bdate + Bstr + b.ep + b.part
   return BScore - AScore;
 }
-
 function sortIndex(a: any, b: any) {
   return b.index - a.index
 }
 function sortRaw(a: any, b: any) {
   return a.isRaw - b.isRaw
 }
+function shouldPlacedAtTheTop(gold){
+  return gold.date === '66-66-66'
+}
 
+// 分析
 function attrStatistics(sample, attrName){
   // 将某个由多个对象组成数组，对该数组中对象的某个属性的值进行数量统计
   const statistics = {}
@@ -72,7 +75,6 @@ function attrStatistics(sample, attrName){
   }
   return statistics
 }
-
 function statisticsSort(stat){
   // 按照数量统计进行排序，返回一个有顺序的值数组
   const sort = Object.keys(stat)  
@@ -82,9 +84,16 @@ function statisticsSort(stat){
   return sort
 }
 
-function shouldPlacedAtTheTop(gold){
-  return gold.date === '66-66-66'
+// 筛选
+function isOneOf(itm, arr){
+  for(let i = 0;i < arr.length;i++){
+    if(itm === arr[i]){
+      return true
+    }
+  }
+  return false
 }
+
 
 @Component({
   data() {
@@ -147,20 +156,51 @@ function shouldPlacedAtTheTop(gold){
       let chain = []
       switch(this.filter){
         case 'GroupVariety':
+        // 团综：团综、小团综、团综花絮、SHOWCON
           this.GoldenChains.map(gc => {
-            let gcF = gc.filter(i => i.tag === '团综' || i.tag === '小团综' || shouldPlacedAtTheTop(i))
+            let gcF = gc.filter(i => ( isOneOf(i.tag,['团综','小团综','团综花絮','SHOWCON']) || shouldPlacedAtTheTop(i) ) )
+            if(gcF.length !== 0){ chain.push(gcF) }
+          })
+          break
+        case 'Stage':
+        // 舞台：练习室、舞台、典礼舞台
+          this.GoldenChains.map(gc => {
+            let gcF = gc.filter(i => ( isOneOf(i.tag,['练习室','舞台','典礼舞台']) || shouldPlacedAtTheTop(i) ) )
+            if(gcF.length !== 0){ chain.push(gcF) }
+          })
+          break
+        case 'Album':
+        // 专辑：MV披露、音源、MV、MV花絮、专辑花絮
+          this.GoldenChains.map(gc => {
+            let gcF = gc.filter(i => ( isOneOf(i.tag,['MV披露','音源','MV','MV花絮','专辑花絮']) || shouldPlacedAtTheTop(i) ) )
+            if(gcF.length !== 0){ chain.push(gcF) }
+          })
+          break
+        case 'Ceremony':
+        // 典礼：颁奖、典礼配料、红毯、受赏、典礼舞台、典礼花絮
+          this.GoldenChains.map(gc => {
+            let gcF = gc.filter(i => ( isOneOf(i.tag,['颁奖','典礼配料','红毯','受赏','典礼舞台','典礼花絮']) || shouldPlacedAtTheTop(i) ) )
+            if(gcF.length !== 0){ chain.push(gcF) }
+          })
+          break
+        case 'Radio':
+        // 电台
+          this.GoldenChains.map(gc => {
+            let gcF = gc.filter(i => ( isOneOf(i.tag,['电台']) || shouldPlacedAtTheTop(i) ) )
             if(gcF.length !== 0){ chain.push(gcF) }
           })
           break
         case 'Variety':
+        // 综艺：采访、综艺、综艺花絮
           this.GoldenChains.map(gc => {
-            let gcF = gc.filter(i => i.tag === '综艺' || shouldPlacedAtTheTop(i))
+            let gcF = gc.filter(i => ( isOneOf(i.tag,['采访','综艺','综艺花絮']) || shouldPlacedAtTheTop(i) ) )
             if(gcF.length !== 0){ chain.push(gcF) }
           })
           break
-        case 'Vlive':
+        case 'Live':
+        // 直播：SHOWROOM、Vlive、直播
           this.GoldenChains.map(gc => {
-            let gcF = gc.filter(i => i.tag === 'Vlive直播' || shouldPlacedAtTheTop(i))
+            let gcF = gc.filter(i => ( isOneOf(i.tag,['SHOWROOM','Vlive','直播']) || shouldPlacedAtTheTop(i) ) )
             if(gcF.length !== 0){ chain.push(gcF) }
           })
           break
@@ -168,6 +208,10 @@ function shouldPlacedAtTheTop(gold){
           chain = this.GoldenChains
           break
       }
+
+      // 可省略
+          //  默认省略： 配料、预告、报道、广告、杂志、饭拍
+          //  可选省略： 采访、典礼配料
 
       const newHideMarks: any = []
       // sort by index & isRaw

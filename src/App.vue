@@ -16,7 +16,12 @@
         <label><input name='filter' v-model="filter" type='radio' value='No'/>全部</label>
         <label><input name='filter' v-model="filter" type='radio' value='Variety'/>综艺</label>
         <label><input name='filter' v-model="filter" type='radio' value='GroupVariety'/>团综</label>
-        <label><input name='filter' v-model="filter" type="radio" value='Vlive'/>Vlive</label>
+        <label><input name='filter' v-model="filter" type='radio' value='Stage'/>舞台</label>
+        <br>
+        <label><input name='filter' v-model="filter" type="radio" value='Live'/>直播</label>
+        <label><input name='filter' v-model="filter" type='radio' value='Album'/>专辑</label>
+        <label><input name='filter' v-model="filter" type='radio' value='Radio'/>电台</label>
+        <label><input name='filter' v-model="filter" type="radio" value='Ceremony'/>典礼</label>
       </form>
     </header>
     <Mine :noShell='noShell' :filter='filter'/>
