@@ -14,9 +14,9 @@
       <div class="cell from">【{{site}}】{{up}}</div>
       <div class="cell members">{{memberStr}}</div>
     </div>
-    <div v-if="rdd">
+    <!-- <div v-if="rdd">
         <input value="修改" type="button" @click.stop="revise">
-    </div>
+    </div> -->
   </div>
 </template>
 

@@ -4,14 +4,29 @@
       <div class="date" >
         {{GoldenBall[0].date === '66-66-66' ? '置顶' : GoldenBall[0].date}}
       </div>
-        <Gold v-for="(i,idx) in (GoldenBallHideMarks[ballIdx] <= 0 ? GoldenBall : GoldenBall.slice(0,3))"
-        :noShell="noShell || GoldenBall[0].date === '66-66-66'"
+      <template v-for="(i,idx) in (GoldenBallHideMarks[ballIdx] <= 0 ? GoldenBall : GoldenBall.slice(0,3))">
+         <Gold 
+        v-if="!rdd || !i.edit"
+        :noShell="GoldenBall[0].date === '66-66-66'"
         :key="i.id + '_gold_' + idx" 
         :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
         :site="i.site" :up="i.up" :tag="i.tag"
         :ep="i.ep" :part="i.part" :index="i.index"
         :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut"
         :members="i.members" />
+        <GoldEdit 
+        v-if="rdd && i.edit"
+        :sites="Sites" :tags="Tags"
+        :key="i.id + '_goldEdit_' + idx" 
+        :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
+        :site="i.site" :up="i.up" :tag="i.tag"
+        :ep="i.ep" :part="i.part" :index="i.index"
+        :isRaw="i.isRaw" :isCut="i.isCut"
+        :members="i.members" 
+        @finishEdit='endEdit(i)'/>
+        <button v-if="rdd && !i.edit" :key="`${i.id}_toEditBtn`" @click="toEdit(i)">编辑</button>
+      </template>
+       
       <span 
         class="handle"
         :class="{'handle-In': GoldenBallHideMarks[ballIdx] === -1 }" 
@@ -20,7 +35,7 @@
         {{GoldenBallHideMarks[ballIdx] == 1  ? `展开纸条(${ GoldenBall.length - 3})` : `叠回去`}}
       </span>
     </div>
-    <Shovel :ups="Ups" :sites="Sites" :tags="Tags" @flash="flashData"/>
+    <Shovel @flash="flashData"/>
   </div>
 </template>
 
@@ -28,7 +43,9 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import axios from 'axios'
 import Gold from './Gold.vue';
+import GoldEdit from './GoldEdit.vue'
 import Shovel from './Shovel.vue';
+
 import moment from 'moment'
 
 
@@ -56,28 +73,28 @@ function sortIndex(a: any, b: any) {
 function sortRaw(a: any, b: any) {
   return a.isRaw - b.isRaw
 }
-function shouldPlacedAtTheTop(gold){
+function shouldPlacedAtTheTop(gold) {
   return gold.date === '66-66-66'
 }
 
 // 分析
-function attrStatistics(sample, attrName){
+function attrStatistics(sample, attrName) {
   // 将某个由多个对象组成数组，对该数组中对象的某个属性的值进行数量统计
   const statistics = {}
-  for(let i = 0;i < sample.length;i++){
+  for (let i = 0; i < sample.length; i++) {
     const itm = sample[i]
     const itmAttrValue = itm[attrName]
-    if(statistics.hasOwnProperty(itmAttrValue)){
+    if (statistics.hasOwnProperty(itmAttrValue)) {
       statistics[itmAttrValue]++
-    }else{
+    } else {
       statistics[itmAttrValue] = 0
     }
   }
   return statistics
 }
-function statisticsSort(stat){
+function statisticsSort(stat) {
   // 按照数量统计进行排序，返回一个有顺序的值数组
-  const sort = Object.keys(stat)  
+  const sort = Object.keys(stat)
   sort.sort((a: string, b: string) => {
     return stat[b] - stat[a]
   })
@@ -85,9 +102,9 @@ function statisticsSort(stat){
 }
 
 // 筛选
-function isOneOf(itm, arr){
-  for(let i = 0;i < arr.length;i++){
-    if(itm === arr[i]){
+function isOneOf(itm, arr) {
+  for (let i = 0; i < arr.length; i++) {
+    if (itm === arr[i]) {
       return true
     }
   }
@@ -101,7 +118,6 @@ function isOneOf(itm, arr){
       Golds: [],
       GoldenChains: [],
       GoldenBallHideMarks: [],
-      Ups: [],
       Sites: [],
       Tags: [],
       limitLength: 8,
@@ -123,6 +139,15 @@ function isOneOf(itm, arr){
       }
       Vue.set(this.$data.GoldenBallHideMarks, ballIdx, -this.$data.GoldenBallHideMarks[ballIdx])
     },
+    toEdit(goldObj) {
+      const newGold = Object.assign({}, this.$data.Golds[goldObj.goldNo], {
+        edit: true
+      })
+      Vue.set(this.$data.Golds, goldObj.goldNo, newGold)
+    },
+    endEdit(goldObj) {
+      this.flashData()
+    }
   },
   watch: {
     Golds(nVal) {
@@ -145,63 +170,63 @@ function isOneOf(itm, arr){
 
       // Ups and Sites
       // 将某个由多个对象组成数组，对该数组中对象的某个属性进行数量统计
-      this.$data.Ups = statisticsSort(attrStatistics(nVal,'up'))
-      this.$data.Sites = statisticsSort(attrStatistics(nVal,'site'))
-      this.$data.Tags = statisticsSort(attrStatistics(nVal,'tag'))
+      // this.$data.Ups = statisticsSort(attrStatistics(nVal, 'up'))
+      this.$data.Sites = statisticsSort(attrStatistics(nVal, 'site'))
+      this.$data.Tags = statisticsSort(attrStatistics(nVal, 'tag'))
     }
   },
   computed: {
-    GoldenChainsShow(){
+    GoldenChainsShow() {
       // 预先添加日期为66-66-66的条目
       let chain = []
-      switch(this.filter){
+      switch (this.filter) {
         case 'GroupVariety':
         // 团综：团综、小团综、团综花絮、SHOWCON
           this.GoldenChains.map(gc => {
-            let gcF = gc.filter(i => ( isOneOf(i.tag,['团综','小团综','团综花絮','SHOWCON']) || shouldPlacedAtTheTop(i) ) )
-            if(gcF.length !== 0){ chain.push(gcF) }
+            const gcF = gc.filter(i => ( isOneOf(i.tag, ['团综', '小团综', '团综花絮', 'SHOWCON']) || shouldPlacedAtTheTop(i) ) )
+            if (gcF.length !== 0) { chain.push(gcF) }
           })
           break
         case 'Stage':
         // 舞台：练习室、舞台、典礼舞台
           this.GoldenChains.map(gc => {
-            let gcF = gc.filter(i => ( isOneOf(i.tag,['练习室','舞台','典礼舞台']) || shouldPlacedAtTheTop(i) ) )
-            if(gcF.length !== 0){ chain.push(gcF) }
+            const gcF = gc.filter(i => ( isOneOf(i.tag, ['练习室', '舞台', '典礼舞台']) || shouldPlacedAtTheTop(i) ) )
+            if (gcF.length !== 0) { chain.push(gcF) }
           })
           break
         case 'Album':
         // 专辑：MV披露、音源、MV、MV花絮、专辑花絮
           this.GoldenChains.map(gc => {
-            let gcF = gc.filter(i => ( isOneOf(i.tag,['MV披露','音源','MV','MV花絮','专辑花絮']) || shouldPlacedAtTheTop(i) ) )
-            if(gcF.length !== 0){ chain.push(gcF) }
+            const gcF = gc.filter(i => ( isOneOf(i.tag, ['MV披露', '音源', 'MV', 'MV花絮', '专辑花絮']) || shouldPlacedAtTheTop(i) ) )
+            if (gcF.length !== 0) { chain.push(gcF) }
           })
           break
         case 'Ceremony':
         // 典礼：颁奖、典礼配料、红毯、受赏、典礼舞台、典礼花絮
           this.GoldenChains.map(gc => {
-            let gcF = gc.filter(i => ( isOneOf(i.tag,['颁奖','典礼配料','红毯','受赏','典礼舞台','典礼花絮']) || shouldPlacedAtTheTop(i) ) )
-            if(gcF.length !== 0){ chain.push(gcF) }
+            const gcF = gc.filter(i => ( isOneOf(i.tag, ['颁奖', '典礼配料', '红毯', '受赏', '典礼舞台', '典礼花絮']) || shouldPlacedAtTheTop(i) ) )
+            if (gcF.length !== 0) { chain.push(gcF) }
           })
           break
         case 'Radio':
         // 电台
           this.GoldenChains.map(gc => {
-            let gcF = gc.filter(i => ( isOneOf(i.tag,['电台']) || shouldPlacedAtTheTop(i) ) )
-            if(gcF.length !== 0){ chain.push(gcF) }
+            const gcF = gc.filter(i => ( isOneOf(i.tag, ['电台']) || shouldPlacedAtTheTop(i) ) )
+            if (gcF.length !== 0) { chain.push(gcF) }
           })
           break
         case 'Variety':
         // 综艺：采访、综艺、综艺花絮
           this.GoldenChains.map(gc => {
-            let gcF = gc.filter(i => ( isOneOf(i.tag,['采访','综艺','综艺花絮']) || shouldPlacedAtTheTop(i) ) )
-            if(gcF.length !== 0){ chain.push(gcF) }
+            const gcF = gc.filter(i => ( isOneOf(i.tag, ['采访', '综艺', '综艺花絮']) || shouldPlacedAtTheTop(i) ) )
+            if (gcF.length !== 0) { chain.push(gcF) }
           })
           break
         case 'Live':
         // 直播：SHOWROOM、Vlive、直播
           this.GoldenChains.map(gc => {
-            let gcF = gc.filter(i => ( isOneOf(i.tag,['SHOWROOM','Vlive','直播']) || shouldPlacedAtTheTop(i) ) )
-            if(gcF.length !== 0){ chain.push(gcF) }
+            const gcF = gc.filter(i => ( isOneOf(i.tag, ['SHOWROOM', 'Vlive', '直播']) || shouldPlacedAtTheTop(i) ) )
+            if (gcF.length !== 0) { chain.push(gcF) }
           })
           break
         case 'No':
@@ -230,32 +255,41 @@ function isOneOf(itm, arr){
       this.$data.GoldenBallHideMarks = newHideMarks;
 
       return chain
-    }
+    },
+    rdd() {
+      return this.$store.state.rdd
+    },
   },
   components: {
-    Gold, Shovel
+    Gold, Shovel, GoldEdit
   },
 })
 export default class Mine extends Vue {
   @Prop() private noShell!: boolean;
   @Prop() private filter!: string;
-  
+
   public flashData() {
     axios.get(Vue.rootPath + '/izone/all')
     .then((golds) => {
-      this.$data.Golds = golds.data.data.sort(sortMethod)
+      const goldAfterSort = golds.data.data.sort(sortMethod)
+      const goldAfterAddEdit = goldAfterSort.map( (i, idx) => {
+        i.goldNo = idx
+        i.edit = false
+        return i
+      })
+      this.$data.Golds = goldAfterAddEdit
     })
     .catch((err) => {
       console.error(err)
     })
   }
-  public headData(){
+  public headData() {
     axios.get(Vue.rootPath + '/izone/head')
     .then((golds) => {
       this.$data.Golds = golds.data.data.sort(sortMethod)
-      setTimeout(()=>{
+      setTimeout(() => {
         this.flashData()
-      },4200)
+      }, 4200)
     })
     .catch((err) => {
       console.error(err)

@@ -48,9 +48,9 @@ import axios from 'axios'
   components: {
     Mine,
   },
-  watch:{
-    filter(to,from){
-      this.$record('过滤器切换',to,from)
+  watch: {
+    filter(to, from) {
+      this.$record('过滤器切换', to, from)
     }
   },
   methods: {
@@ -64,7 +64,7 @@ import axios from 'axios'
       }
       this.$data.voice++;
     },
-    switchShell(){
+    switchShell() {
       this.$record('去皮', 'blaba', 'blaba', 'blaba')
       this.$data.noShell = !this.$data.noShell
     }
