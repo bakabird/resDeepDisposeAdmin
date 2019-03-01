@@ -23,7 +23,7 @@
         :ep="i.ep" :part="i.part" :index="i.index"
         :isRaw="i.isRaw" :isCut="i.isCut"
         :members="i.members" 
-        @finishEdit='endEdit(i)'/>
+        @finishEdit='flashData'/>
         <button v-if="rdd && !i.edit" :key="`${i.id}_toEditBtn`" @click="toEdit(i)">编辑</button>
       </template>
        
@@ -144,9 +144,6 @@ function isOneOf(itm, arr) {
         edit: true
       })
       Vue.set(this.$data.Golds, goldObj.goldNo, newGold)
-    },
-    endEdit(goldObj) {
-      this.flashData()
     }
   },
   watch: {
