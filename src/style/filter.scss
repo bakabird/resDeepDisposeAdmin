@@ -1,0 +1,50 @@
+.filter input[type='radio'] {
+  outline: none;
+  margin: -2px 5px 1px 20px;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  font-family: PingFangSC-Regular;
+  color: rgba(56, 71, 68, 1);
+  -webkit-appearance: none;
+  border: 1px solid #ddd;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.filter input[type='radio']:checked:before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e65357;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+}
+
+.filter input[type='radio']:checked {
+  display: inline-block;
+  border: 1px solid #e65357;
+  border-radius: 50%;
+  position: relative;
+}
+
+.rose{
+
+}
+.suki{
+  .filter input[type='radio'] {
+    color: rgba(56, 71, 68, 1);
+    border: 1px solid #446f7a
+  }
+  
+  .filter input[type='radio']:checked:before {
+    background: #1aa0cc;
+  }
+  
+  .filter input[type='radio']:checked {
+    border: 1px solid #639AA9;
+  }
+}

@@ -54,37 +54,3 @@ const now = moment()
 export default class Shovel extends Vue {
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-.shovel{
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  max-height: 200px;
-  overflow: auto;
-  // text-align: left;
-  background: #fff;
-  width: 100vw;
-}
-.handle{
-  background: yellow;
-  width: 100vw;
-  height:30px;
-  line-height: 30px;
-  position: absolute;
-  top:-30px;
-  left: 0;
-}
-input[type='text']{
-  max-width: 400px;
-  width: 100%;
-}
-.longInput{
-  width: 400px;
-}
-.taijiBtn{
-  background: none;
-  border:none;
-}
-</style>

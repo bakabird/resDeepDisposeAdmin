@@ -9,10 +9,10 @@
         <input type="checkbox" :id="`isRaw_${sqlId}`" v-model="ISRAW">
       </div>
       <div>
-        <input class='longInput' type="text" v-model="NAME">
+        <input class='name' type="text" v-model="NAME">
       </div>
       <div>
-        <input class='longInput' type="text" v-model="URL">
+        <input class='url' type="text" v-model="URL">
         <button class='taijiBtn' @click="fetchInfo">☯️</button>
       </div>
       <div class="cell section">
@@ -20,7 +20,7 @@
         EP <input type="text" v-model="EP">
         排序数 <input type="text" v-model="INDEX">
       </div>
-      <div class='flexWrap'>
+      <div class='meta'>
         <div class="cell tag">
           TAG<input type="text" v-model="TAG">
           <btnList :values="tags" :name="tag" v-on:biubiubiu="changeTag"/>
@@ -186,104 +186,3 @@ export default class GoldEdit extends Vue {
   @Prop() private tags!: string[];
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-.goldedit{
-  // margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  color: #E4555B;
-  background: #FAFAFA;
-  border-bottom: 1px solid #c9bccc;
-  position: relative;
-}
-.longInput{
-  width: 90%;
-}
-
-
-
-.link{
-  display: flex;
-  // height: 2em;
-  line-height: 2em;
-  font-size: 1.3em;
-  color: #E4555B;
-  background: #ffffff;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.meta{
-  display: flex;
-  // color: #efa8ab;
-  // background: #bf9e9e;
-  flex-wrap: wrap;
-  color: #de7579;
-  overflow: hidden;
-}
-.link:hover{
-  cursor: pointer;
-}
-.cell{
-  width: 100%;
-  // background: #efe;
-}
-.name{
-  flex: 2;
-  padding: 0 5px;
-  // background: #FAFAFA;
-}
-.new{
-  .cell{
-    color: #dc4c65;
-    background: #fdebea;
-  }
-}
-.raw{
-  .cell{
-    background: #f0f4ee;
-    color: #9cb599;
-    .part, .ep, .cut{
-      background: #f0f4ee;
-      color: #9cb599;
-    }
-  }
-}
-.part,.ep,.cut{
-  font-size: 12px;
-  color: #de7579;
-}
-.members{
-  min-width: 290px;
-  flex:1;
-  // border-right: 1px dashed;
-}
-.cut{
-  flex: 1;
-}
-
-.flexWrap{
- display: flex;
- flex-wrap: wrap;
-}
-.up,.more{
-  flex:0.9;
-  min-width: 60px;
-  border-top: 1px dashed;
-  max-width: 100%;
-}
-.from{
-  flex: 1;
-  min-width: 60px;
-  max-width: 100%;
-  border-top: 1px dashed;
-}
-.tag{
-  min-width: 200px;
-  max-width: 100%;
-  border-right: 1px dashed;
-  flex: 0.5;
-}
-
-</style>
