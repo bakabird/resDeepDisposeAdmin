@@ -14,9 +14,6 @@
       <div class="cell from">【{{site}}】{{up}}</div>
       <div class="cell members">{{memberStr}}</div>
     </div>
-    <!-- <div v-if="rdd">
-        <input value="修改" type="button" @click.stop="revise">
-    </div> -->
   </div>
 </template>
 
@@ -53,11 +50,11 @@ const now = moment();
   },
   watch: {
     async singleLineHeight(nVal) {
-      if (nVal != 0) {
+      if (nVal !== 0) {
         const updateFontSize = () => {
           const height = this.$el.querySelector('.cell').clientHeight
           if (height > nVal * 1.4) {
-            const size = parseInt( getComputedStyle(this.$el.querySelector('.cell'))['font-size']  )
+            const size = parseInt( getComputedStyle(this.$el.querySelector('.cell'))['font-size'] , 10 )
             if (size > 12) {
               this.$el.querySelector('.cell').style.fontSize = `${size - 1}px`
               setTimeout(updateFontSize, 200)

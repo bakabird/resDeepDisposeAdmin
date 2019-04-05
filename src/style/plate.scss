@@ -1,0 +1,23 @@
+@import "color.scss";
+
+.plate {
+	position: fixed;
+	top: 10px;
+	left: 15px;
+	right: 15px;
+	z-index: 2000;
+	overflow: auto;
+	background: #ffffffb3;
+	max-height: 90vh;
+    box-shadow: 0px 1px 2px 2px #0003;
+    .titlePanel{
+    }
+    .closePanel{
+        background: $clamp_bgcolor;
+        color: #E9A76D;
+        border-bottom: 2px solid #e3e3e3;
+        height: 30px;
+        font-weight: bold;
+        line-height: 30px;
+    }
+}

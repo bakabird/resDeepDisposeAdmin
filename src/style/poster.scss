@@ -1,8 +1,9 @@
+@import "color.scss";
+
 .gold {
   position: relative;
 }
-.golds{
-}
+
 .tomorrow{
   opacity: .5;
 }
@@ -11,16 +12,24 @@
 }
 // color-theme
 .rose{
-  $normal_color: #E4555B;
-  $normal_bgcolor: #FAFAFA;
-  $new_color: #dc4c65;
-  $new_bgcolor: #fdebea;
-  $raw_color: #9cb599;
-  $raw_bgcolor: #f0f4ee;
-  $last_poster_border-bottom: #c9bccc;
 
-  .gold:last-of-type{
+  // .clamp{
+  //   position: fixed;
+  //   top: 20px;
+  //   bottom: 20px;
+  //   border-top: 5px solid $normal_color;
+  //   border-bottom: 5px solid $last_poster_border-bottom;
+  // }
+  .clamp:last-of-type,.gold:last-of-type{
     border-bottom: 1px solid $last_poster_border-bottom;
+  }
+  
+  .clamp{
+    background: $clamp_bgcolor;
+    color: $clamp_color;
+    .cell{
+      color: $clamp_color;
+    }
   }
 
   .gold{
@@ -133,6 +142,25 @@
   }
 }
 
+.clamp{
+  .title{
+    // display: flex;
+    height: 2em;
+    line-height: 2em;
+    font-size: 1.3em;
+    font-weight: bold;
+    // text-align: center;
+    // text-decoration: none;
+  }
+  .meta{
+    .tag{
+      flex: 1;
+    }
+  }
+}
+
+
+
 .link{
   display: flex;
   line-height: 2em;
@@ -149,7 +177,7 @@
   flex-wrap: wrap;
   overflow: hidden;
 }
-.name{
+.name,.title{
   flex: 2;
   padding: 0 5px;
 }

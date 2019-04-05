@@ -23,11 +23,11 @@ const now = moment()
   methods: {
     async addItem() {
       try {
-        const now = moment();
+        const currentTime = moment();
         const rock: any = {
           mainUrl: '/izone/',
           name: '施工中',
-          date: now.format('YY-MM-DD'),
+          date: currentTime.format('YY-MM-DD'),
           members: '',
           tag: '综艺',
           site: 'B站',

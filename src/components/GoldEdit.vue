@@ -2,6 +2,14 @@
   <div class="goldedit">
     <div class="cell name">
       <div>
+        <label for='note'>纸条</label>
+        <input type='radio' id='note' v-model='ITEMTYPE' value='note'/>
+        <label for='clamp'>夹子</label>
+        <input type='radio' id='clamp' v-model='ITEMTYPE' value='clamp'/>
+        <label for='riddle'>时空洞</label>
+        <input type='radio' id='riddle' v-model='ITEMTYPE' value='riddle'/>
+      </div>
+      <div>
         <label :for="`isCut_${sqlId}`">剪辑</label>
         <input type="checkbox" :id="`isCut_${sqlId}`" v-model="ISCUT">
         <input type="date" v-model="DATE">
@@ -85,6 +93,7 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
       SITE: '',
       UP: '',
       MEMBERARR: [],
+      ITEMTYPE: '',
       membersInfo: Vue.members,
 
       TOFLASH: false
@@ -102,6 +111,7 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
         const prop = this.$props
         const gold: any = {
           id: prop.sqlId,
+          itemType: data.ITEMTYPE,
           mainUrl: data.URL,
           name: data.NAME,
           tag: data.TAG,
@@ -160,10 +170,13 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
     this.$data.SITE = this.$props.site
     this.$data.UP = this.$props.up
     this.$data.MEMBERARR = !!this.$props.members ? this.$props.members.split('&') : []
+
+    this.$data.ITEMTYPE = this.$props.itemType
   }
 })
 export default class GoldEdit extends Vue {
   @Prop() private sqlId!: number;
+  @Prop() private itemType!: string;
 
   @Prop() private mainUrl!: string;
   @Prop() private date!: string;

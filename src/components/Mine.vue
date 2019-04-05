@@ -6,12 +6,14 @@
       @edit='toEdit' @finishEdit='flashData' 
       :GoldChain='GoldChain' :Sites='Sites' :Tags='Tags' :filter='filter'/>
     </div>
+    <!-- <Plate :Golds="Golds" :Sites='Sites' :Tags='Tags' :filter='filter'/> -->
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import axios from 'axios'
+// import Plate from './Plate.vue'
 import Golds from './Golds.vue'
 import Shovel from './Shovel.vue';
 
@@ -41,8 +43,7 @@ function sortMethod(a: any, b: any) {
 function attrStatistics(sample, attrName) {
   // 将某个由多个对象组成数组，对该数组中对象的某个属性的值进行数量统计
   const statistics = {}
-  for (let i = 0; i < sample.length; i++) {
-    const itm = sample[i]
+  for (const itm of sample) {
     const itmAttrValue = itm[attrName]
     if (statistics.hasOwnProperty(itmAttrValue)) {
       statistics[itmAttrValue]++
@@ -72,7 +73,7 @@ function statisticsSort(stat) {
     }
   },
   methods: {
-    toEdit(goldNo){
+    toEdit(goldNo) {
       const newGold = Object.assign({}, this.$data.Golds[goldNo], {
           edit: true
       })
@@ -95,15 +96,16 @@ function statisticsSort(stat) {
     },
   },
   components: {
-    // Gold, 
-    Shovel, Golds
+    // Gold,
+    Shovel, Golds, 
+    // Plate
     // GoldEdit
   },
 })
 export default class Mine extends Vue {
   @Prop() private filter!: string;
 
-  public setGold(rawGolds){
+  public setGold(rawGolds) {
       // the gold will be date-sequential after sort
       const goldAfterSort = rawGolds.data.data.sort(sortMethod)
       // add some field into the obj for edit-useage
@@ -158,8 +160,8 @@ export default class Mine extends Vue {
 
     const updateSingleLH = () => {
       const firstGoldCell = document.querySelector('.gold .cell')
-      if (firstGoldCell.textContent.trim() == 'PD48') {
-        if (firstGoldCell.clientHeight != 0) {
+      if (firstGoldCell.textContent.trim() === 'PD48') {
+        if (firstGoldCell.clientHeight !== 0) {
           this.$store.commit('updateSingleLH', firstGoldCell.clientHeight)
         }
       } else {

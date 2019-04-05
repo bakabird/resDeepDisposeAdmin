@@ -3,14 +3,23 @@
         tomorrow: dateDescription === '明天',
         theDayAfterTomorrow: dateDescription === '后天' || dateDescription === '未来',
     }">
-        <div class="date" v-if="GoldenChainShow.length !== 0">
+        <div class="date" v-if="GoldenChainShow.length !== 0 && showDate">
             {{dateDescription}} {{ GoldenChainShow[0].date != '66-66-66' ? GoldenChainShow[0].date : '' }}
         </div>
         <template v-for="(i,idx) in GoldenChainShow">        
             <Gold 
-            v-if="!rdd || !i.edit"
+            v-if="(!rdd || !i.edit) && i.itemType === 'note'"
             :noShell="i.date === '66-66-66'"
             :key="i.id + '_gold_' + idx" 
+            :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
+            :site="i.site" :up="i.up" :tag="i.tag"
+            :ep="i.ep" :part="i.part" :index="i.index"
+            :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut"
+            :members="i.members" />
+            <Clamp 
+            v-if="(!rdd || !i.edit) && i.itemType === 'clamp'"
+            :noShell="i.date === '66-66-66'"
+            :key="i.id + '_clamp_' + idx" 
             :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
             :site="i.site" :up="i.up" :tag="i.tag"
             :ep="i.ep" :part="i.part" :index="i.index"
@@ -20,19 +29,20 @@
             v-if="rdd && i.edit"
             :sites="Sites" :tags="Tags"
             :key="i.id + '_goldEdit_' + idx" 
-            :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
+            :sqlId="i.id" :itemType='i.itemType' :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
             :site="i.site" :up="i.up" :tag="i.tag"
             :ep="i.ep" :part="i.part" :index="i.index"
             :isRaw="i.isRaw" :isCut="i.isCut"
             :members="i.members" 
             @finishEdit="$emit('finishEdit')"/>
-            <button v-if="rdd && !i.edit" :key="`${i.id}_toEditBtn`" @click="toEdit(i)">编辑</button>
+            <button v-if="rdd && !i.edit" :key="`${i.id}_toEditBtn`" @click="toEdit(i)">编辑【{{i.id}}】</button>
         </template>
     </div>
 </template>
 <script>
 import Vue from 'vue'
 import Gold from './Gold.vue'
+import Clamp from './Clamp.vue'
 import GoldEdit from './GoldEdit.vue'
 import moment from 'moment'
 
@@ -54,6 +64,7 @@ function sortRaw(a, b) {
 }
 
 export default {
+    name: 'golds',
     methods:{
         toEdit(gold) {
             this.$emit('edit',gold.goldNo)
@@ -128,13 +139,14 @@ export default {
 
             chain = chain.sort(sortIndex)
             chain = chain.sort(sortRaw)
+            if(!this.$props.insideClamp) chain = chain.filter(i => i.inClamp === -1)
 
             return chain
         },        
 
     },
     components:{
-        Gold, GoldEdit
+        Gold, GoldEdit, Clamp
     },
     props:{
         GoldChain:{
@@ -153,9 +165,17 @@ export default {
             type: Array,
             default: []
         },
+        showDate: {
+            type: Boolean,
+            default: true
+        },
         filter: {
             type: String,
             required: true
+        },
+        insideClamp: {
+            type: Boolean,
+            default: false
         }
     }
 }
