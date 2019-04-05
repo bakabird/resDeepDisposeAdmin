@@ -1,10 +1,12 @@
 <template>
-    <div class="plate" v-if="goldsOnPlate !== ''">
-        <div class='closePanel' @click='closeClamp'>合上夹子「{{plateName}}」</div>
+<div v-if="goldsOnPlate !== ''">
+    <div class="plate">
         <Golds 
         :GoldChain='goldsChain' :Sites='Sites' :Tags='Tags'
         :insideClamp='true' :showDate='false' :filter='filter'/>
     </div>
+    <div class='closePanel' @click='closeClamp'>点这里合上夹子「{{plateName}}」</div>
+</div>
 </template>
 <script>
 import Golds from './Golds.vue'

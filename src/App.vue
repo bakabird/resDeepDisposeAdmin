@@ -8,7 +8,7 @@
       <img class="logo" @click="knock()" width="250" src="./assets/iz-one-logo.png">
       <div class="new">刚出炉的熟肉呈浅珊瑚色</div>
       <div class="raw">较难食用的生肉呈墨绿色</div>
-      <div class="clamp">包含了其他纸条的夹子呈橙色</div>
+      <div class="clamp">包含了其他纸条的夹子呈米黄色</div>
       <!-- <div>比起弹幕数量更关注弹幕的友善度</div> -->
       <div>个人维护，更新不及时见谅</div>
       <form class='filter'>

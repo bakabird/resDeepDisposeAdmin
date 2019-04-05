@@ -1,24 +1,26 @@
-.plate {
-    $clamp_color: #E1B58E;
-    $clamp_bgcolor: #fffaf1;
+$clamp_color: #d8a67a;
+$clamp_bgcolor: #fffaf1;
 
+.plate {
 	position: fixed;
-	top: 10px;
 	left: 15px;
 	right: 15px;
+	bottom: 120px;
 	z-index: 2000;
 	overflow: auto;
 	background: #ffffffb3;
-	max-height: 90vh;
-    box-shadow: 0px 1px 2px 2px #0003;
-    .titlePanel{
-    }
-    .closePanel{
-        background: $clamp_bgcolor;
-        color: #E9A76D;
-        border-bottom: 2px solid #e3e3e3;
-        height: 30px;
-        font-weight: bold;
-        line-height: 30px;
-    }
+	max-height: 60vh;
+    box-shadow: 0px 1px 30px 5px #0003;
+}
+.closePanel{
+    background: $clamp_bgcolor;
+    color: #E9A76D;
+    height: 40px;
+    line-height: 40px;
+    font-weight: bold;
+    position: fixed;
+    bottom: 40px;
+    left:10px;
+    box-shadow: 0px 1px 20px 2px #0003;
+    right: 10px;
 }

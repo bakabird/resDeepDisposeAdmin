@@ -18,7 +18,7 @@
   $new_bgcolor: #fdebea;
   $raw_color: #9cb599;
   $raw_bgcolor: #f0f4ee;
-  $clamp_color: #E1B58E;
+  $clamp_color: #d8a67a;
   $clamp_bgcolor: #fffaf1;
   $last_poster_border-bottom: #c9bccc;
 
@@ -29,6 +29,9 @@
   //   border-top: 5px solid $normal_color;
   //   border-bottom: 5px solid $last_poster_border-bottom;
   // }
+  .clamp,.gold{
+    border-bottom: 1px solid #fff;
+  }
   .clamp:last-of-type,.gold:last-of-type{
     border-bottom: 1px solid $last_poster_border-bottom;
   }
