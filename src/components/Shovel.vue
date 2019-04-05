@@ -31,6 +31,7 @@ const now = moment()
           members: '',
           tag: '综艺',
           site: 'B站',
+          itemType: 'note'
         }
         const response = await axios.post(Vue.rootPath + '/izone/add', rock);
         if (response.status === 200) {
