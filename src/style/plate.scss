@@ -1,6 +1,7 @@
-@import "color.scss";
-
 .plate {
+    $clamp_color: #E1B58E;
+    $clamp_bgcolor: #fffaf1;
+
 	position: fixed;
 	top: 10px;
 	left: 15px;

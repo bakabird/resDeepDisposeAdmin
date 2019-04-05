@@ -6,14 +6,14 @@
       @edit='toEdit' @finishEdit='flashData' 
       :GoldChain='GoldChain' :Sites='Sites' :Tags='Tags' :filter='filter'/>
     </div>
-    <!-- <Plate :Golds="Golds" :Sites='Sites' :Tags='Tags' :filter='filter'/> -->
+    <Plate :Golds="Golds" :Sites='Sites' :Tags='Tags' :filter='filter'/>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import axios from 'axios'
-// import Plate from './Plate.vue'
+import Plate from './Plate.vue'
 import Golds from './Golds.vue'
 import Shovel from './Shovel.vue';
 
@@ -97,8 +97,8 @@ function statisticsSort(stat) {
   },
   components: {
     // Gold,
-    Shovel, Golds, 
-    // Plate
+    Shovel, Golds,
+    Plate
     // GoldEdit
   },
 })

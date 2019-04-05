@@ -23,14 +23,14 @@
         <label for="Ceremony"><input id='Ceremony' name='filter' v-model="filter" type="radio" value='Ceremony'/>典礼</label>
       </form>
     </header>
-    <!-- <Mine :filter='filter'/> -->
+    <Mine :filter='filter'/>
     <footer>- 暂由RDD个人维护 -</footer>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-// import Mine from './components/Mine.vue';
+import Mine from './components/Mine.vue';
 import axios from 'axios'
 
 @Component({

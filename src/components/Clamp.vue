@@ -12,14 +12,8 @@
     </div>
 </template>
 <script>
-// click -> send the mesage to the mask -> show the mask
-    import Golds from './Golds.vue'
-
     export default {
         name: 'clamp',
-        components: { 
-            Golds
-        },
         methods:{
             openClamp(){
                 this.$record('打开夹子', this.$props.name, 'default')
