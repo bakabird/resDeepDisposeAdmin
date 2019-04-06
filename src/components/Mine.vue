@@ -1,11 +1,13 @@
 <template>
   <div class="mine">
     <Shovel @flash="flashData"/>
-    <div class='dateCard' v-for="GoldChain in GoldenChains" :key="GoldChain[0].date">
-      <Golds 
-      @edit='toEdit' @finishEdit='flashData' 
-      :GoldChain='GoldChain' :Sites='Sites' :Tags='Tags' :filter='filter'/>
-    </div>
+    <template v-for="GoldChain in GoldChainsFiltered">
+      <div class='dateCard' :key="GoldChain[0].date">
+        <Golds 
+        @edit='toEdit' @finishEdit='flashData' 
+        :GoldChain='GoldChain' :Sites='Sites' :Tags='Tags'/>
+      </div>
+    </template>
     <Plate :Golds="Golds" :Sites='Sites' :Tags='Tags' :filter='filter'/>
   </div>
 </template>
@@ -18,6 +20,7 @@ import Golds from './Golds.vue'
 import Shovel from './Shovel.vue';
 
 import moment from 'moment'
+import { isOneOf, sortIndex, sortRaw } from './sort.js'
 
 
 // 排序
@@ -29,7 +32,7 @@ function strSum(str: string) {
   })
   return i;
 }
-function sortMethod(a: any, b: any) {
+function sortByDateAndOther(a: any, b: any) {
   const Adate = parseInt( a.date.split('-').join('') , 10 ) * 1000
   const Bdate = parseInt( b.date.split('-').join('') , 10 ) * 1000
   const Astr = strSum(a.name) / 1000
@@ -67,7 +70,7 @@ function statisticsSort(stat) {
   data() {
     return {
       Golds: [],
-      GoldenChains: [],
+      GoldChains: [],
       Sites: [],
       Tags: []
     }
@@ -85,37 +88,83 @@ function statisticsSort(stat) {
       // Ups and Sites
       // 将某个由多个对象组成数组，对该数组中对象的某个属性进行数量统计
       // this.$data.Ups = statisticsSort(attrStatistics(nVal, 'up'))
-      this.makeChain(nVal)
       this.$data.Sites = statisticsSort(attrStatistics(nVal, 'site'))
       this.$data.Tags = statisticsSort(attrStatistics(nVal, 'tag'))
+      this.makeChain(nVal)
     }
   },
   computed: {
     rdd() {
       return this.$store.state.rdd
     },
+    GoldChainsFiltered() {
+        // 预先添加日期为66-66-66的条目;
+        let chains = this.GoldChains
+        let chainsFiltered = []
+        for(let chain of chains){
+          let date = chain[0].date
+          if(date !== '66-66-66'){
+            switch (this.filter) {
+                case 'GroupVariety':
+                // 团综：团综、小团综、团综花絮、SHOWCON
+                chain = chain.filter( i => ( isOneOf(i.tag, ['团综', '小团综', '团综花絮', 'SHOWCON']) ) )
+                break
+                case 'Stage':
+                // 舞台：练习室、舞台、典礼舞台
+                chain = chain.filter( i => ( isOneOf(i.tag, ['练习室', '舞台', '典礼舞台']) ) )
+                break
+                case 'Album':
+                // 专辑：MV披露、音源、MV、MV花絮、专辑花絮
+                chain = chain.filter( i => ( isOneOf(i.tag, ['MV披露', '音源', 'MV', 'MV花絮', '专辑花絮']) ) )
+                break
+                case 'Ceremony':
+                // 典礼：颁奖、典礼配料、红毯、受赏、典礼舞台、典礼花絮
+                chain = chain.filter( i => ( isOneOf(i.tag, ['颁奖', '典礼配料', '红毯', '受赏', '典礼舞台', '典礼花絮']) ) )
+                break
+                case 'Radio':
+                // 电台
+                chain = chain.filter( i => ( isOneOf(i.tag, ['电台']) ) )
+                break
+                case 'Variety':
+                // 综艺：采访、综艺、综艺花絮
+                chain = chain.filter( i => ( isOneOf(i.tag, ['采访', '综艺', '综艺花絮']) ) )
+                break
+                case 'Live':
+                // 直播：SHOWROOM、Vlive、直播
+                chain = chain.filter( i => ( isOneOf(i.tag, ['SHOWROOM', 'Vlive', '直播']) ) )
+                break
+            }
+          }
+          chain = chain.sort(sortIndex)
+          chain = chain.sort(sortRaw)
+          if(chain.length !== 0){
+            chainsFiltered.push(chain)
+          }
+        }
+        
+        // if(!this.$props.insideClamp) chain = chain.filter(i => i.inClamp === -1)
+        return chainsFiltered
+      },  
   },
   components: {
-    // Gold,
-    Shovel, Golds,
-    Plate
-    // GoldEdit
+    Shovel, Golds, Plate
   },
 })
 export default class Mine extends Vue {
   @Prop() private filter!: string;
 
+  // factory for the useful date
+  //    including: Golds Sites Tag & GoldChain
   public setGold(rawGolds) {
       // the gold will be date-sequential after sort
-      const goldAfterSort = rawGolds.data.data.sort(sortMethod)
+      const goldSorted = rawGolds.data.data.sort(sortByDateAndOther)
       // add some field into the obj for edit-useage
-      const goldAfterAddEdit = goldAfterSort.map( (i, idx) => {
+      const goldHasEditMark = goldSorted.map( (i, idx) => {
         i.goldNo = idx
         i.edit = false
         return i
       })
-      this.$data.Golds = goldAfterAddEdit
-      this.makeChain(goldAfterAddEdit)
+      this.$data.Golds = goldHasEditMark
   }
   public makeChain(golds) {
     // make up goldchain according to the date of the gold
@@ -132,8 +181,9 @@ export default class Mine extends Vue {
         newChains[i] = [a]
       }
     })
-    this.$data.GoldenChains = newChains;
+    this.$data.GoldChains = newChains;
   }
+  // fetch date from api
   public flashData() {
     axios.get(Vue.rootPath + '/izone/all')
     .then((golds) => {
@@ -155,6 +205,7 @@ export default class Mine extends Vue {
       console.error(err)
     })
   }
+  // startFrom here
   public mounted() {
     this.headData();
 

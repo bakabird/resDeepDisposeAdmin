@@ -17,17 +17,12 @@
         methods:{
             openClamp(){
                 this.$record('打开夹子', this.$props.name, 'default')
-                this.$store.commit('updateGoldsOnPlate',this.$props.mainUrl)
-                this.$store.commit('updatePlateName',this.$props.name)
+                this.$emit('open')
+                // this.$store.commit('updateGoldsOnPlate',this.$props.mainUrl)
+                // this.$store.commit('updatePlateName',this.$props.name)
             }
         },
         props: {
-            chain:{
-                type: Array,
-                default: ()=>{
-                    return []
-                }
-            },
             mainUrl:{
                 type: String,
                 required: true
@@ -41,10 +36,12 @@
                 required: true
             },
             ep: {
-                type: String
+                type: Number,
+                required: false
             },
             part: {
-                type: String
+                type: Number,
+                required: false
             },
 
         },
