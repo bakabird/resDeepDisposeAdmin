@@ -35,6 +35,14 @@
   .clamp:last-of-type,.gold:last-of-type{
     border-bottom: 1px solid $last_poster_border-bottom;
   }
+
+  .closeCusinon{
+    background: $clamp_bgcolor;
+    color: #E9A76D;
+    height: 40px;
+    line-height: 40px;
+    font-weight: bold;
+  }
   
   .clamp{
     background: $clamp_bgcolor;

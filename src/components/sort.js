@@ -1,10 +1,10 @@
 function isOneOf(itm, arr) {
-for (let i = 0; i < arr.length; i++) {
-    if (itm === arr[i]) {
-    return true
+    for(let i of arr){
+        if (itm === i) {
+            return true
+        }
     }
-}
-return false
+    return false
 }
 function sortIndex(a, b) {
 return b.index - a.index

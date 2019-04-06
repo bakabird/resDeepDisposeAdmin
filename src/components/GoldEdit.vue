@@ -1,6 +1,7 @@
 <template>
   <div class="goldedit">
     <div class="cell name">
+      【{{sqlId}}】
       <div>
         <label for='note'>纸条</label>
         <input type='radio' id='note' v-model='ITEMTYPE' value='note'/>

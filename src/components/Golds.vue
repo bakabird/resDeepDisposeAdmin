@@ -35,11 +35,11 @@
                     <div 
                     v-else-if="i.itemType === 'cushion' && clampOpened[i.inClamp]" 
                     @click="clampOpened[i.inClamp] = false"
-                    class='closePanel'>点这里合上夹子「{{i.clampName}}」</div>
+                    class='closePanel'>合上夹子</div>
                 </template>
                 <Clamp 
                 v-if="i.itemType === 'clamp'"
-                @open="clampOpened[i.id] = true"
+                @open="clampOpened[i.id] = !clampOpened[i.id]"
                 :noShell="i.date === '66-66-66'"
                 :key="i.id + '_clamp_' + idx" 
                 :sqlId="i.id" :mainUrl='i.mainUrl' :name="i.name" 
@@ -141,8 +141,7 @@ export default {
                     if(!this.rdd){
                         chainSorted.push({
                             itemType: 'cushion',
-                            inClamp: id,
-                            clampName: gold.name
+                            inClamp: id
                         })
                     }
                 }

@@ -8,19 +8,25 @@
         :GoldChain='GoldChain' :Sites='Sites' :Tags='Tags'/>
       </div>
     </template>
-    <Plate :Golds="Golds" :Sites='Sites' :Tags='Tags' :filter='filter'/>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import axios from 'axios'
-import Plate from './Plate.vue'
 import Golds from './Golds.vue'
 import Shovel from './Shovel.vue';
 
 import moment from 'moment'
-import { isOneOf, sortIndex, sortRaw } from './sort.js'
+import { sortIndex, sortRaw } from './sort.js'
+function isOneOf(itm, arr) {
+    for (const i of arr) {
+        if (itm === i) {
+            return true
+        }
+    }
+    return false
+}
 
 
 // 排序
@@ -99,11 +105,11 @@ function statisticsSort(stat) {
     },
     GoldChainsFiltered() {
         // 预先添加日期为66-66-66的条目;
-        let chains = this.GoldChains
-        let chainsFiltered = []
-        for(let chain of chains){
-          let date = chain[0].date
-          if(date !== '66-66-66'){
+        const chains = this.GoldChains
+        const chainsFiltered = []
+        for (let chain of chains) {
+          const date = chain[0].date
+          if (date !== '66-66-66') {
             switch (this.filter) {
                 case 'GroupVariety':
                 // 团综：团综、小团综、团综花絮、SHOWCON
@@ -137,17 +143,17 @@ function statisticsSort(stat) {
           }
           chain = chain.sort(sortIndex)
           chain = chain.sort(sortRaw)
-          if(chain.length !== 0){
+          if (chain.length !== 0) {
             chainsFiltered.push(chain)
           }
         }
-        
+
         // if(!this.$props.insideClamp) chain = chain.filter(i => i.inClamp === -1)
         return chainsFiltered
-      },  
+      },
   },
   components: {
-    Shovel, Golds, Plate
+    Shovel, Golds
   },
 })
 export default class Mine extends Vue {
