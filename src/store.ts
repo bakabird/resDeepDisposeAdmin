@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    rdd: true,
+    rdd: false,
     revising: false,
     revisingObj: {
     },

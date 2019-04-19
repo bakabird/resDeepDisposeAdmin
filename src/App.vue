@@ -68,8 +68,7 @@ import axios from 'axios'
       if (this.$data.voice < 10) { this.$data.voice++; }
     },
     veritify() {
-      console.log('当前的开发环境是' + Vue.isDev )
-      if ( this.$data.word === 'Violeta123' || (this.$data.word === 'RDD' && Vue.isDev) ) {
+      if ( this.$data.word === 'Violeta1210' || (this.$data.word === 'RDD' && Vue.isDev) ) {
         this.$store.commit('rddIsGod')
       }
       this.$data.voice++;
