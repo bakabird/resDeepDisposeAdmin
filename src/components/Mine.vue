@@ -18,6 +18,18 @@ import Golds from './Golds.vue'
 import Shovel from './Shovel.vue';
 
 import moment from 'moment'
+
+
+const protoCriteria:any = {
+  "GroupVariety": ["团综", "小团综", "团综花絮", "SHOWCON"],
+  "Stage":["练习室", "舞台", "典礼舞台"],
+  "Album":["MV披露", "音源", "MV", "MV花絮", "专辑花絮"],
+  "Ceremony": ["颁奖", "典礼配料", "红毯", "受赏", "典礼舞台", "典礼花絮"],
+  "Radio":["电台"],
+  "Variety":["采访", "综艺", "综艺花絮"],
+  "Live":["SHOWROOM", "Vlive", "直播"]
+}
+
 function sortIndex(a, b) {
 return b.index - a.index
 }
@@ -77,13 +89,15 @@ function statisticsSort(stat) {
 }
 
 
+
 @Component({
   data() {
     return {
       Golds: [],
       GoldChains: [],
       Sites: [],
-      Tags: []
+      Tags: [],
+      criteria: protoCriteria
     }
   },
   methods: {
@@ -110,41 +124,43 @@ function statisticsSort(stat) {
     },
     GoldChainsFiltered() {
         // 预先添加日期为66-66-66的条目;
+        console.log('密集计算打卡点一')
         const chains = this.GoldChains
         const chainsFiltered = []
         for (let chain of chains) {
           const date = chain[0].date
-          if (date !== '66-66-66') {
-            switch (this.filter) {
-                case 'GroupVariety':
-                // 团综：团综、小团综、团综花絮、SHOWCON
-                chain = chain.filter( i => ( isOneOf(i.tag, ['团综', '小团综', '团综花絮', 'SHOWCON']) ) )
-                break
-                case 'Stage':
-                // 舞台：练习室、舞台、典礼舞台
-                chain = chain.filter( i => ( isOneOf(i.tag, ['练习室', '舞台', '典礼舞台']) ) )
-                break
-                case 'Album':
-                // 专辑：MV披露、音源、MV、MV花絮、专辑花絮
-                chain = chain.filter( i => ( isOneOf(i.tag, ['MV披露', '音源', 'MV', 'MV花絮', '专辑花絮']) ) )
-                break
-                case 'Ceremony':
-                // 典礼：颁奖、典礼配料、红毯、受赏、典礼舞台、典礼花絮
-                chain = chain.filter( i => ( isOneOf(i.tag, ['颁奖', '典礼配料', '红毯', '受赏', '典礼舞台', '典礼花絮']) ) )
-                break
-                case 'Radio':
-                // 电台
-                chain = chain.filter( i => ( isOneOf(i.tag, ['电台']) ) )
-                break
-                case 'Variety':
-                // 综艺：采访、综艺、综艺花絮
-                chain = chain.filter( i => ( isOneOf(i.tag, ['采访', '综艺', '综艺花絮']) ) )
-                break
-                case 'Live':
-                // 直播：SHOWROOM、Vlive、直播
-                chain = chain.filter( i => ( isOneOf(i.tag, ['SHOWROOM', 'Vlive', '直播']) ) )
-                break
-            }
+          if (date !== '66-66-66' && this.filter !== 'No') {
+            chain = chain.filter( i => ( isOneOf(i.tag, this.$data.criteria[this.filter]) ) )
+            // switch (this.filter) {
+            //     case 'GroupVariety':
+            //     // 团综：团综、小团综、团综花絮、SHOWCON
+            //     chain = chain.filter( i => ( isOneOf(i.tag, ['团综', '小团综', '团综花絮', 'SHOWCON']) ) )
+            //     break
+            //     case 'Stage':
+            //     // 舞台：练习室、舞台、典礼舞台
+            //     chain = chain.filter( i => ( isOneOf(i.tag, ['练习室', '舞台', '典礼舞台']) ) )
+            //     break
+            //     case 'Album':
+            //     // 专辑：MV披露、音源、MV、MV花絮、专辑花絮
+            //     chain = chain.filter( i => ( isOneOf(i.tag, ['MV披露', '音源', 'MV', 'MV花絮', '专辑花絮']) ) )
+            //     break
+            //     case 'Ceremony':
+            //     // 典礼：颁奖、典礼配料、红毯、受赏、典礼舞台、典礼花絮
+            //     chain = chain.filter( i => ( isOneOf(i.tag, ['颁奖', '典礼配料', '红毯', '受赏', '典礼舞台', '典礼花絮']) ) )
+            //     break
+            //     case 'Radio':
+            //     // 电台
+            //     chain = chain.filter( i => ( isOneOf(i.tag, ['电台']) ) )
+            //     break
+            //     case 'Variety':
+            //     // 综艺：采访、综艺、综艺花絮
+            //     chain = chain.filter( i => ( isOneOf(i.tag, ['采访', '综艺', '综艺花絮']) ) )
+            //     break
+            //     case 'Live':
+            //     // 直播：SHOWROOM、Vlive、直播
+            //     chain = chain.filter( i => ( isOneOf(i.tag, ['SHOWROOM', 'Vlive', '直播']) ) )
+            //     break
+            // }
           }
           chain = chain.sort(sortIndex)
           chain = chain.sort(sortRaw)
