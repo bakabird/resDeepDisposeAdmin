@@ -46,7 +46,7 @@ import axios from 'axios'
       word: '',
       hasComforted: false,
       filter: 'No',
-      announcement: store.get('announcement'),
+      announcement: store.get('announcement') || '',
       newAnnouncement: '',
     }
   },

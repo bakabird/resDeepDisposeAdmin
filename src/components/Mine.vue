@@ -17,18 +17,19 @@ import axios from 'axios'
 import Golds from './Golds.vue'
 import Shovel from './Shovel.vue';
 
+import store from 'store'
 import moment from 'moment'
 
 
-const protoCriteria:any = {
-  "GroupVariety": ["团综", "小团综", "团综花絮", "SHOWCON"],
-  "Stage":["练习室", "舞台", "典礼舞台"],
-  "Album":["MV披露", "音源", "MV", "MV花絮", "专辑花絮"],
-  "Ceremony": ["颁奖", "典礼配料", "红毯", "受赏", "典礼舞台", "典礼花絮"],
-  "Radio":["电台"],
-  "Variety":["采访", "综艺", "综艺花絮"],
-  "Live":["SHOWROOM", "Vlive", "直播"]
-}
+// const protoCriteria:any = {
+//   "GroupVariety": ["团综", "小团综", "团综花絮", "SHOWCON"],
+//   "Stage":["练习室", "舞台", "典礼舞台"],
+//   "Album":["MV披露", "音源", "MV", "MV花絮", "专辑花絮"],
+//   "Ceremony": ["颁奖", "典礼配料", "红毯", "受赏", "典礼舞台", "典礼花絮"],
+//   "Radio":["电台"],
+//   "Variety":["采访", "综艺", "综艺花絮"],
+//   "Live":["SHOWROOM", "Vlive", "直播"]
+// }
 
 function sortIndex(a, b) {
 return b.index - a.index
@@ -97,7 +98,8 @@ function statisticsSort(stat) {
       GoldChains: [],
       Sites: [],
       Tags: [],
-      criteria: protoCriteria
+      criteria: store.get('criteria') || '',
+      // criteria: '',
     }
   },
   methods: {
@@ -131,36 +133,6 @@ function statisticsSort(stat) {
           const date = chain[0].date
           if (date !== '66-66-66' && this.filter !== 'No') {
             chain = chain.filter( i => ( isOneOf(i.tag, this.$data.criteria[this.filter]) ) )
-            // switch (this.filter) {
-            //     case 'GroupVariety':
-            //     // 团综：团综、小团综、团综花絮、SHOWCON
-            //     chain = chain.filter( i => ( isOneOf(i.tag, ['团综', '小团综', '团综花絮', 'SHOWCON']) ) )
-            //     break
-            //     case 'Stage':
-            //     // 舞台：练习室、舞台、典礼舞台
-            //     chain = chain.filter( i => ( isOneOf(i.tag, ['练习室', '舞台', '典礼舞台']) ) )
-            //     break
-            //     case 'Album':
-            //     // 专辑：MV披露、音源、MV、MV花絮、专辑花絮
-            //     chain = chain.filter( i => ( isOneOf(i.tag, ['MV披露', '音源', 'MV', 'MV花絮', '专辑花絮']) ) )
-            //     break
-            //     case 'Ceremony':
-            //     // 典礼：颁奖、典礼配料、红毯、受赏、典礼舞台、典礼花絮
-            //     chain = chain.filter( i => ( isOneOf(i.tag, ['颁奖', '典礼配料', '红毯', '受赏', '典礼舞台', '典礼花絮']) ) )
-            //     break
-            //     case 'Radio':
-            //     // 电台
-            //     chain = chain.filter( i => ( isOneOf(i.tag, ['电台']) ) )
-            //     break
-            //     case 'Variety':
-            //     // 综艺：采访、综艺、综艺花絮
-            //     chain = chain.filter( i => ( isOneOf(i.tag, ['采访', '综艺', '综艺花絮']) ) )
-            //     break
-            //     case 'Live':
-            //     // 直播：SHOWROOM、Vlive、直播
-            //     chain = chain.filter( i => ( isOneOf(i.tag, ['SHOWROOM', 'Vlive', '直播']) ) )
-            //     break
-            // }
           }
           chain = chain.sort(sortIndex)
           chain = chain.sort(sortRaw)
@@ -232,9 +204,19 @@ export default class Mine extends Vue {
       console.error(err)
     })
   }
+  public fetchCriteria() {
+    axios.get(Vue.rootPath + '/util/getVal?key=izoniCriteria')
+    .then(re => {
+      this.$data.criteria = JSON.parse(re.data.data)
+      store.set('criteria',JSON.parse(re.data.data))
+    }).catch(err => {
+      console.error(err)
+    })
+  }
   // startFrom here
   public mounted() {
     this.headData();
+    this.fetchCriteria()
 
     const updateSingleLH = () => {
       const firstGoldCell = document.querySelector('.gold .cell')
