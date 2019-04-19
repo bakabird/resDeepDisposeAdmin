@@ -1,7 +1,7 @@
 <template>
   <div class="btnList">
-    <input type="button" v-for="(i,idx) in values" v-if="!limit || idx <= 4" :key="name + i" :value="i" @click="$emit('biubiubiu',i)">
-    <input v-if="values.length > 4" class="trigger" type="button" :value="limit ? '>>>>' : '<<<<'" @click="limit = !limit">
+    <input type="button" v-for="(i) in filtedValues" :key="name + i" :value="i" @click="$emit('biubiubiu',i)">
+    <input v-if="values.length > limitNumber" class="trigger" type="button" :value="limit ? '>>>>' : '<<<<'" @click="limit = !limit">
   </div>
 </template>
 
@@ -11,7 +11,16 @@ import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 @Component({
   data() {
     return {
-      limit: true
+      limit: true,
+      limitNumber: 8
+    }
+  },
+  computed:{
+    filtedValues(){
+      const values = this.$props.values
+      return values.filter((a,idx)=>{
+        return !this.$data.limit || idx <= this.$data.limitNumber
+      })
     }
   },
   methods: {
