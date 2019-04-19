@@ -1,6 +1,6 @@
 <template>
   <div class="mine">
-    <Shovel @flash="flashData"/>
+    <Shovel @flash="flashData" :criteriaString='criteriaString'/>
     <template v-for="GoldChain in GoldChainsFiltered">
       <div class='dateCard' :key="GoldChain[0].date">
         <Golds 
@@ -19,17 +19,6 @@ import Shovel from './Shovel.vue';
 
 import store from 'store'
 import moment from 'moment'
-
-
-// const protoCriteria:any = {
-//   "GroupVariety": ["团综", "小团综", "团综花絮", "SHOWCON"],
-//   "Stage":["练习室", "舞台", "典礼舞台"],
-//   "Album":["MV披露", "音源", "MV", "MV花絮", "专辑花絮"],
-//   "Ceremony": ["颁奖", "典礼配料", "红毯", "受赏", "典礼舞台", "典礼花絮"],
-//   "Radio":["电台"],
-//   "Variety":["采访", "综艺", "综艺花絮"],
-//   "Live":["SHOWROOM", "Vlive", "直播"]
-// }
 
 function sortIndex(a, b) {
 return b.index - a.index
@@ -98,8 +87,7 @@ function statisticsSort(stat) {
       GoldChains: [],
       Sites: [],
       Tags: [],
-      criteria: store.get('criteria') || '',
-      // criteria: '',
+      criteria: store.get('criteria') || {},
     }
   },
   methods: {
@@ -124,6 +112,9 @@ function statisticsSort(stat) {
     rdd() {
       return this.$store.state.rdd
     },
+    criteriaString() {
+      return JSON.stringify(this.$data.criteria)
+    },
     GoldChainsFiltered() {
         // 预先添加日期为66-66-66的条目;
         console.log('密集计算打卡点一')
@@ -132,7 +123,7 @@ function statisticsSort(stat) {
         for (let chain of chains) {
           const date = chain[0].date
           if (date !== '66-66-66' && this.filter !== 'No') {
-            chain = chain.filter( i => ( isOneOf(i.tag, this.$data.criteria[this.filter]) ) )
+            chain = chain.filter( i => ( isOneOf(i.tag, this.$data.criteria[this.filter] || []) ) )
           }
           chain = chain.sort(sortIndex)
           chain = chain.sort(sortRaw)
