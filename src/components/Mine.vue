@@ -18,7 +18,12 @@ import Golds from './Golds.vue'
 import Shovel from './Shovel.vue';
 
 import moment from 'moment'
-import { sortIndex, sortRaw } from './sort.js'
+function sortIndex(a, b) {
+return b.index - a.index
+}
+function sortRaw(a, b) {
+return a.isRaw - b.isRaw
+}
 function isOneOf(itm, arr) {
     for (const i of arr) {
         if (itm === i) {

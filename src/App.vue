@@ -10,7 +10,12 @@
       <div class="raw">较难食用的生肉呈墨绿色</div>
       <div class="clamp">包含了其他纸条的夹子呈米黄色</div>
       <!-- <div>比起弹幕数量更关注弹幕的友善度</div> -->
-      <div>个人维护，更新不及时见谅</div>
+      <div>{{announcement}}</div>
+      <div v-if="rdd">
+        <input type="text" v-model="newAnnouncement">
+        <button @click="setAnnouncement">修改公告</button>
+      </div>
+      <!-- <div>个人维护，更新不及时见谅</div> -->
       <form class='filter'>
         <label for="No"><input id='No' name='filter' v-model="filter" type='radio' value='No'/>全部</label>
         <label for="Variety"><input id='Variety' name='filter' v-model="filter" type='radio' value='Variety'/>综艺</label>
@@ -39,7 +44,9 @@ import axios from 'axios'
       voice: 0 ,
       word: '',
       hasComforted: false,
-      filter: 'No'
+      filter: 'No',
+      announcement: '',
+      newAnnouncement: '',
     }
   },
   components: {
@@ -48,6 +55,11 @@ import axios from 'axios'
   watch: {
     filter(to, from) {
       this.$record('过滤器切换(to,from)', to, from)
+    }
+  },
+  computed: {
+    rdd() {
+      return this.$store.state.rdd
     }
   },
   methods: {
@@ -60,10 +72,32 @@ import axios from 'axios'
         this.$store.commit('rddIsGod')
       }
       this.$data.voice++;
+    },
+    fetchAnnouncement(){
+      axios.get(Vue.rootPath + '/util/getVal?key=izoniAnnouncement')
+      .then(re => {
+        this.$data.announcement = re.data.data
+      }).catch(err => {
+        this.$data.announcement = 'ErrorCode:42'
+        console.error(err)
+      })
+    },
+    setAnnouncement(){
+      const that:any = this
+      axios.post(Vue.rootPath + '/util/setVal',{
+        key: 'izoniAnnouncement',
+        value: this.$data.newAnnouncement
+      })
+      .then(re => {
+        that.fetchAnnouncement()
+      }).catch(err => {
+          console.error(err)
+      })
     }
   },
   mounted() {
     document.getElementsByTagName('html')[0].className = 'rose'
+    this.fetchAnnouncement()
   }
 })
 export default class App extends Vue {

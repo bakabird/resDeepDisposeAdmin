@@ -20,6 +20,7 @@
                     :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut"
                     :members="i.members" />
                     <button :key="`${i.id}_toEditBtn`" @click="toEdit(i.goldNo)">编辑【{{i.id}}】</button>
+                    <div :key="i.id + '_board_' + idx" v-if="i.inClamp !== -1">🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈</div>
                 </template>
                 <template v-else>
                     <!-- 用户使用时 -->
@@ -32,10 +33,11 @@
                     :ep="i.ep" :part="i.part" :index="i.index"
                     :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut"
                     :members="i.members" />
-                    <div 
+                    <div
+                    :key="i.id + '_goldCushion_' + idx"
                     v-else-if="i.itemType === 'cushion' && clampOpened[i.inClamp]" 
                     @click="clampOpened[i.inClamp] = false"
-                    class='closePanel'>合上夹子</div>
+                    class='cushion'>合上夹子</div>
                 </template>
                 <Clamp 
                 v-if="i.itemType === 'clamp'"
@@ -68,7 +70,6 @@ import Clamp from './Clamp.vue'
 import GoldEdit from './GoldEdit.vue'
 
 import moment from 'moment'
-// import { isOneOf, sortIndex, sortRaw } from './sort.js'
 
 export default {
     name: 'golds',
