@@ -36,6 +36,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Mine from './components/Mine.vue';
+import store from 'store'
 import axios from 'axios'
 
 @Component({
@@ -45,7 +46,7 @@ import axios from 'axios'
       word: '',
       hasComforted: false,
       filter: 'No',
-      announcement: '',
+      announcement: store.get('announcement'),
       newAnnouncement: '',
     }
   },
@@ -77,6 +78,7 @@ import axios from 'axios'
       axios.get(Vue.rootPath + '/util/getVal?key=izoniAnnouncement')
       .then(re => {
         this.$data.announcement = re.data.data
+        store.set('announcement',re.data.data)
       }).catch(err => {
         this.$data.announcement = 'ErrorCode:42'
         console.error(err)
