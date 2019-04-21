@@ -1,7 +1,8 @@
 <template>
   <div class="goldedit">
-    <div class="cell name">
+      <div class="cell name">
       【{{sqlId}}】
+      </div>
       <div>
         <label for='note'>纸条</label>
         <input type='radio' id='note' v-model='ITEMTYPE' value='note'/>
@@ -9,6 +10,7 @@
         <input type='radio' id='clamp' v-model='ITEMTYPE' value='clamp'/>
         <label for='riddle'>时空洞</label>
         <input type='radio' id='riddle' v-model='ITEMTYPE' value='riddle'/>
+        排序数 <input type="text" v-model="INDEX">
       </div>
       <div>
         <label :for="`isCut_${sqlId}`">剪辑</label>
@@ -19,21 +21,13 @@
       </div>
       <div>
         <input class='name' type="text" v-model="NAME">
+        <button @click="proConfig = !proConfig">{{proConfig ? '简易' : 'PRO'}}</button>
       </div>
-      <div>
-        <input class='url' type="text" v-model="URL">
-        <button class='taijiBtn' @click="fetchInfo">☯️</button>
-      </div>
-      <div class="cell section">
+      <div class="cell section" v-if='proConfig'>
         part <input type="text" v-model="PART">
         EP <input type="text" v-model="EP">
-        排序数 <input type="text" v-model="INDEX">
       </div>
-      <div class='meta'>
-        <div class="cell tag">
-          TAG<input type="text" v-model="TAG">
-          <btnList :values="tags" :name="tag" v-on:biubiubiu="changeTag"/>
-        </div>
+      <div class='meta' v-if='proConfig'>
         <div class="cell from">
           SITE<input type="text" v-model="SITE">
           <btnList :values="sites" name="site" v-on:biubiubiu="changeSite"/>
@@ -42,22 +36,36 @@
           UP<input type="text" v-model="UP">
         </div>
       </div>
+      <div>
+        <input class='url' type="text" v-model="URL">
+        <button class='taijiBtn' @click="fetchInfo">☯️</button>
+      </div>
+      <div class="cell tagWrap">
+        <div class='curTag'>
+          TAG<input type="text" v-model="TAG">
+        </div>
+        <div v-for="(tag,key) in tags" :key="key + '_tag_group'" class="cell tag">
+          {{key}}
+          <btnList :values="tag" :name="tag" v-on:biubiubiu="changeTag"/>
+        </div>
+      </div>
       <div class="cell members">
         <template v-for="(val,K) in membersInfo">
           <label :for="`${K}_${sqlId}`" :key="K + 'label'">{{val}}</label>
           <input type="checkbox" :value="K" v-model="MEMBERARR" :id='`${K}_${sqlId}`' :key="K + 'input'">
         </template>
-        <input type="button" value="全不选" @click="MEMBERARR = []">
-        <input type="button" value="全选" @click="MEMBERARR = ['圆','樱','柔','椰','安','奈','权','惠','仁','彩','珉','燕']">
-        <input type="button" value="猫组" @click="MEMBERARR = ['樱','柔','椰','奈','珉']">
-        <input type="button" value="分手" @click="MEMBERARR = ['圆','安','权','惠','仁','彩','燕']">
+        <div>
+          <input type="button" value="全不选" @click="MEMBERARR = []">
+          <input type="button" value="全选" @click="MEMBERARR = ['圆','樱','柔','椰','安','奈','权','惠','仁','彩','珉','燕']">
+          <input type="button" value="猫组" @click="MEMBERARR = ['樱','柔','椰','奈','珉']">
+          <input type="button" value="分手" @click="MEMBERARR = ['圆','安','权','惠','仁','彩','燕']">
+        </div>
       </div>
       <div>
         <label :for="`toFlashBtn_${sqlId}`">回锅</label>
         <input type="checkbox" :id='`toFlashBtn_${sqlId}`' v-model="TOFLASH">
         <button @click="revise">完成编辑</button>
       </div>
-    </div>
   </div>
 </template>
 
@@ -75,12 +83,22 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
   }
 }
 
-function checkThen(source,pattern,whenSucess){
+function checkThen(source, pattern, whenSucess) {
   const checkRlt = source.match(pattern)
-  if(!!checkRlt){
+  if (!!checkRlt) {
     whenSucess(checkRlt)
   }
 }
+
+function isOneOf(itm, arr) {
+    for (const i of arr) {
+        if (itm === i) {
+            return true
+        }
+    }
+    return false
+}
+
 
 @Component({
   components: {
@@ -106,13 +124,15 @@ function checkThen(source,pattern,whenSucess){
       ITEMTYPE: '',
       membersInfo: Vue.members,
 
-      TOFLASH: false
+      TOFLASH: false,
+
+      proConfig: false
     }
   },
   computed: {
     rdd() {
       return this.$store.state.rdd
-    },
+    }
   },
   methods: {
     async revise() {
@@ -153,28 +173,28 @@ function checkThen(source,pattern,whenSucess){
     changeSite(nVal) {
       this.$data.SITE = nVal
     },
-    dateEvaluate(vname){
+    dateEvaluate(vname) {
       // 190417
-      const dateCheck1  = "(18|19|20|21)(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|30|31)"
+      const dateCheck1  = '(18|19|20|21)(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|30|31)'
       // 2019.04.17
-      const dateCheck2 = "20(18|19|20|21).(0[1-9]|1[0-2]).(0[1-9]|[1-2][0-9]|30|31)"
+      const dateCheck2 = '20(18|19|20|21).(0[1-9]|1[0-2]).(0[1-9]|[1-2][0-9]|30|31)'
 
-      checkThen(vname,dateCheck1,(checkRlt)=>{
+      checkThen(vname, dateCheck1, (checkRlt) => {
         this.$data.DATE = `20${checkRlt[1]}-${checkRlt[2]}-${checkRlt[3]}`
       })
-      checkThen(vname,dateCheck2,(checkRlt)=>{
+      checkThen(vname, dateCheck2, (checkRlt) => {
         this.$data.DATE = `20${checkRlt[1]}-${checkRlt[2]}-${checkRlt[3]}`
       })
     },
-    metaInfoEvaluate(vname){
-      const kkuraRaido = "今夜 咲良树下"
-      const hitomiRadio = "World Get You"  
+    metaInfoEvaluate(vname) {
+      const kkuraRaido = '今夜 咲良树下'
+      const hitomiRadio = 'World Get You'
 
-      checkThen(vname,kkuraRaido,(checkRlt)=>{
+      checkThen(vname, kkuraRaido, (checkRlt) => {
         this.$data.TAG = '樱花电台'
         this.$data.MEMBERARR = ['樱']
       })
-      checkThen(vname,hitomiRadio,(checkRlt)=>{
+      checkThen(vname, hitomiRadio, (checkRlt) => {
         this.$data.TAG = '仁美电台'
         this.$data.MEMBERARR = ['仁']
       })
@@ -188,7 +208,7 @@ function checkThen(source,pattern,whenSucess){
         this.$data.NAME = videoName
         this.$data.UP = videoUp
 
-        const that:any = this
+        const that: any = this
         that.dateEvaluate(videoName)
         that.metaInfoEvaluate(videoName)
       })
@@ -239,6 +259,6 @@ export default class GoldEdit extends Vue {
   @Prop() private isCut!: boolean;
 
   @Prop() private sites!: string[];
-  @Prop() private tags!: string[];
+  @Prop() private tags!: {};
 }
 </script>

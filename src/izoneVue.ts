@@ -7,6 +7,12 @@ izoneVue.install = (Vue: any, options: any) => {
   // Vue.myGlobalMethod = function () {
   //   // 逻辑...
   // }
+  Vue.log = function(){
+    if (Vue.isDev) {
+      // allow here no-console
+      console.log(...arguments)
+    }
+  }
   Vue.members = {
     圆: '🐰',
     樱: '🌸',

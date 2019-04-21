@@ -73,19 +73,19 @@ import axios from 'axios'
       }
       this.$data.voice++;
     },
-    fetchAnnouncement(){
+    fetchAnnouncement() {
       axios.get(Vue.rootPath + '/util/getVal?key=izoniAnnouncement')
       .then(re => {
         this.$data.announcement = re.data.data
-        store.set('announcement',re.data.data)
+        store.set('announcement', re.data.data)
       }).catch(err => {
         this.$data.announcement = 'ErrorCode:42'
         console.error(err)
       })
     },
-    setAnnouncement(){
-      const that:any = this
-      axios.post(Vue.rootPath + '/util/setVal',{
+    setAnnouncement() {
+      const that: any = this
+      axios.post(Vue.rootPath + '/util/setVal', {
         key: 'izoniAnnouncement',
         value: this.$data.newAnnouncement
       })

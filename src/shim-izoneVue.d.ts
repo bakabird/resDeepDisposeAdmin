@@ -7,6 +7,7 @@ declare module 'vue/types/vue' {
     isDev: boolean
     rootPath: string
     members: any
+    log(...args: any): any;
   }
   interface Vue {
     $record(a: string , b: string, c: string, d?: string): void;

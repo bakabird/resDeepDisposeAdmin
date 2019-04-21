@@ -15,10 +15,10 @@ import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
       limitNumber: 8
     }
   },
-  computed:{
-    filtedValues(){
+  computed: {
+    filtedValues() {
       const values = this.$props.values
-      return values.filter((a,idx)=>{
+      return values.filter((a, idx) => {
         return !this.$data.limit || idx <= this.$data.limitNumber
       })
     }

@@ -19,7 +19,7 @@ import moment from 'moment'
 const now = moment()
 
 @Component({
-  data(){
+  data() {
     return {
       editCriteria: false
     }
@@ -29,31 +29,31 @@ const now = moment()
       return this.$store.state.rdd
     }
   },
-  components:{
+  components: {
     Criteria
   },
-  props:{
-    criteriaString:{
+  props: {
+    criteriaString: {
         type: String,
         required: true
     }
   },
   methods: {
-    updateCriteria(newCriteriaString){
-      try{
+    updateCriteria(newCriteriaString) {
+      try {
         JSON.parse(newCriteriaString)
-        axios.post(Vue.rootPath + '/util/setVal',{
+        axios.post(Vue.rootPath + '/util/setVal', {
           key: 'izoniCriteria',
           value: newCriteriaString
-        }).then((re)=>{
+        }).then((re) => {
           console.log('修改完成')
         }).catch(err => {
           console.error(err)
         })
-      }catch(err){
+      } catch (err) {
         console.error(err)
       }
-      
+
     },
     async addItem() {
       try {

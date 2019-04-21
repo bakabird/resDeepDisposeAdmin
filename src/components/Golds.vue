@@ -171,8 +171,10 @@ export default {
             }
         },
         Tags: {
-            type: Array,
-            default: []
+            type: Object,
+            default: ()=>{
+                return {}
+            }
         },
         showDate: {
             type: Boolean,

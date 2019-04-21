@@ -1,11 +1,11 @@
 <template>
   <div class="mine">
-    <Shovel @flash="flashData" :criteriaString='criteriaString'/>
+    <Shovel @flash="flashData" :criteriaString='criteriaString' :curTags="tagsClassified"/>
     <template v-for="GoldChain in GoldChainsFiltered">
       <div class='dateCard' :key="GoldChain[0].date">
         <Golds 
         @edit='toEdit' @finishEdit='flashData' 
-        :GoldChain='GoldChain' :Sites='Sites' :Tags='Tags'/>
+        :GoldChain='GoldChain' :Sites='Sites' :Tags='tagsClassified'/>
       </div>
     </template>
   </div>
@@ -18,6 +18,7 @@ import Golds from './Golds.vue'
 import Shovel from './Shovel.vue';
 
 import store from 'store'
+import isEqual from 'lodash.isequal'
 import moment from 'moment'
 
 function sortIndex(a, b) {
@@ -103,8 +104,10 @@ function statisticsSort(stat) {
       // Ups and Sites
       // 将某个由多个对象组成数组，对该数组中对象的某个属性进行数量统计
       // this.$data.Ups = statisticsSort(attrStatistics(nVal, 'up'))
-      this.$data.Sites = statisticsSort(attrStatistics(nVal, 'site'))
-      this.$data.Tags = statisticsSort(attrStatistics(nVal, 'tag'))
+      const newSites = statisticsSort(attrStatistics(nVal, 'site'))
+      const newTags = statisticsSort(attrStatistics(nVal, 'tag'))
+      this.$data.Sites = isEqual(this.$data.Sites, newSites)  ? this.$data.Sites : newSites
+      this.$data.Tags = isEqual(this.$data.Tags, newTags)  ? this.$data.Tags : newTags
       this.makeChain(nVal)
     }
   },
@@ -115,9 +118,25 @@ function statisticsSort(stat) {
     criteriaString() {
       return JSON.stringify(this.$data.criteria)
     },
+    tagsClassified() {
+      const criteria = this.$data.criteria
+      const tags = this.$data.Tags
+      const keys = Object.keys(criteria)
+
+      let include = []
+      const re: any = {}
+      for (const key of keys) {
+        re[key] = tags.filter(i => isOneOf(i, criteria[key]))
+        include = [...include, ...criteria[key]]
+      }
+
+      re.Other = tags.filter(i => !isOneOf(i, include))
+      Vue.log(re)
+      return re
+    },
     GoldChainsFiltered() {
         // 预先添加日期为66-66-66的条目;
-        console.log('密集计算打卡点一')
+        Vue.log('密集计算打卡点')
         const chains = this.GoldChains
         const chainsFiltered = []
         for (let chain of chains) {
@@ -199,7 +218,7 @@ export default class Mine extends Vue {
     axios.get(Vue.rootPath + '/util/getVal?key=izoniCriteria')
     .then(re => {
       this.$data.criteria = JSON.parse(re.data.data)
-      store.set('criteria',JSON.parse(re.data.data))
+      store.set('criteria', JSON.parse(re.data.data))
     }).catch(err => {
       console.error(err)
     })
