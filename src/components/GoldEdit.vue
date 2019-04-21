@@ -47,6 +47,7 @@
           <label :for="`${K}_${sqlId}`" :key="K + 'label'">{{val}}</label>
           <input type="checkbox" :value="K" v-model="MEMBERARR" :id='`${K}_${sqlId}`' :key="K + 'input'">
         </template>
+        <input type="button" value="全不选" @click="MEMBERARR = []">
         <input type="button" value="全选" @click="MEMBERARR = ['圆','樱','柔','椰','安','奈','权','惠','仁','彩','珉','燕']">
         <input type="button" value="猫组" @click="MEMBERARR = ['樱','柔','椰','奈','珉']">
         <input type="button" value="分手" @click="MEMBERARR = ['圆','安','权','惠','仁','彩','燕']">
@@ -66,10 +67,18 @@ import btnList from './btnList.vue'
 import moment from 'moment'
 import axios from 'axios'
 
+
 // /main/~/model/iznoi.js
 function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
   if (rock.hasOwnProperty(rkey) && rock[rkey] !== undefined && rock[rkey] != null) {
     if (typeof rock[rkey] === 'boolean') { gold[gkey] = rock[rkey] ? 1 : 0 } else { gold[gkey] = rock[rkey] }
+  }
+}
+
+function checkThen(source,pattern,whenSucess){
+  const checkRlt = source.match(pattern)
+  if(!!checkRlt){
+    whenSucess(checkRlt)
   }
 }
 
@@ -144,11 +153,44 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
     changeSite(nVal) {
       this.$data.SITE = nVal
     },
+    dateEvaluate(vname){
+      // 190417
+      const dateCheck1  = "(18|19|20|21)(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|30|31)"
+      // 2019.04.17
+      const dateCheck2 = "20(18|19|20|21).(0[1-9]|1[0-2]).(0[1-9]|[1-2][0-9]|30|31)"
+
+      checkThen(vname,dateCheck1,(checkRlt)=>{
+        this.$data.DATE = `20${checkRlt[1]}-${checkRlt[2]}-${checkRlt[3]}`
+      })
+      checkThen(vname,dateCheck2,(checkRlt)=>{
+        this.$data.DATE = `20${checkRlt[1]}-${checkRlt[2]}-${checkRlt[3]}`
+      })
+    },
+    metaInfoEvaluate(vname){
+      const kkuraRaido = "今夜 咲良树下"
+      const hitomiRadio = "World Get You"  
+
+      checkThen(vname,kkuraRaido,(checkRlt)=>{
+        this.$data.TAG = '樱花电台'
+        this.$data.MEMBERARR = ['樱']
+      })
+      checkThen(vname,hitomiRadio,(checkRlt)=>{
+        this.$data.TAG = '仁美电台'
+        this.$data.MEMBERARR = ['仁']
+      })
+    },
     async fetchInfo() {
       axios.get(Vue.rootPath + '/izone/biliInfo?url=' + this.$data.URL)
       .then(res => {
-        this.$data.NAME = res.data.data.title
-        this.$data.UP = res.data.data.up
+        const videoName = res.data.data.title
+        const videoUp = res.data.data.up
+
+        this.$data.NAME = videoName
+        this.$data.UP = videoUp
+
+        const that:any = this
+        that.dateEvaluate(videoName)
+        that.metaInfoEvaluate(videoName)
       })
       .catch(err => {
         console.error(err)
