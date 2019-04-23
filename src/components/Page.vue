@@ -3,7 +3,7 @@
         tomorrow: dateDescription === '明天',
         theDayAfterTomorrow: dateDescription === '后天' || dateDescription === '未来',
     }">
-        <div class="date" v-if="GoldChainSorted.length !== 0 && showDate">
+        <div class="date" v-if="GoldChainSorted.length !== 0">
             {{dateDescription}} {{ GoldChainSorted[0].date != '66-66-66' ? GoldChainSorted[0].date : '' }}
         </div>
         <template v-for="(i,idx) in GoldChainSorted">        

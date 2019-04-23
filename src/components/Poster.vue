@@ -29,9 +29,6 @@ const now = moment();
     rdd() {
       return this.$store.state.rdd
     },
-    singleLineHeight() {
-      return this.$store.state.singleLineHeight
-    },
     memberStr() {
       let arr = this.$props.members.split('&')
       arr = arr.sort( () => {
@@ -48,27 +45,7 @@ const now = moment();
       return !this.$props.isRaw && now.diff(this.$props.bakedTime , 'hour') < 36
     }
   },
-  watch: {
-    async singleLineHeight(nVal) {
-      if (nVal !== 0) {
-        const updateFontSize = () => {
-          const height = this.$el.querySelector('.cell').clientHeight
-          if (height > nVal * 1.4) {
-            const size = parseInt( getComputedStyle(this.$el.querySelector('.cell'))['font-size'] , 10 )
-            if (size > 12) {
-              this.$el.querySelector('.cell').style.fontSize = `${size - 1}px`
-              setTimeout(updateFontSize, 200)
-            }
-          }
-        }
-        updateFontSize.bind(this)()
-      }
-    }
-  },
   methods: {
-    revise() {
-      this.$store.commit('revising', this.$props)
-    },
     record(url) {
       this.$record('跳转', this.$props.name, url, this.$props.sqlId)
     }
