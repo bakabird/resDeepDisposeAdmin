@@ -1,7 +1,11 @@
 <template>
   <div class='shovel' v-if="rdd">
     <!-- 你正在修改这个条目 -->
-    <button @click="wholeInspection">🐞全体检查！</button>
+    <div>
+      <button @click="wholeInspection">🐞全体检查！</button>
+      <a target="_blank" href="/static/izone/InsepectionResult.json">查看结果</a>
+    </div>
+
     <div><input type="button" value="添加一个默认项" @click="addItem"></div>
 
     <Criteria v-if="editCriteria" :criteriaString='criteriaString' @revise='updateCriteria' @hide='editCriteria = false'/>
