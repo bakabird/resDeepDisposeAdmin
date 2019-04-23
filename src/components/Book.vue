@@ -1,9 +1,9 @@
 <template>
   <div class="mine">
-    <Shovel @flash="flashData" :criteriaString='criteriaString' :curTags="tagsClassified"/>
+    <ToolBox @flash="flashData" :criteriaString='criteriaString' :curTags="tagsClassified"/>
     <template v-for="GoldChain in GoldChainsFiltered">
       <div class='dateCard' :key="GoldChain[0].date">
-        <Golds 
+        <Page 
         @edit='toEdit' @finishEdit='flashData' 
         :GoldChain='GoldChain' :Sites='Sites' :Tags='tagsClassified'/>
       </div>
@@ -13,10 +13,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import axios from 'axios'
-import Golds from './Golds.vue'
-import Shovel from './Shovel.vue';
+import Page from './Page.vue'
+import ToolBox from './ToolBox.vue';
 
+import axios from 'axios'
 import store from 'store'
 import isEqual from 'lodash.isequal'
 import moment from 'moment'
@@ -156,7 +156,7 @@ function statisticsSort(stat) {
       },
   },
   components: {
-    Shovel, Golds
+    ToolBox, Page
   },
 })
 export default class Mine extends Vue {

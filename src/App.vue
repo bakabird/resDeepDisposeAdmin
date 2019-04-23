@@ -28,14 +28,14 @@
         <label for="Ceremony"><input id='Ceremony' name='filter' v-model="filter" type="radio" value='Ceremony'/>典礼</label>
       </form>
     </header>
-    <Mine :filter='filter'/>
+    <Book :filter='filter'/>
     <footer>- 暂由RDD个人维护 -</footer>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import Mine from './components/Mine.vue';
+import Book from './components/Book.vue';
 import store from 'store'
 import axios from 'axios'
 
@@ -51,7 +51,7 @@ import axios from 'axios'
     }
   },
   components: {
-    Mine
+    Book
   },
   watch: {
     filter(to, from) {

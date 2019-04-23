@@ -10,10 +10,10 @@
             <template v-if="!i.edit">
                 <template v-if="rdd">
                     <!-- 调试模式时 -->
-                    <Gold 
+                    <Poster 
                     v-if="i.itemType === 'note'"
                     :noShell="i.date === '66-66-66'"
-                    :key="i.id + '_gold_' + idx" 
+                    :key="i.id + '_poster_' + idx" 
                     :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
                     :site="i.site" :up="i.up" :tag="i.tag"
                     :ep="i.ep" :part="i.part" :index="i.index"
@@ -24,10 +24,10 @@
                 </template>
                 <template v-else>
                     <!-- 用户使用时 -->
-                    <Gold 
+                    <Poster 
                     v-if="i.itemType === 'note' && clampOpened[i.inClamp]"
                     :noShell="i.date === '66-66-66'"
-                    :key="i.id + '_gold_' + idx" 
+                    :key="i.id + '_poster_' + idx" 
                     :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
                     :site="i.site" :up="i.up" :tag="i.tag"
                     :ep="i.ep" :part="i.part" :index="i.index"
@@ -50,10 +50,10 @@
                 :bakedTime="i.bakedTime"
                 :members="i.members" />
             </template>
-            <GoldEdit 
+            <Molecule 
             v-else
             :sites="Sites" :tags="Tags"
-            :key="i.id + '_goldEdit_' + idx" 
+            :key="i.id + '_molecule_' + idx" 
             :sqlId="i.id" :itemType='i.itemType' :mainUrl='i.mainUrl' :date="i.date" :name="i.name" 
             :site="i.site" :up="i.up" :tag="i.tag"
             :ep="i.ep" :part="i.part" :index="i.index"
@@ -65,14 +65,15 @@
 </template>
 <script>
 import Vue from 'vue'
-import Gold from './Gold.vue'
+
+import Poster from './Poster.vue'
 import Clamp from './Clamp.vue'
-import GoldEdit from './GoldEdit.vue'
+import Molecule from './Molecule.vue'
 
 import moment from 'moment'
 
 export default {
-    name: 'golds',
+    name: 'page',
     data(){
         return {
             clampOpened:{
@@ -91,18 +92,19 @@ export default {
             let date = chain[0].date
             let dateDescription = ''
             if(date !== '66-66-66'){
-                dateDescription = moment('20' + date).fromNow()
-                if( moment('20'+date).isSame(moment().subtract(2,'day'),'day') ){
+                const validDate = '20' + date
+                dateDescription = moment(validDate).fromNow()
+                if( moment(validDate).isSame(moment().subtract(2,'day'),'day') ){
                     dateDescription = '前天'
-                }else if( moment('20'+date).isSame(moment().subtract(1,'day'),'day') ){
+                }else if( moment(validDate).isSame(moment().subtract(1,'day'),'day') ){
                     dateDescription = '昨天'
-                }else if( moment('20'+date).isSame(moment(),'day') ){
+                }else if( moment(validDate).isSame(moment(),'day') ){
                     dateDescription = '今天'
-                }else if( moment('20'+date).isSame(moment().add(1,'day'),'day') ){
+                }else if( moment(validDate).isSame(moment().add(1,'day'),'day') ){
                     dateDescription = '明天'
-                }else if( moment('20'+date).isSame(moment().add(2,'day'),'day') ){
+                }else if( moment(validDate).isSame(moment().add(2,'day'),'day') ){
                     dateDescription = '后天'
-                }else if( moment('20'+date).isAfter(moment(),'day') ){
+                }else if( moment(validDate).isAfter(moment(),'day') ){
                     dateDescription = '未来'
                 }else{
                     dateDescription = ''
@@ -155,7 +157,7 @@ export default {
         },      
     },
     components:{
-        Gold, GoldEdit, Clamp
+        Poster, Molecule, Clamp
     },
     props:{
         GoldChain:{
@@ -175,14 +177,6 @@ export default {
             default: ()=>{
                 return {}
             }
-        },
-        showDate: {
-            type: Boolean,
-            default: true
-        },
-        insideClamp: {
-            type: Boolean,
-            default: false
         }
     }
 }

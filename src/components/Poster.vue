@@ -11,7 +11,7 @@
     </a>
     <div v-if="!noShell" class="meta">
       <div class="cell tag">{{tag}}</div>
-      <div class="cell from">【{{site}}】{{up}}</div>
+      <div class="cell from"><span class='site'>【{{site}}】</span>{{up}}</div>
       <div class="cell members">{{memberStr}}</div>
     </div>
   </div>

@@ -1,7 +1,9 @@
 
+@import "color";
 
 .gold {
   position: relative;
+  border-bottom: 2px solid #fff;
 }
 
 .tomorrow{
@@ -10,27 +12,9 @@
 .theDayAfterTomorrow{
   opacity: .25;
 }
-// color-theme
-.rose{
-  $normal_color: #E4555B;
-  $normal_bgcolor: #FAFAFA;
-  $new_color: #dc4c65;
-  $new_bgcolor: #fdebea;
-  $raw_color: #9cb599;
-  $raw_bgcolor: #f0f4ee;
-  $clamp_color: #d8a67a;
-  $clamp_bgcolor: #fffaf1;
-  $last_poster_border-bottom: #c9bccc;
 
-  // .clamp{
-  //   position: fixed;
-  //   top: 20px;
-  //   bottom: 20px;
-  //   border-top: 5px solid $normal_color;
-  //   border-bottom: 5px solid $last_poster_border-bottom;
-  // }
-  .clamp,.gold{
-    border-bottom: 2px solid #fff;
+  .clamp{
+    
   }
   .clamp:last-of-type,.gold:last-of-type{
     border-bottom: 1px solid $last_poster_border-bottom;
@@ -79,47 +63,47 @@
       }
     }
   }
-}
+// }
 
-.suki{
-  $normal_color: #eac254;
-  $normal_bgcolor: #5A3370;
-  $new_color: #66c643;
-  $new_bgcolor: #D52F5A;
-  $raw_color: #6e0a0a;
-  $raw_bgcolor: #2d6c5d;
-  $last_poster_border-bottom: #370505;
+// .suki{
+//   $normal_color: #eac254;
+//   $normal_bgcolor: #5A3370;
+//   $new_color: #66c643;
+//   $new_bgcolor: #D52F5A;
+//   $raw_color: #6e0a0a;
+//   $raw_bgcolor: #2d6c5d;
+//   $last_poster_border-bottom: #370505;
 
-  .gold:last-of-type{
-    border-bottom: 1px solid $last_poster_border-bottom;
-  }
+//   .gold:last-of-type{
+//     border-bottom: 1px solid $last_poster_border-bottom;
+//   }
 
-  .gold{
-    background: $normal_bgcolor;
-  }
-  .link,.meta,.part,.ep,.cut{
-    color: $normal_color;
-  }
+//   .gold{
+//     background: $normal_bgcolor;
+//   }
+//   .link,.meta,.part,.ep,.cut{
+//     color: $normal_color;
+//   }
 
-  .new{
-    color: $new_color;
-    background: $new_bgcolor;
-    .cell{
-      color: $new_color;
-      background: $new_bgcolor;
-    }
-  }
-  .raw{
-    background:$raw_bgcolor;
-    color: $raw_color;
-    .cell{
-      background:$raw_bgcolor;
-      color: $raw_color;
-      .part, .ep, .cut{
-        background:$raw_bgcolor;
-        color: $raw_color;
-      }
-    }
-  }
-}
+//   .new{
+//     color: $new_color;
+//     background: $new_bgcolor;
+//     .cell{
+//       color: $new_color;
+//       background: $new_bgcolor;
+//     }
+//   }
+//   .raw{
+//     background:$raw_bgcolor;
+//     color: $raw_color;
+//     .cell{
+//       background:$raw_bgcolor;
+//       color: $raw_color;
+//       .part, .ep, .cut{
+//         background:$raw_bgcolor;
+//         color: $raw_color;
+//       }
+//     }
+//   }
+// }
 

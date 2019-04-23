@@ -101,6 +101,8 @@ function isOneOf(itm, arr) {
 
 
 @Component({
+  name: 'Molecule',
+  // 其意为：分子，不管是Poster还是Clamp、Riddle，都拆解成分子状态，而后对其中某些部分进行调整。
   components: {
     btnList
   },

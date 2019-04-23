@@ -30,21 +30,3 @@
   border-radius: 50%;
   position: relative;
 }
-
-.rose{
-
-}
-.suki{
-  .filter input[type='radio'] {
-    color: rgba(56, 71, 68, 1);
-    border: 1px solid #446f7a
-  }
-  
-  .filter input[type='radio']:checked:before {
-    background: #1aa0cc;
-  }
-  
-  .filter input[type='radio']:checked {
-    border: 1px solid #639AA9;
-  }
-}
