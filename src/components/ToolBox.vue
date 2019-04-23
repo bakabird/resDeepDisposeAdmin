@@ -50,12 +50,12 @@ const now = moment()
           key: 'izoniCriteria',
           value: newCriteriaString
         }).then((re) => {
-          console.log('修改完成')
+          Vue.log('修改完成')
         }).catch(err => {
-          console.error(err)
+          Vue.error(err)
         })
       } catch (err) {
-        console.error(err)
+        Vue.error(err)
       }
 
     },
@@ -76,16 +76,16 @@ const now = moment()
           this.$emit('flash')
         }
       } catch (error) {
-        console.error(error);
+        Vue.error(error);
       }
     },
     async wholeInspection() {
       axios.get(Vue.rootPath + '/izone/wholeInspection')
       .then(res => {
-        console.log(res)
+        Vue.log(res)
       })
       .catch(err => {
-        console.error(err)
+        Vue.error(err)
       })
     }
   }

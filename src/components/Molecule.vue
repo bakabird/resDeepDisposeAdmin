@@ -166,7 +166,7 @@ function isOneOf(itm, arr) {
         const response = await axios.post(Vue.rootPath + '/izone/upt', gold);
         this.$emit('finishEdit')
       } catch (error) {
-        console.error(error);
+        Vue.error(error);
       }
     },
     changeTag(nVal) {
@@ -215,7 +215,7 @@ function isOneOf(itm, arr) {
         that.metaInfoEvaluate(videoName)
       })
       .catch(err => {
-        console.error(err)
+        Vue.error(err)
       })
     },
   },

@@ -199,7 +199,7 @@ export default class Mine extends Vue {
       this.setGold(golds)
     })
     .catch((err) => {
-      console.error(err)
+      Vue.error(err)
     })
   }
   public headData() {
@@ -211,7 +211,7 @@ export default class Mine extends Vue {
       }, 4200)
     })
     .catch((err) => {
-      console.error(err)
+      Vue.error(err)
     })
   }
   public fetchCriteria() {
@@ -220,7 +220,7 @@ export default class Mine extends Vue {
       this.$data.criteria = JSON.parse(re.data.data)
       store.set('criteria', JSON.parse(re.data.data))
     }).catch(err => {
-      console.error(err)
+      Vue.error(err)
     })
   }
   // startFrom here

@@ -7,10 +7,16 @@ izoneVue.install = (Vue: any, options: any) => {
   // Vue.myGlobalMethod = function () {
   //   // 逻辑...
   // }
-  Vue.log = function(){
+  Vue.log = (firstArg, ...restArg) => {
     if (Vue.isDev) {
-      // allow here no-console
-      console.log(...arguments)
+      // tslint:disable-next-line
+      console.log(firstArg, ...restArg)
+    }
+  }
+  Vue.error = (firstArg, ...restArg) => {
+    if (Vue.isDev) {
+      // tslint:disable-next-line
+      console.error(firstArg, ...restArg)
     }
   }
   Vue.members = {

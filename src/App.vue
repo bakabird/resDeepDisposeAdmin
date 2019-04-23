@@ -80,7 +80,7 @@ import axios from 'axios'
         store.set('announcement', re.data.data)
       }).catch(err => {
         this.$data.announcement = 'ErrorCode:42'
-        console.error(err)
+        Vue.error(err)
       })
     },
     setAnnouncement() {
@@ -92,7 +92,7 @@ import axios from 'axios'
       .then(re => {
         that.fetchAnnouncement()
       }).catch(err => {
-          console.error(err)
+          Vue.error(err)
       })
     }
   },
