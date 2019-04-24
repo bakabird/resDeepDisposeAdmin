@@ -1,9 +1,14 @@
 @import "filter";
+@import "introduction";
 // @import "button";
-@import "gold";
-@import "goldEdit";
+
+@import "bar";
+@import "poster";
+@import "molecule";
+@import "clamp";
+
 @import "shovel";
-@import "mine";
+@import "book";
 @import "plate";
 
 
@@ -22,20 +27,6 @@ html{
     color: #E4555B;
   }
 }
-
-// html.suki{
-//   background: hsl(192, 28%, 21%);
-//   // color: #942A32;
-
-//   #app {
-//     color: #639AA9;
-//   }
-//   // header {
-//   //   color: #e6afb1;
-//   // }
-// }
-
-
 
 header{
   font-size: 12px;

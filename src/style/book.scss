@@ -1,25 +1,20 @@
-.mine{
+.mine {
   max-width: 700px;
   margin: 0 auto;
 }
-.rose{
-  .date{
-    color: #a58a78;
-    background: #f5eee887;
-  }
+
+.date {
+  color: #a58a78;
+  background: #f5eee887;
 }
-// .suki{
-//   .date{
-//     color: #598f9e;
-//     background: #365962;
-//   }
-// }
-.date{
+
+.date {
   font-size: 12px;
   width: 30%;
   margin: .7em auto 1em;
 }
-.foldBtn{
+
+.foldBtn {
   width: 90%;
   height: 20px;
   margin: 0 auto;
@@ -31,7 +26,8 @@
   font-size: 12px;
   background: rgba(241, 229, 221, 0.64);
 }
-.unfold{
+
+.unfold {
   opacity: 0.5;
   border: none;
 }

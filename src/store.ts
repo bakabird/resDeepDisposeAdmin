@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    rdd: false,
+    rdd: true,
   },
   mutations: {
     rddIsGod(state) {

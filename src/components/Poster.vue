@@ -1,18 +1,15 @@
 <template>
-  <div class="gold" :class="{ new:!!isNew, raw:!!isRaw}">
-    <a class="link" @click="record(mainUrl)" :href="mainUrl" target="_blank">
-      <div class="cell name">
-        {{name}}
-        <span class='cut' v-if="!!isCut">[cut]</span>
-        <span class='part' v-if="!!part">Part {{part}}</span>
-        <span class='ep' v-else-if="!!ep">EP {{ep}}</span>
-        <span v-else></span>
-      </div>
+  <div class="bar poster" :class="{ new:!!isNew, raw:!!isRaw, inClamp: inClamp}">
+    <a class="title link" @click="record(mainUrl)" :href="mainUrl" target="_blank">
+      {{name}}
+      <span class='titleMeta cut' v-if="!!isCut">[cut]</span>
+      <span class='titleMeta part' v-if="!!part">Part {{part}}</span>
+      <span class='titleMeta ep' v-else-if="!!ep">EP {{ep}}</span>
     </a>
     <div v-if="!noShell" class="meta">
-      <div class="cell tag">{{tag}}</div>
-      <div class="cell from"><span class='site'>【{{site}}】</span>{{up}}</div>
-      <div class="cell members">{{memberStr}}</div>
+      <div class="tag">{{tag}}</div>
+      <div class="from"><span class='site'>【{{site}}】</span>{{up}}</div>
+      <div class="members">{{memberStr}}</div>
     </div>
   </div>
 </template>
@@ -74,5 +71,6 @@ export default class Gold extends Vue {
 
 // setting
   @Prop() private noShell!: boolean;
+  @Prop() private inClamp!: boolean;
 }
 </script>

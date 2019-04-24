@@ -1,6 +1,7 @@
 <template>
     <div>
-        <textarea v-model="newCriteriaString" name="newCriteriaString" id="newCriteriaString" cols="30" rows="5"></textarea>
+        <textarea v-model="newCriteriaString" name="newCriteriaString" id="newCriteriaString" cols="30"
+            rows="5"></textarea>
         <div>
             <button @click="paintNewCriteria">更新图像</button>
             <button @click="$emit('revise',newCriteriaString)">提交修改</button>
@@ -23,30 +24,28 @@
     </div>
 </template>
 <script>
-export default {
-    data(){
-        return {
-            newCriteriaString: '{}',
-            criteria: {}
+    export default {
+        data() {
+            return {
+                newCriteriaString: '{}',
+                criteria: {}
+            }
+        },
+        computed: {},
+        props: {
+            criteriaString: {
+                type: String,
+                required: true
+            }
+        },
+        methods: {
+            paintNewCriteria() {
+                this.criteria = JSON.parse(this.$data.newCriteriaString)
+            }
+        },
+        mounted() {
+            this.$data.newCriteriaString = this.$props.criteriaString
+            this.paintNewCriteria()
         }
-    },
-    computed:{
-    },
-    props:{
-        criteriaString:{
-            type: String,
-            required: true
-        }
-    },
-    methods:{
-        paintNewCriteria(){
-            this.criteria = JSON.parse(this.$data.newCriteriaString)
-        }
-    },
-    mounted(){
-        this.$data.newCriteriaString = this.$props.criteriaString
-        this.paintNewCriteria()
     }
-}
 </script>
-

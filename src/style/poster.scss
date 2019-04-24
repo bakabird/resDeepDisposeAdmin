@@ -1,0 +1,90 @@
+@import "color";
+
+.poster {
+  .link {
+    color: $normal_color;
+  }
+
+  .link:hover {
+    cursor: pointer;
+  }
+
+  .meta{
+    color: $normal_meta;
+  }
+
+  &.new{
+    color: $new_color;
+    background: $new_bgcolor;
+    .meta{
+      color: $new_meta;
+    }
+  }
+  &.raw{
+    background: $raw_bgcolor;
+    .meta{
+      color: $raw_meta;
+    }
+    .link{
+      color: $raw_color;
+    }
+  }
+}
+
+.meta {
+  .tag{
+      min-width: 4em;
+      flex: .5;
+      @media screen and (max-width:300px){
+        flex: 1;
+      }
+      padding:0 3px;
+  }
+  .from{
+      min-width: 7em;
+      flex: 1;
+  }
+  .members {
+      min-width: 13em;
+      flex: 1;
+  }
+}
+
+// .gold {
+//   background: $normal_bgcolor;
+// }
+
+// .link,
+// .meta,
+// .part,
+// .ep,
+// .cut {
+//   color: $normal_color;
+// }
+
+// .new {
+//   color: $new_color;
+//   background: $new_bgcolor;
+
+//   .cell {
+//     color: $new_color;
+//     background: $new_bgcolor;
+//   }
+// }
+
+// .raw {
+//   background: $raw_bgcolor;
+//   color: $raw_color;
+
+//   .cell {
+//     background: $raw_bgcolor;
+//     color: $raw_color;
+
+//     .part,
+//     .ep,
+//     .cut {
+//       background: $raw_bgcolor;
+//       color: $raw_color;
+//     }
+//   }
+// }
