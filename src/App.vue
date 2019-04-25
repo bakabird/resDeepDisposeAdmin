@@ -19,20 +19,26 @@
       </div>
       <!-- <div>个人维护，更新不及时见谅</div> -->
       <form class='filter'>
-        <label for="Lastest"><input id='Lastest' name='filter' v-model="filter" type='radio' value='Lastest' />最近更新</label>
-        <br>
-        <label for="No"><input id='No' name='filter' v-model="filter" type='radio' value='No' />全部</label>
-        <label for="Variety"><input id='Variety' name='filter' v-model="filter" type='radio'
-            value='Variety' />综艺</label>
-        <label for="GroupVariety"><input id='GroupVariety' name='filter' v-model="filter" type='radio'
-            value='GroupVariety' />团综</label>
-        <label for="Stage"><input id='Stage' name='filter' v-model="filter" type='radio' value='Stage' />表演</label>
-        <br>
-        <label for="Live"><input id='Live' name='filter' v-model="filter" type="radio" value='Live' />直播</label>
-        <label for="Album"><input id='Album' name='filter' v-model="filter" type='radio' value='Album' />专辑</label>
-        <label for="Radio"><input id='Radio' name='filter' v-model="filter" type='radio' value='Radio' />电台</label>
-        <label for="Ceremony"><input id='Ceremony' name='filter' v-model="filter" type="radio"
-            value='Ceremony' />典礼</label>
+        <label class='mainItem Latest' :class="{'itemActived': filter === 'Latest'}" for="Latest">
+          <input id='Latest' name='filter' v-model="filter" type='radio' value='Latest' />最近更新</label>
+        <!-- sec line -->
+        <label class='item No' :class="{'itemActived': filter === 'No'}" for="No">
+          <input id='No' name='filter' v-model="filter" type='radio' value='No' />全部</label>
+        <label class='item Variety' :class="{'itemActived': filter === 'Variety'}" for="Variety">
+          <input id='Variety' name='filter' v-model="filter" type='radio' value='Variety' />综艺</label>
+        <label class='item GroupVariety' :class="{'itemActived': filter === 'GroupVariety'}" for="GroupVariety"><input
+            id='GroupVariety' name='filter' v-model="filter" type='radio' value='GroupVariety' />团综</label>
+        <label class='item Stage' :class="{'itemActived': filter === 'Stage'}" for="Stage">
+          <input id='Stage' name='filter' v-model="filter" type='radio' value='Stage' />表演</label>
+        <!-- trd line -->
+        <label class='item Live' :class="{'itemActived': filter === 'Live'}" for="Live">
+          <input id='Live' name='filter' v-model="filter" type="radio" value='Live' />直播</label>
+        <label class='item Album' :class="{'itemActived': filter === 'Album'}" for="Album">
+          <input id='Album' name='filter' v-model="filter" type='radio' value='Album' />专辑</label>
+        <label class='item Radio' :class="{'itemActived': filter === 'Radio'}" for="Radio">
+          <input id='Radio' name='filter' v-model="filter" type='radio' value='Radio' />电台</label>
+        <label class='item Ceremony' :class="{'itemActived': filter === 'Ceremony'}" for="Ceremony">
+          <input id='Ceremony' name='filter' v-model="filter" type="radio" value='Ceremony' />典礼</label>
       </form>
     </header>
     <Book :filter='filter' />
@@ -55,7 +61,7 @@
         voice: 0,
         word: '',
         hasComforted: false,
-        filter: 'Lastest',
+        filter: 'Latest',
         announcement: store.get('announcement') || '',
         newAnnouncement: '',
       }

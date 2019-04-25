@@ -105,7 +105,7 @@
         Vue.set(Posters, posterNo, newPosters)
       },
       getCurrentPosters(){
-        if(this.$props.filter === 'Lastest'){
+        if(this.$props.filter === 'Latest'){
           return this.$data.freshPosters
         }else{
           return this.$data.allPosters
@@ -170,7 +170,7 @@
         const pagesFiltered = []
         for (let page of pages) {
           const date = page[0].date
-          if (date !== '66-66-66' && this.filter !== 'No' && this.filter !== 'Lastest') {
+          if (date !== '66-66-66' && this.filter !== 'No' && this.filter !== 'Latest') {
             page = page.filter(i => (isOneOf(i.tag, this.$data.criteria[this.filter] || [])))
           }
           page = page.sort(sortIndex)
