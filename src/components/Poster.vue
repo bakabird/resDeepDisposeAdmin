@@ -1,5 +1,5 @@
 <template>
-  <div class="bar poster" :class="{ new:!!isNew, raw:!!isRaw, inClamp: inClamp}">
+  <div class="bar poster" :class="{ new:!!isNew, raw:!!isRaw, inClamp: inClamp, noShellPoster: noShell}">
     <a class="title link" @click="record(mainUrl)" :href="mainUrl" target="_blank">
       {{name}}
       <span class='titleMeta cut' v-if="!!isCut">[cut]</span>

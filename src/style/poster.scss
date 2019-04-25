@@ -13,6 +13,12 @@
     color: $normal_meta;
   }
 
+
+  &.noShellPoster{
+    .title{
+      font-size: 1em;
+    }
+  }
   &.new{
     color: $new_color;
     background: $new_bgcolor;
