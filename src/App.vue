@@ -19,6 +19,8 @@
       </div>
       <!-- <div>个人维护，更新不及时见谅</div> -->
       <form class='filter'>
+        <label for="Lastest"><input id='Lastest' name='filter' v-model="filter" type='radio' value='Lastest' />最近更新</label>
+        <br>
         <label for="No"><input id='No' name='filter' v-model="filter" type='radio' value='No' />全部</label>
         <label for="Variety"><input id='Variety' name='filter' v-model="filter" type='radio'
             value='Variety' />综艺</label>
@@ -53,7 +55,7 @@
         voice: 0,
         word: '',
         hasComforted: false,
-        filter: 'No',
+        filter: 'Lastest',
         announcement: store.get('announcement') || '',
         newAnnouncement: '',
       }

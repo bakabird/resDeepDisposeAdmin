@@ -8,26 +8,14 @@
         </div>
         <template v-for="(i,idx) in GoldChainSorted">
             <template v-if="!i.edit">
-                <template v-if="rdd">
-                    <!-- 调试模式时 -->
-                    <Poster v-if="i.itemType === 'note'" :noShell="i.date === '66-66-66'" :inClamp='i.inClamp !== -1'
-                        :key="i.id + '_poster_' + idx" :sqlId="i.id" :mainUrl='i.mainUrl' :date="i.date" :name="i.name"
-                        :site="i.site" :up="i.up" :tag="i.tag" :ep="i.ep" :part="i.part" :index="i.index"
-                        :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut" :members="i.members" />
-                    <button :key="`${i.id}_toEditBtn`" @click="toEdit(i.goldNo)">编辑【{{i.id}}】</button>
-                    <!-- <div :key="i.id + '_board_' + idx" v-if="i.inClamp !== -1">🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈🎈</div> -->
-                </template>
-                <template v-else>
-                    <!-- 用户使用时 -->
-                    <Poster v-if="i.itemType === 'note' && clampOpened[i.inClamp]" :noShell="i.date === '66-66-66'"
-                        :inClamp='i.inClamp !== -1' :key="i.id + '_poster_' + idx" :sqlId="i.id" :mainUrl='i.mainUrl'
-                        :date="i.date" :name="i.name" :site="i.site" :up="i.up" :tag="i.tag" :ep="i.ep" :part="i.part"
-                        :index="i.index" :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut"
-                        :members="i.members" />
-                    <div :key="i.id + '_goldCushion_' + idx"
-                        v-else-if="i.itemType === 'cushion' && clampOpened[i.inClamp]"
-                        @click="clampOpened[i.inClamp] = false" class='bar cushion'>合上夹子</div>
-                </template>
+                <Poster v-if="i.itemType === 'note' && (rdd || clampOpened[i.inClamp])" :noShell="i.date === '66-66-66'"
+                    :inClamp='i.inClamp !== -1' :key="i.id + '_poster_' + idx" :sqlId="i.id" :mainUrl='i.mainUrl'
+                    :date="i.date" :name="i.name" :site="i.site" :up="i.up" :tag="i.tag" :ep="i.ep" :part="i.part"
+                    :index="i.index" :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut" :members="i.members" />
+                <button v-if='rdd' :key="`${i.id}_toEditBtn`" @click="toEdit(i.posterNo)">编辑【{{i.id}}】</button>
+                <div :key="i.id + '_goldCushion_' + idx"
+                    v-if="!rdd && i.itemType === 'cushion' && clampOpened[i.inClamp]"
+                    @click="clampOpened[i.inClamp] = false" class='bar cushion'>合上夹子</div>
                 <Clamp v-if="i.itemType === 'clamp'" @triggle="clampOpened[i.id] = !clampOpened[i.id]"
                     :hasOpen="clampOpened[i.id]" :noShell="i.date === '66-66-66'" :key="i.id + '_clamp_' + idx"
                     :sqlId="i.id" :mainUrl='i.mainUrl' :name="i.name" :tag="i.tag" :ep="i.ep" :part="i.part"
@@ -59,14 +47,14 @@
             }
         },
         methods: {
-            toEdit(goldNo) {
-                this.$emit('edit', goldNo)
+            toEdit(posterNo) {
+                this.$emit('edit', posterNo)
             }
         },
         computed: {
             dateDescription() {
-                const chain = this.GoldChain
-                const date = chain[0].date
+                const posters = this.PageContent
+                const date = posters[0].date
                 let dateDescription = ''
                 if (date !== '66-66-66') {
                     const validDate = '20' + date
@@ -92,34 +80,34 @@
                 return dateDescription
             },
             GoldChainSorted() {
-                const chainSorted = []
+                const pageSorted = []
 
                 const clampOpened = {
                     '-1': true
                 }
                 const clampMarkBook = {}
-                const chain = this.GoldChain.filter(gold => {
-                    const inClamp = gold.inClamp
+                const pagePosters = this.PageContent.filter(poster => {
+                    const inClamp = poster.inClamp
                     if (inClamp !== -1) {
                         clampOpened[inClamp] = clampOpened[inClamp] || false
                         clampMarkBook[inClamp] = clampMarkBook[inClamp] || []
-                        clampMarkBook[inClamp].push(gold)
+                        clampMarkBook[inClamp].push(poster)
                     }
                     return inClamp === -1
                 })
                 this.clampOpened = clampOpened
 
 
-                for (const gold of chain) {
-                    chainSorted.push(gold)
-                    if (gold.itemType === 'clamp') {
-                        const id = gold.id
-                        const clampNotes = clampMarkBook[id]
-                        for (const note of clampNotes) {
-                            chainSorted.push(note)
+                for (const poster of pagePosters) {
+                    pageSorted.push(poster)
+                    if (poster.itemType === 'clamp') {
+                        const id = poster.id
+                        const postersInTheClamp = clampMarkBook[id]
+                        for (const poster of postersInTheClamp) {
+                            pageSorted.push(poster)
                         }
                         if (!this.rdd) {
-                            chainSorted.push({
+                            pageSorted.push({
                                 itemType: 'cushion',
                                 inClamp: id
                             })
@@ -127,7 +115,7 @@
                     }
                 }
 
-                return chainSorted
+                return pagePosters
             },
             rdd() {
                 return this.$store.state.rdd
@@ -139,7 +127,7 @@
             Clamp
         },
         props: {
-            GoldChain: {
+            PageContent: {
                 type: Array,
                 default: () => {
                     return []
