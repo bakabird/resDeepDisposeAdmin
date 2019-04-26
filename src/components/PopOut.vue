@@ -1,13 +1,13 @@
 <template>
     <div>
         <div @click="show">
-            <slot name='face'></slot>
+            <slot name='face'>
+            </slot>
         </div>
         <div v-if="popoutttt" class='PopOutBlock' @click.self="hide">
             <div class='PopOutBody'>
                 <slot name='body'></slot>
             </div>
-            <button @click="hide">关闭</button>
         </div>
     </div>
 </template>
@@ -35,3 +35,5 @@ export default Vue.extend({
     },
 })
 </script>
+<style lang="scss" scoped>
+</style>

@@ -7,17 +7,14 @@
     top: 0;
     background: #0002;
     .PopOutBody{
-        position: fixed;
         z-index: 200000;
-        width: 80vw;
-        height: 100px;
-        top: 20vh;
-        left: 10vw;
-        background: #fff;
+        display: inline-block;
+        margin: 0 auto;
+        margin-top: 20vh;
+        background: #ededed;
         border-radius: 7px;
         border: 1px solid #9f9f9f;
         padding: 10px;
         box-sizing: border-box;
-        min-height: 30vh;
     }
 }

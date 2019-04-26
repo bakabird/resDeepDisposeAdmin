@@ -8,7 +8,7 @@
         </div>
         <template v-for="(i,idx) in PostersSorted">
             <Poster v-if="i.itemType === 'note'" :noShell="i.date === '66-66-66'"
-                :itemType='i.itemType'
+                :itemType='i.itemType' :tags='Tags' :sites='Sites'
                 :inClamp='i.inClamp !== -1' :key="i.id + '_poster_' + idx" :sqlId="i.id" :mainUrl='i.mainUrl'
                 :date="i.date" :name="i.name" :site="i.site" :up="i.up" :tag="i.tag" :ep="i.ep" :part="i.part"
                 :index="i.index" :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut" :members="i.members" />

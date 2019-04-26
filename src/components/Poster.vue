@@ -10,7 +10,9 @@
           </td>
         </template>
         <template v-else>
-          <td class='name' colspan="3">{{NAME}}</td>
+          <td class='name' colspan="3">
+            <PopOutInput v-model="NAME" type='longtext' />
+          </td>
           <td class='btn' @click="reset">
             复原
           </td>
@@ -33,18 +35,37 @@
         </tr>
         <tr>
           <td colspan="3">
-            <!-- {{URL}} -->
-            <PopOut @pop='autofocus("url_input")'>
+            <PopOutInput v-model="URL" type='longtext' />
+          </td>
+          <td colspan="2">
+            <PopOut>
               <template slot="face">
-                {{URL}}
+                {{TAG}}
               </template>
-              <template slot="body">
-                <input class='url_input' v-model="URL" type="text">
+              <template slot='body'>
+                <div class="tagWrap">
+                  <div class='curTag'>
+                    <input type="text" v-model="TAG">
+                  </div>
+                  <Table>
+                    <tr>
+                      <th>大类</th>
+                      <th>小类</th>
+                    </tr>
+                    <tr v-for="(tag,key) in tags" :key="key + '_tag_group'" class="tag">
+                      <td>{{key}}</td>
+                      <td>
+                        <btnList :values="tag" :name="tag" v-on:biubiubiu="changeTag" />
+                      </td>
+                    </tr>
+                  </Table>
+                </div>
               </template>
             </PopOut>
           </td>
-          <td colspan="2">{{TAG}}</td>
-          <td colspan="2">{{DATE}}</td>
+          <td colspan="2">
+            <PopOutInput v-model="DATE" />
+          </td>
         </tr>
         <tr>
           <th class='th_memberstr' colspan="7">MemberStr</th>
@@ -62,13 +83,35 @@
           <th class='th_iscut'>isRaw</th>
         </tr>
         <tr>
-          <td>{{PART}}</td>
-          <td>{{EP}}</td>
-          <td>{{ITEMTYPE}}</td>
-          <td>{{SITE}}</td>
-          <td>{{UP}}</td>
-          <td>{{ISCUT ? '✅' : '❌'}}</td>
-          <td>{{ISRAW ? '✅' : '❌'}}</td>
+          <td>
+            <PopOutInput v-model.number="PART" type='number' />
+          </td>
+          <td>
+            <PopOutInput v-model.number="EP" type='number' />
+          </td>
+          <td>
+            <PopOutInput v-model="ITEMTYPE" :range="allItemTypes" type='checkbox'/>
+          </td>
+          <td>
+            <PopOut>
+              <template slot="face">
+                {{SITE}}
+              </template>
+              <template slot='body'>
+                <div>
+                  <div>
+                    <input type="text" v-model="SITE">
+                  </div>
+                  <btnList :values="sites" :name="sites" v-on:biubiubiu="changeSite" />
+                </div>
+              </template>
+            </PopOut>
+          </td>
+          <td>
+            <PopOutInput v-model="UP" />
+          </td>
+          <td @click="ISCUT = !ISCUT">{{ISCUT ? '✅' : '❌'}}</td>
+          <td @click="ISRAW = !ISRAW">{{ISRAW ? '✅' : '❌'}}</td>
         </tr>
       </template>
     </table>
@@ -85,7 +128,9 @@
     Prop,
     Vue
   } from 'vue-property-decorator';
+  import btnList from './btnList.vue'
   import PopOut from './PopOut.vue'
+  import PopOutInput from './PopOutInput.vue'
 
   import moment from 'moment'
   import axios from 'axios'
@@ -127,7 +172,13 @@
 
         membersInfo: Vue.members,
         TOFLASH: false,
-        proConfig: false
+        proConfig: false,
+
+        allItemTypes:{
+          'note': '纸条',
+          'clamp': '夹子',
+          'riddle': '谜面'
+        }
       }
     },
     computed: {
@@ -151,16 +202,20 @@
       }
     },
     components: {
-      PopOut
+      PopOutInput,
+      PopOut,
+      btnList
     },
     methods: {
-      autofocus(className) {
-        const that: any = this.$el.querySelector(`.${className}`)
-        that.select()
-      },
       reset() {
-        const that:any = this
+        const that: any = this
         that.loadPropsToDatas()
+      },
+      changeTag(nVal) {
+        this.$data.TAG = nVal
+      },
+      changeSite(nVal) {
+        this.$data.SITE = nVal
       },
       loadPropsToDatas() {
         this.$data.DATE = this.$props.date
@@ -263,5 +318,8 @@
 
     // setting
     @Prop() private inClamp!: boolean;
+
+    @Prop() private tags!: {};
+    @Prop() private sites!: [];
   }
 </script>
