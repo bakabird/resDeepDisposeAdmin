@@ -116,9 +116,6 @@
       Posters(){
         return this.getCurrentPosters()
       },
-      rdd() {
-        return this.$store.state.rdd
-      },
       criteriaString() {
         return JSON.stringify(this.criteria)
       },
