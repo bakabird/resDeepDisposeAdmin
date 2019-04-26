@@ -11,7 +11,7 @@
         </template>
         <template v-else>
           <td class='name' colspan="3">{{NAME}}</td>
-          <td class='btn'>
+          <td class='btn' @click="reset">
             复原
           </td>
           <td class='btn' @click="revise">
@@ -150,16 +150,36 @@
         return !this.$props.isRaw && now.diff(this.$props.bakedTime, 'hour') < 36
       }
     },
-    components:{
+    components: {
       PopOut
     },
     methods: {
-      autofocus(className){
-        const that:any =this.$el.querySelector(`.${className}`) 
+      autofocus(className) {
+        const that: any = this.$el.querySelector(`.${className}`)
         that.select()
       },
-      reset(){
+      reset() {
+        const that:any = this
+        that.loadPropsToDatas()
+      },
+      loadPropsToDatas() {
+        this.$data.DATE = this.$props.date
+        this.$data.NAME = this.$props.name
+        this.$data.URL = this.$props.mainUrl
 
+        this.$data.ISCUT = this.$props.isCut
+        this.$data.ISRAW = this.$props.isRaw
+
+        this.$data.PART = this.$props.part
+        this.$data.EP = this.$props.ep
+        this.$data.INDEX = this.$props.index
+
+        this.$data.TAG = this.$props.tag
+        this.$data.SITE = this.$props.site
+        this.$data.UP = this.$props.up
+        this.$data.MEMBERARR = !!this.$props.members ? this.$props.members.split('&') : []
+
+        this.$data.ITEMTYPE = this.$props.itemType
       },
       record(url) {
         this.$record('跳转', this.$props.name, url, this.$props.sqlId)
@@ -215,24 +235,8 @@
           })
       },
     },
-    mounted(){
-      this.$data.DATE = this.$props.date
-      this.$data.NAME = this.$props.name
-      this.$data.URL = this.$props.mainUrl
-
-      this.$data.ISCUT = this.$props.isCut
-      this.$data.ISRAW = this.$props.isRaw
-
-      this.$data.PART = this.$props.part
-      this.$data.EP = this.$props.ep
-      this.$data.INDEX = this.$props.index
-
-      this.$data.TAG = this.$props.tag
-      this.$data.SITE = this.$props.site
-      this.$data.UP = this.$props.up
-      this.$data.MEMBERARR = !!this.$props.members ? this.$props.members.split('&') : []
-
-      this.$data.ITEMTYPE = this.$props.itemType
+    mounted() {
+      this.loadPropsToDatas()
     }
   })
   export default class Gold extends Vue {
