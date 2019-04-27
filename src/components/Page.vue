@@ -11,7 +11,7 @@
                 :sites='Sites' :inClamp='i.inClamp !== -1' :key="i.id + '_poster_' + idx" :sqlId="i.id"
                 :mainUrl='i.mainUrl' :date="i.date" :name="i.name" :site="i.site" :up="i.up" :tag="i.tag" :ep="i.ep"
                 :part="i.part" :index="i.index" :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut"
-                :members="i.members" :flashSignal='flashSignal'/>
+                :members="i.members" :flashSignal='flashSignal' @finishEdit='$emit("finishEdit")'/>
             <div :key="i.id + '_goldCushion_' + idx" v-if="i.itemType === 'cushion' && clampOpened[i.inClamp]"
                 @click="clampOpened[i.inClamp] = false" class='bar cushion'>合上夹子</div>
             <Clamp v-if="i.itemType === 'clamp'" @triggle="clampOpened[i.id] = !clampOpened[i.id]"

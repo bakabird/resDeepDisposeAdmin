@@ -20,7 +20,7 @@
           <td class='btn' @click="revise">
             修改
           </td>
-          <td class='btn'>
+          <td class='btn' @click="bake">
             回锅
           </td>
           <td class='btn'>
@@ -203,6 +203,12 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
     record(url) {
       this.$record('跳转', this.$props.name, url, this.$props.sqlId)
     },
+    async bake(){
+      const rlt = await axios.post(Vue.rootPath + '/izone/bake', {
+        id: this.$props.sqlId
+      })
+      this.$emit('finishEdit')
+    },
     async revise() {
       try {
         const data = this.$data
@@ -224,10 +230,6 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
           isCut: data.ISCUT
         }
 
-        // if (this.$data.TOFLASH) {
-        //   const nowmoment = moment();
-        //   gold.bakedTime = nowmoment.format('YYYY-MM-DD HH:mm:ss')
-        // }
         const response = await axios.post(Vue.rootPath + '/izone/upt', gold);
         this.$emit('finishEdit')
       } catch (error) {
