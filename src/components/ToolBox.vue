@@ -8,6 +8,7 @@
 
     <div>
       <input type="button" value="添加一个默认项" @click="addItem">
+      <input type="button" value='刷新数据' @click="$emit('flash')">
     </div>
 
     <Criteria v-if="editCriteria" :criteriaString='criteriaString' @revise='updateCriteria' @hide='editCriteria = false'/>

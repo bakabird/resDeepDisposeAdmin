@@ -213,9 +213,7 @@ export default class Book extends Vue {
     axios.get(Vue.rootPath + '/izone/all')
       .then((re) => {
         this.setAllPosters(re.data.data)
-        setTimeout(() => {
-          this.headData()
-        }, 4200)
+        this.headData()
       })
       .catch((err) => {
         Vue.error(err)
