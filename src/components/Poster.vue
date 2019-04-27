@@ -74,19 +74,7 @@
             <PopOutInput v-model="ITEMTYPE" :range="allItemTypes" type='checkbox'/>
           </td>
           <td>
-            <PopOut>
-              <template slot="face">
-                {{SITE}}
-              </template>
-              <template slot='body'>
-                <div>
-                  <div>
-                    <input type="text" v-model="SITE">
-                  </div>
-                  <btnList :values="sites" :name="sites" v-on:biubiubiu="changeSite" />
-                </div>
-              </template>
-            </PopOut>
+            <PopOutSiteEditor v-model="SITE" :sites='sites'/>
           </td>
           <td>
             <PopOutInput v-model="UP" />
@@ -113,6 +101,7 @@ import btnList from './btnList.vue'
 import PopOut from './PopOut.vue'
 import PopOutInput from './PopOutInput.vue'
 import PopOutTagEditor from './PopOutTagEditor.vue'
+import PopOutSiteEditor from './PopOutSiteEditor.vue'
 
 import moment from 'moment'
 import axios from 'axios'
@@ -190,6 +179,7 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
     PopOut,
     PopOutInput,
     PopOutTagEditor,
+    PopOutSiteEditor,
     btnList
   },
   methods: {
