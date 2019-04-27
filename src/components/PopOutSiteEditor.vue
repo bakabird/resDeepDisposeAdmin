@@ -30,7 +30,7 @@
         },
         props: {
             SITE: String,
-            sites: Object
+            sites: Array
         }
     }
 </script>

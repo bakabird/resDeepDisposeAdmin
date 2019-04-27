@@ -11,7 +11,7 @@
           </td>
         </template>
         <template v-else>
-          <td class='name' colspan="3">
+          <td class='name' :class="{'changed': name !== NAME}" colspan="3">
             <PopOutInput v-model="NAME" type='longtext' />
           </td>
           <td class='btn' @click="reset">
@@ -36,13 +36,13 @@
           <th colspan="2" class='th_date'>日期</th>
         </tr>
         <tr>
-          <td colspan="3">
+          <td :class="{'changed': mainUrl !== URL}" colspan="3">
             <PopOutInput v-model="URL" type='longtext' />
           </td>
-          <td colspan="2">
+          <td :class="{'changed': tag !== TAG}" colspan="2">
             <PopOutTagEditor v-model='TAG' :tags='tags'/>
           </td>
-          <td colspan="2">
+          <td :class="{'changed': date !== date}" colspan="2">
             <PopOutInput v-model="DATE" />
           </td>
         </tr>
@@ -51,7 +51,9 @@
           <th class='th_memberstr' colspan="7">MemberStr</th>
         </tr>
         <tr>
-          <td colspan="6">{{memberEmoji}}</td>
+          <td :class="{'changed': members !== MEMBERS}" colspan="6">
+              <PopOutMembersEditor v-model="MEMBERS"/>
+          </td>
         </tr>
         <!-- THIRD LINE -->
         <tr>
@@ -64,23 +66,23 @@
           <th class='th_iscut'>isRaw</th>
         </tr>
         <tr>
-          <td>
+          <td :class="{'changed': part !== PART}">
             <PopOutInput v-model.number="PART" type='number' />
           </td>
-          <td>
+          <td :class="{'changed': ep !== EP}">
             <PopOutInput v-model.number="EP" type='number' />
           </td>
-          <td>
+          <td :class="{'changed': itemType !== ITEMTYPE}">
             <PopOutInput v-model="ITEMTYPE" :range="allItemTypes" type='checkbox'/>
           </td>
-          <td>
+          <td :class="{'changed': site !== SITE}">
             <PopOutSiteEditor v-model="SITE" :sites='sites'/>
           </td>
-          <td>
+          <td :class="{'changed': up !== UP}">
             <PopOutInput v-model="UP" />
           </td>
-          <td @click="ISCUT = !ISCUT">{{ISCUT ? '✅' : '❌'}}</td>
-          <td @click="ISRAW = !ISRAW">{{ISRAW ? '✅' : '❌'}}</td>
+          <td :class="{'changed': isCut !== ISCUT}" @click="ISCUT = !ISCUT">{{ISCUT ? '✅' : '❌'}}</td>
+          <td :class="{'changed': isRaw !== ISRAW}" @click="ISRAW = !ISRAW">{{ISRAW ? '✅' : '❌'}}</td>
         </tr>
       </template>
     </table>
@@ -102,6 +104,7 @@ import PopOut from './PopOut.vue'
 import PopOutInput from './PopOutInput.vue'
 import PopOutTagEditor from './PopOutTagEditor.vue'
 import PopOutSiteEditor from './PopOutSiteEditor.vue'
+import PopOutMembersEditor from './PopOutMembersEditor.vue'
 
 import moment from 'moment'
 import axios from 'axios'
@@ -140,8 +143,6 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
       UP: '',
       MEMBERS: '',
       ITEMTYPE: '',
-
-      membersInfo: Vue.members,
       TOFLASH: false,
       proConfig: false,
 
@@ -153,18 +154,7 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
     }
   },
   computed: {
-    memberEmoji() {
-      let arr = this.MEMBERS.split('&')
-      arr = arr.sort(() => {
-        return Math.random() > 0.5 ? -1 : 1
-      })
-      let re = ''
 
-      arr.forEach((i: string) => {
-        re += Vue.members[i]
-      })
-      return re
-    },
     isNew() {
       return !this.$props.isRaw && now.diff(this.$props.bakedTime, 'hour') < 36
     }
@@ -180,7 +170,8 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
     PopOutInput,
     PopOutTagEditor,
     PopOutSiteEditor,
-    btnList
+    PopOutMembersEditor,
+    btnList,
   },
   methods: {
     reset() {
