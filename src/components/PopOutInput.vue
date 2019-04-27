@@ -26,16 +26,7 @@
 import Vue from 'vue'
 import PopOut from './PopOut.vue'
 
-const counterWrap = {
-    coutner: 0
-}
-
 export default Vue.extend({
-    data() {
-        return {
-            popoutId: counterWrap.coutner++
-        }
-    },
     model: {
         prop: 'bindVal',
         event: 'change'

@@ -7,13 +7,12 @@
             {{dateDescription}} {{ PostersSorted[0].date != '66-66-66' ? PostersSorted[0].date : '' }}
         </div>
         <template v-for="(i,idx) in PostersSorted">
-            <Poster v-if="i.itemType === 'note'" :noShell="i.date === '66-66-66'"
-                :itemType='i.itemType' :tags='Tags' :sites='Sites'
-                :inClamp='i.inClamp !== -1' :key="i.id + '_poster_' + idx" :sqlId="i.id" :mainUrl='i.mainUrl'
-                :date="i.date" :name="i.name" :site="i.site" :up="i.up" :tag="i.tag" :ep="i.ep" :part="i.part"
-                :index="i.index" :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut" :members="i.members" />
-            <div :key="i.id + '_goldCushion_' + idx"
-                v-if="i.itemType === 'cushion' && clampOpened[i.inClamp]"
+            <Poster v-if="i.itemType === 'note'" :noShell="i.date === '66-66-66'" :itemType='i.itemType' :tags='Tags'
+                :sites='Sites' :inClamp='i.inClamp !== -1' :key="i.id + '_poster_' + idx" :sqlId="i.id"
+                :mainUrl='i.mainUrl' :date="i.date" :name="i.name" :site="i.site" :up="i.up" :tag="i.tag" :ep="i.ep"
+                :part="i.part" :index="i.index" :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut"
+                :members="i.members" :flashSignal='flashSignal'/>
+            <div :key="i.id + '_goldCushion_' + idx" v-if="i.itemType === 'cushion' && clampOpened[i.inClamp]"
                 @click="clampOpened[i.inClamp] = false" class='bar cushion'>合上夹子</div>
             <Clamp v-if="i.itemType === 'clamp'" @triggle="clampOpened[i.id] = !clampOpened[i.id]"
                 :hasOpen="clampOpened[i.id]" :noShell="i.date === '66-66-66'" :key="i.id + '_clamp_' + idx"
@@ -76,7 +75,7 @@
                 const newClampMarkBook = {}
                 posters.map(poster => {
                     const inClamp = poster.inClamp
-                    if (inClamp != -1) {
+                    if (inClamp !== -1) {
                         newClampMarkBook[inClamp] = newClampMarkBook[inClamp] || []
                         newClampMarkBook[inClamp].push(poster)
                     }
@@ -97,7 +96,7 @@
                     if (poster.itemType === 'clamp') {
                         const id = poster.id
                         const postersInTheClamp = clampMarkBook[id]
-                        if(clampOpened[id]){
+                        if (clampOpened[id]) {
                             pageSorted = [...pageSorted, ...postersInTheClamp, {
                                 itemType: 'cushion',
                                 inClamp: id
@@ -116,7 +115,7 @@
             Poster,
             Clamp,
         },
-        mounted(){
+        mounted() {
             const clampOpened = {}
             this.$props.PageContent.map(poster => {
                 const inClamp = poster.inClamp
@@ -142,6 +141,9 @@
                 default: () => {
                     return {}
                 }
+            },
+            flashSignal: {
+                type: Number
             }
         }
     }

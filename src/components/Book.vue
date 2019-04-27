@@ -3,7 +3,7 @@
     <ToolBox @flash="flashData" :criteriaString='criteriaString' :curTags="tagsClassified" />
     <template v-for="Page in PagesFiltered">
       <div class='dateCard' :key="Page[0].date">
-        <Page @edit='toEdit' @finishEdit='flashData' :PageContent='Page' :Sites='Sites' :Tags='tagsClassified' />
+        <Page @edit='toEdit' :flashSignal='flashSignal' @finishEdit='flashData' :PageContent='Page' :Sites='Sites' :Tags='tagsClassified' />
       </div>
     </template>
   </div>
@@ -93,6 +93,7 @@ function statisticsSort(stat) {
       allPosters: [],
       freshPosters: [],
       criteria: store.get('criteria') || {},
+      flashSignal: 0
     }
   },
   methods: {
@@ -214,6 +215,9 @@ export default class Book extends Vue {
       .then((re) => {
         this.setAllPosters(re.data.data)
         this.headData()
+        Vue.nextTick(()=>{
+          this.$data.flashSignal += 1
+        })
       })
       .catch((err) => {
         Vue.error(err)

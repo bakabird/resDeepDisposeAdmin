@@ -1,6 +1,7 @@
 <template>
   <div class="bar poster" :class="{ new:!!isNew, raw:!!isRaw, inClamp: inClamp}">
     <table>
+      <!-- ZERO LINE -->
       <tr>
         <template v-if='!edit'>
           <td class='name' v-if='!edit' @click="edit = true">
@@ -14,7 +15,7 @@
             <PopOutInput v-model="NAME" type='longtext' />
           </td>
           <td class='btn' @click="reset">
-            复原
+            重载
           </td>
           <td class='btn' @click="revise">
             修改
@@ -27,6 +28,7 @@
           </td>
         </template>
       </tr>
+      <!-- FIRST LINE -->
       <template v-if='edit'>
         <tr>
           <th colspan="3" class='th_url' @click="fetchInfo">URL</th>
@@ -38,41 +40,20 @@
             <PopOutInput v-model="URL" type='longtext' />
           </td>
           <td colspan="2">
-            <PopOut>
-              <template slot="face">
-                {{TAG}}
-              </template>
-              <template slot='body'>
-                <div class="tagWrap">
-                  <div class='curTag'>
-                    <input type="text" v-model="TAG">
-                  </div>
-                  <Table>
-                    <tr>
-                      <th>大类</th>
-                      <th>小类</th>
-                    </tr>
-                    <tr v-for="(tag,key) in tags" :key="key + '_tag_group'" class="tag">
-                      <td>{{key}}</td>
-                      <td>
-                        <btnList :values="tag" :name="tag" v-on:biubiubiu="changeTag" />
-                      </td>
-                    </tr>
-                  </Table>
-                </div>
-              </template>
-            </PopOut>
+            <PopOutTagEditor v-model='TAG' :tags='tags'/>
           </td>
           <td colspan="2">
             <PopOutInput v-model="DATE" />
           </td>
         </tr>
+        <!-- SECOND LINE -->
         <tr>
           <th class='th_memberstr' colspan="7">MemberStr</th>
         </tr>
         <tr>
-          <td colspan="6">{{memberStr}}</td>
+          <td colspan="6">{{memberEmoji}}</td>
         </tr>
+        <!-- THIRD LINE -->
         <tr>
           <th class='th_part'>Part</th>
           <th class='th_ep'>EP</th>
@@ -131,6 +112,7 @@ import {
 import btnList from './btnList.vue'
 import PopOut from './PopOut.vue'
 import PopOutInput from './PopOutInput.vue'
+import PopOutTagEditor from './PopOutTagEditor.vue'
 
 import moment from 'moment'
 import axios from 'axios'
@@ -167,7 +149,7 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
       TAG: '',
       SITE: '',
       UP: '',
-      MEMBERARR: [],
+      MEMBERS: '',
       ITEMTYPE: '',
 
       membersInfo: Vue.members,
@@ -182,11 +164,8 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
     }
   },
   computed: {
-    rdd() {
-      return this.$store.state.rdd
-    },
-    memberStr() {
-      let arr = this.$props.members.split('&')
+    memberEmoji() {
+      let arr = this.MEMBERS.split('&')
       arr = arr.sort(() => {
         return Math.random() > 0.5 ? -1 : 1
       })
@@ -201,18 +180,22 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
       return !this.$props.isRaw && now.diff(this.$props.bakedTime, 'hour') < 36
     }
   },
+  watch:{
+    flashSignal(){
+      const that:any = this
+      that.loadPropsToDatas()
+    }
+  },
   components: {
-    PopOutInput,
     PopOut,
+    PopOutInput,
+    PopOutTagEditor,
     btnList
   },
   methods: {
     reset() {
       const that: any = this
       that.loadPropsToDatas()
-    },
-    changeTag(nVal) {
-      this.$data.TAG = nVal
     },
     changeSite(nVal) {
       this.$data.SITE = nVal
@@ -232,7 +215,7 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
       this.$data.TAG = this.$props.tag
       this.$data.SITE = this.$props.site
       this.$data.UP = this.$props.up
-      this.$data.MEMBERARR = !!this.$props.members ? this.$props.members.split('&') : []
+      this.$data.MEMBERS = this.$props.members
 
       this.$data.ITEMTYPE = this.$props.itemType
     },
@@ -253,20 +236,19 @@ function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
           date: data.DATE,
           up: data.UP,
           index: data.INDEX,
-          members: data.MEMBERARR.join('&')
-        }
-        setIfHave(gold, 'ep', data, 'EP')
-        setIfHave(gold, 'part', data, 'PART')
-        setIfHave(gold, 'isRaw', data, 'ISRAW')
-        setIfHave(gold, 'isCut', data, 'ISCUT')
-
-        if (this.$data.TOFLASH) {
-          const nowmoment = moment();
-          gold.bakedTime = nowmoment.format('YYYY-MM-DD HH:mm:ss')
+          members: data.MEMBERS,
+          ep: data.EP,
+          part: data.PART,
+          isRaw: data.ISRAW,
+          isCut: data.ISCUT
         }
 
+        // if (this.$data.TOFLASH) {
+        //   const nowmoment = moment();
+        //   gold.bakedTime = nowmoment.format('YYYY-MM-DD HH:mm:ss')
+        // }
         const response = await axios.post(Vue.rootPath + '/izone/upt', gold);
-        // this.$emit('finishEdit')
+        this.$emit('finishEdit')
       } catch (error) {
         Vue.error(error);
       }
@@ -316,6 +298,7 @@ export default class Gold extends Vue {
   @Prop() private isCut!: boolean;
 
   // setting
+  @Prop() private flashSignal!: number;
   @Prop() private inClamp!: boolean;
 
   @Prop() private tags!: {};
