@@ -23,7 +23,7 @@
           <td class='btn' @click="bake">
             回锅
           </td>
-          <td class='btn'>
+          <td class='btn' @click="remove(name)">
             删除
           </td>
         </template>
@@ -40,7 +40,7 @@
             <PopOutInput v-model="URL" type='longtext' />
           </td>
           <td :class="{'changed': tag !== TAG}" colspan="2">
-            <PopOutTagEditor v-model='TAG' :tags='tags'/>
+            <PopOutTagEditor v-model='TAG' :tags='tags' />
           </td>
           <td :class="{'changed': date !== date}" colspan="2">
             <PopOutInput v-model="DATE" />
@@ -52,7 +52,7 @@
         </tr>
         <tr>
           <td :class="{'changed': members !== MEMBERS}" colspan="6">
-              <PopOutMembersEditor v-model="MEMBERS"/>
+            <PopOutMembersEditor v-model="MEMBERS" />
           </td>
         </tr>
         <!-- THIRD LINE -->
@@ -73,10 +73,10 @@
             <PopOutInput v-model.number="EP" type='number' />
           </td>
           <td :class="{'changed': itemType !== ITEMTYPE}">
-            <PopOutInput v-model="ITEMTYPE" :range="allItemTypes" type='checkbox'/>
+            <PopOutInput v-model="ITEMTYPE" :range="allItemTypes" type='checkbox' />
           </td>
           <td :class="{'changed': site !== SITE}">
-            <PopOutSiteEditor v-model="SITE" :sites='sites'/>
+            <PopOutSiteEditor v-model="SITE" :sites='sites' />
           </td>
           <td :class="{'changed': up !== UP}">
             <PopOutInput v-model="UP" />
@@ -94,197 +94,206 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Prop,
-  Vue
-} from 'vue-property-decorator';
-import btnList from './btnList.vue'
-import PopOut from './PopOut.vue'
-import PopOutInput from './PopOutInput.vue'
-import PopOutTagEditor from './PopOutTagEditor.vue'
-import PopOutSiteEditor from './PopOutSiteEditor.vue'
-import PopOutMembersEditor from './PopOutMembersEditor.vue'
+  import {
+    Component,
+    Prop,
+    Vue
+  } from 'vue-property-decorator';
+  import btnList from './btnList.vue'
+  import PopOut from './PopOut.vue'
+  import PopOutInput from './PopOutInput.vue'
+  import PopOutTagEditor from './PopOutTagEditor.vue'
+  import PopOutSiteEditor from './PopOutSiteEditor.vue'
+  import PopOutMembersEditor from './PopOutMembersEditor.vue'
 
-import moment from 'moment'
-import axios from 'axios'
+  import moment from 'moment'
+  import axios from 'axios'
 
-const now = moment();
+  const now = moment();
 
-function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
-  if (rock.hasOwnProperty(rkey) && rock[rkey] !== undefined && rock[rkey] != null) {
-    if (typeof rock[rkey] === 'boolean') {
-      gold[gkey] = rock[rkey] ? 1 : 0
-    } else {
-      gold[gkey] = rock[rkey]
-    }
-  }
-}
-
-
-@Component({
-  data() {
-    return {
-      edit: false,
-
-      DATE: '',
-      NAME: '',
-      URL: '',
-
-      ISCUT: false,
-      ISRAW: false,
-
-      PART: -1,
-      EP: -1,
-      INDEX: -1,
-
-      TAG: '',
-      SITE: '',
-      UP: '',
-      MEMBERS: '',
-      ITEMTYPE: '',
-      TOFLASH: false,
-      proConfig: false,
-
-      allItemTypes: {
-        note: '纸条',
-        clamp: '夹子',
-        riddle: '谜面'
+  function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
+    if (rock.hasOwnProperty(rkey) && rock[rkey] !== undefined && rock[rkey] != null) {
+      if (typeof rock[rkey] === 'boolean') {
+        gold[gkey] = rock[rkey] ? 1 : 0
+      } else {
+        gold[gkey] = rock[rkey]
       }
     }
-  },
-  computed: {
+  }
 
-    isNew() {
-      return !this.$props.isRaw && now.diff(this.$props.bakedTime, 'hour') < 36
-    }
-  },
-  watch:{
-    flashSignal(){
-      const that:any = this
-      that.loadPropsToDatas()
-    }
-  },
-  components: {
-    PopOut,
-    PopOutInput,
-    PopOutTagEditor,
-    PopOutSiteEditor,
-    PopOutMembersEditor,
-    btnList,
-  },
-  methods: {
-    reset() {
-      const that: any = this
-      that.loadPropsToDatas()
-    },
-    changeSite(nVal) {
-      this.$data.SITE = nVal
-    },
-    loadPropsToDatas() {
-      this.$data.DATE = this.$props.date
-      this.$data.NAME = this.$props.name
-      this.$data.URL = this.$props.mainUrl
 
-      this.$data.ISCUT = this.$props.isCut
-      this.$data.ISRAW = this.$props.isRaw
+  @Component({
+    data() {
+      return {
+        edit: false,
 
-      this.$data.PART = this.$props.part
-      this.$data.EP = this.$props.ep
-      this.$data.INDEX = this.$props.index
+        DATE: '',
+        NAME: '',
+        URL: '',
 
-      this.$data.TAG = this.$props.tag
-      this.$data.SITE = this.$props.site
-      this.$data.UP = this.$props.up
-      this.$data.MEMBERS = this.$props.members
+        ISCUT: false,
+        ISRAW: false,
 
-      this.$data.ITEMTYPE = this.$props.itemType
-    },
-    record(url) {
-      this.$record('跳转', this.$props.name, url, this.$props.sqlId)
-    },
-    async bake(){
-      const rlt = await axios.post(Vue.rootPath + '/izone/bake', {
-        id: this.$props.sqlId
-      })
-      this.$emit('finishEdit')
-    },
-    async revise() {
-      try {
-        const data = this.$data
-        const prop = this.$props
-        const gold: any = {
-          id: prop.sqlId,
-          itemType: data.ITEMTYPE,
-          mainUrl: data.URL,
-          name: data.NAME,
-          tag: data.TAG,
-          site: data.SITE,
-          date: data.DATE,
-          up: data.UP,
-          index: data.INDEX,
-          members: data.MEMBERS,
-          ep: data.EP,
-          part: data.PART,
-          isRaw: data.ISRAW,
-          isCut: data.ISCUT
+        PART: -1,
+        EP: -1,
+        INDEX: -1,
+
+        TAG: '',
+        SITE: '',
+        UP: '',
+        MEMBERS: '',
+        ITEMTYPE: '',
+        TOFLASH: false,
+        proConfig: false,
+
+        allItemTypes: {
+          note: '纸条',
+          clamp: '夹子',
+          riddle: '谜面'
         }
-
-        const response = await axios.post(Vue.rootPath + '/izone/upt', gold);
-        this.$emit('finishEdit')
-      } catch (error) {
-        Vue.error(error);
       }
     },
-    async fetchInfo() {
-      axios.get(Vue.rootPath + '/izone/biliInfo?url=' + this.$data.URL)
-        .then(res => {
-          const videoName = res.data.data.title
-          const videoUp = res.data.data.up
+    computed: {
 
-          this.$data.NAME = videoName
-          this.$data.UP = videoUp
-
-          // const that: any = this
-          // that.dateEvaluate(videoName)
-          // that.metaInfoEvaluate(videoName)
-        })
-        .catch(err => {
-          Vue.error(err)
-        })
+      isNew() {
+        return !this.$props.isRaw && now.diff(this.$props.bakedTime, 'hour') < 36
+      }
     },
-  },
-  mounted() {
-    this.loadPropsToDatas()
+    watch: {
+      flashSignal() {
+        const that: any = this
+        that.loadPropsToDatas()
+      }
+    },
+    components: {
+      PopOut,
+      PopOutInput,
+      PopOutTagEditor,
+      PopOutSiteEditor,
+      PopOutMembersEditor,
+      btnList,
+    },
+    methods: {
+      reset() {
+        const that: any = this
+        that.loadPropsToDatas()
+      },
+      changeSite(nVal) {
+        this.$data.SITE = nVal
+      },
+      loadPropsToDatas() {
+        this.$data.DATE = this.$props.date
+        this.$data.NAME = this.$props.name
+        this.$data.URL = this.$props.mainUrl
+
+        this.$data.ISCUT = this.$props.isCut
+        this.$data.ISRAW = this.$props.isRaw
+
+        this.$data.PART = this.$props.part
+        this.$data.EP = this.$props.ep
+        this.$data.INDEX = this.$props.index
+
+        this.$data.TAG = this.$props.tag
+        this.$data.SITE = this.$props.site
+        this.$data.UP = this.$props.up
+        this.$data.MEMBERS = this.$props.members
+
+        this.$data.ITEMTYPE = this.$props.itemType
+      },
+      record(url) {
+        this.$record('跳转', this.$props.name, url, this.$props.sqlId)
+      },
+      async revise() {
+        try {
+          const data = this.$data
+          const prop = this.$props
+          const gold: any = {
+            id: prop.sqlId,
+            itemType: data.ITEMTYPE,
+            mainUrl: data.URL,
+            name: data.NAME,
+            tag: data.TAG,
+            site: data.SITE,
+            date: data.DATE,
+            up: data.UP,
+            index: data.INDEX,
+            members: data.MEMBERS,
+            ep: data.EP,
+            part: data.PART,
+            isRaw: data.ISRAW,
+            isCut: data.ISCUT
+          }
+
+          const response = await axios.post(Vue.rootPath + '/izone/upt', gold);
+          this.$emit('finishEdit')
+        } catch (error) {
+          Vue.error(error);
+        }
+      },
+      async fetchInfo() {
+        axios.get(Vue.rootPath + '/izone/biliInfo?url=' + this.$data.URL)
+          .then(res => {
+            const videoName = res.data.data.title
+            const videoUp = res.data.data.up
+
+            this.$data.NAME = videoName
+            this.$data.UP = videoUp
+
+            // const that: any = this
+            // that.dateEvaluate(videoName)
+            // that.metaInfoEvaluate(videoName)
+          })
+          .catch(err => {
+            Vue.error(err)
+          })
+      },
+      async bake() {
+        const rlt = await axios.post(Vue.rootPath + '/izone/bake', {
+          id: this.$props.sqlId
+        })
+        this.$emit('finishEdit')
+      },
+      async remove(posterName) {
+        var input = prompt(`准备删除「${posterName}」？`, "再此重复该纸条的名称")
+        if (input != null && input === posterName) {
+          const response = await axios.post(Vue.rootPath + '/izone/remove', {
+            id: this.$props.sqlId
+          });
+          this.$emit('finishEdit')
+        }
+      }
+    },
+    mounted() {
+      this.loadPropsToDatas()
+    }
+  })
+  export default class Gold extends Vue {
+    @Prop() private sqlId!: number;
+    @Prop() private itemType!: string;
+
+    @Prop() private mainUrl!: string;
+    @Prop() private date!: string;
+    @Prop() private name!: string;
+
+    @Prop() private site!: string;
+    @Prop() private up!: string;
+    @Prop() private bakedTime!: string;
+
+    @Prop() private ep!: number;
+    @Prop() private part!: number;
+    @Prop() private index!: number;
+
+    @Prop() private tag!: string;
+    @Prop() private members!: string;
+
+    @Prop() private isRaw!: boolean;
+    @Prop() private isCut!: boolean;
+
+    // setting
+    @Prop() private flashSignal!: number;
+    @Prop() private inClamp!: boolean;
+
+    @Prop() private tags!: {};
+    @Prop() private sites!: [];
   }
-})
-export default class Gold extends Vue {
-  @Prop() private sqlId!: number;
-  @Prop() private itemType!: string;
-
-  @Prop() private mainUrl!: string;
-  @Prop() private date!: string;
-  @Prop() private name!: string;
-
-  @Prop() private site!: string;
-  @Prop() private up!: string;
-  @Prop() private bakedTime!: string;
-
-  @Prop() private ep!: number;
-  @Prop() private part!: number;
-  @Prop() private index!: number;
-
-  @Prop() private tag!: string;
-  @Prop() private members!: string;
-
-  @Prop() private isRaw!: boolean;
-  @Prop() private isCut!: boolean;
-
-  // setting
-  @Prop() private flashSignal!: number;
-  @Prop() private inClamp!: boolean;
-
-  @Prop() private tags!: {};
-  @Prop() private sites!: [];
-}
 </script>
