@@ -6,7 +6,9 @@
       <a target="_blank" href="/static/izone/InsepectionResult.json">查看结果</a>
     </div>
 
-    <div><input type="button" value="添加一个默认项" @click="addItem"></div>
+    <div>
+      <input type="button" value="添加一个默认项" @click="addItem">
+    </div>
 
     <Criteria v-if="editCriteria" :criteriaString='criteriaString' @revise='updateCriteria' @hide='editCriteria = false'/>
     <button v-else @click="editCriteria = true">对分类规则进行调整</button>
@@ -61,17 +63,7 @@ const now = moment()
     },
     async addItem() {
       try {
-        const currentTime = moment();
-        const rock: any = {
-          mainUrl: '/izone/',
-          name: '施工中',
-          date: currentTime.format('YY-MM-DD'),
-          members: '',
-          tag: '综艺',
-          site: 'B站',
-          itemType: 'note'
-        }
-        const response = await axios.post(Vue.rootPath + '/izone/add', rock);
+        const response = await axios.post(Vue.rootPath + '/izone/new');
         if (response.status === 200) {
           this.$emit('flash')
         }

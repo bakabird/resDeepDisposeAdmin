@@ -23,41 +23,41 @@
     </div>
 </template>
 <script lang="ts">
-    import Vue from 'vue'
-    import PopOut from './PopOut.vue'
+import Vue from 'vue'
+import PopOut from './PopOut.vue'
 
-    let counterWrap = {
-        coutner: 0
-    }
+const counterWrap = {
+    coutner: 0
+}
 
-    export default Vue.extend({
-        data(){
-            return {
-                popoutId: counterWrap.coutner++
+export default Vue.extend({
+    data() {
+        return {
+            popoutId: counterWrap.coutner++
+        }
+    },
+    model: {
+        prop: 'bindVal',
+        event: 'change'
+    },
+    methods: {
+        autofocus(className) {
+            if (this.$props.type !== 'boolean' && this.$props.type !== 'checkbox') {
+                const that: any = this.$el.querySelector(`.${className}`)
+                that.select()
             }
         },
-        model:{
-            prop: 'bindVal',
-            event: 'change'
+    },
+    props: {
+        bindVal: [String, Number],
+        type: {
+            type: String,
+            default: 'text'
         },
-        methods: {
-            autofocus(className) {
-                if(this.$props.type !== 'boolean' && this.$props.type !== 'checkbox'){
-                    const that: any = this.$el.querySelector(`.${className}`)
-                    that.select()
-                }
-            },
-        },
-        props: {
-            bindVal: [String,Number],
-            type: {
-                type: String,
-                default: 'text'
-            },
-            range: Object
-        },
-        components: {
-            PopOut
-        }
-    })
+        range: Object
+    },
+    components: {
+        PopOut
+    }
+})
 </script>

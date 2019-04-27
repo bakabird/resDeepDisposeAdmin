@@ -58,7 +58,7 @@
     data() {
       return {
         hasComforted: false,
-        filter: 'Latest',
+        filter: 'No',
         announcement: store.get('announcement') || '',
         newAnnouncement: '',
         handlePart: 'Manage',

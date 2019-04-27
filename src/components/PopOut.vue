@@ -14,23 +14,23 @@
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
-    data(){
+    data() {
         return {
             popoutttt: false
         }
     },
-    methods:{
-        show(){
+    methods: {
+        show() {
             this.popoutttt = true
-            Vue.nextTick(()=>{
+            Vue.nextTick(() => {
                 this.$emit('pop')
             })
         },
-        hide(){
+        hide() {
             this.popoutttt = false
         }
     },
-    props:{
+    props: {
 
     },
 })

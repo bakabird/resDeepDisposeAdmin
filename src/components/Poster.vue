@@ -123,203 +123,202 @@
 </template>
 
 <script lang="ts">
-  import {
-    Component,
-    Prop,
-    Vue
-  } from 'vue-property-decorator';
-  import btnList from './btnList.vue'
-  import PopOut from './PopOut.vue'
-  import PopOutInput from './PopOutInput.vue'
+import {
+  Component,
+  Prop,
+  Vue
+} from 'vue-property-decorator';
+import btnList from './btnList.vue'
+import PopOut from './PopOut.vue'
+import PopOutInput from './PopOutInput.vue'
 
-  import moment from 'moment'
-  import axios from 'axios'
+import moment from 'moment'
+import axios from 'axios'
 
-  const now = moment();
+const now = moment();
 
-  function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
-    if (rock.hasOwnProperty(rkey) && rock[rkey] !== undefined && rock[rkey] != null) {
-      if (typeof rock[rkey] === 'boolean') {
-        gold[gkey] = rock[rkey] ? 1 : 0
-      } else {
-        gold[gkey] = rock[rkey]
-      }
+function setIfHave(gold: any, gkey: string, rock: any, rkey: string) {
+  if (rock.hasOwnProperty(rkey) && rock[rkey] !== undefined && rock[rkey] != null) {
+    if (typeof rock[rkey] === 'boolean') {
+      gold[gkey] = rock[rkey] ? 1 : 0
+    } else {
+      gold[gkey] = rock[rkey]
     }
   }
+}
 
 
-  @Component({
-    data() {
-      return {
-        edit: false,
+@Component({
+  data() {
+    return {
+      edit: false,
 
-        DATE: '',
-        NAME: '',
-        URL: '',
+      DATE: '',
+      NAME: '',
+      URL: '',
 
-        ISCUT: false,
-        ISRAW: false,
+      ISCUT: false,
+      ISRAW: false,
 
-        PART: -1,
-        EP: -1,
-        INDEX: -1,
+      PART: -1,
+      EP: -1,
+      INDEX: -1,
 
-        TAG: '',
-        SITE: '',
-        UP: '',
-        MEMBERARR: [],
-        ITEMTYPE: '',
+      TAG: '',
+      SITE: '',
+      UP: '',
+      MEMBERARR: [],
+      ITEMTYPE: '',
 
-        membersInfo: Vue.members,
-        TOFLASH: false,
-        proConfig: false,
+      membersInfo: Vue.members,
+      TOFLASH: false,
+      proConfig: false,
 
-        allItemTypes:{
-          'note': '纸条',
-          'clamp': '夹子',
-          'riddle': '谜面'
-        }
+      allItemTypes: {
+        note: '纸条',
+        clamp: '夹子',
+        riddle: '谜面'
       }
-    },
-    computed: {
-      rdd() {
-        return this.$store.state.rdd
-      },
-      memberStr() {
-        let arr = this.$props.members.split('&')
-        arr = arr.sort(() => {
-          return Math.random() > 0.5 ? -1 : 1
-        })
-        let re = ''
-
-        arr.forEach((i: string) => {
-          re += Vue.members[i]
-        })
-        return re
-      },
-      isNew() {
-        return !this.$props.isRaw && now.diff(this.$props.bakedTime, 'hour') < 36
-      }
-    },
-    components: {
-      PopOutInput,
-      PopOut,
-      btnList
-    },
-    methods: {
-      reset() {
-        const that: any = this
-        that.loadPropsToDatas()
-      },
-      changeTag(nVal) {
-        this.$data.TAG = nVal
-      },
-      changeSite(nVal) {
-        this.$data.SITE = nVal
-      },
-      loadPropsToDatas() {
-        this.$data.DATE = this.$props.date
-        this.$data.NAME = this.$props.name
-        this.$data.URL = this.$props.mainUrl
-
-        this.$data.ISCUT = this.$props.isCut
-        this.$data.ISRAW = this.$props.isRaw
-
-        this.$data.PART = this.$props.part
-        this.$data.EP = this.$props.ep
-        this.$data.INDEX = this.$props.index
-
-        this.$data.TAG = this.$props.tag
-        this.$data.SITE = this.$props.site
-        this.$data.UP = this.$props.up
-        this.$data.MEMBERARR = !!this.$props.members ? this.$props.members.split('&') : []
-
-        this.$data.ITEMTYPE = this.$props.itemType
-      },
-      record(url) {
-        this.$record('跳转', this.$props.name, url, this.$props.sqlId)
-      },
-      async revise() {
-        try {
-          const data = this.$data
-          const prop = this.$props
-          const gold: any = {
-            id: prop.sqlId,
-            itemType: data.ITEMTYPE,
-            mainUrl: data.URL,
-            name: data.NAME,
-            tag: data.TAG,
-            site: data.SITE,
-            date: data.DATE.substring(2),
-            up: data.UP,
-            index: data.INDEX,
-            members: data.MEMBERARR.join('&')
-          }
-          setIfHave(gold, 'ep', data, 'EP')
-          setIfHave(gold, 'part', data, 'PART')
-          setIfHave(gold, 'isRaw', data, 'ISRAW')
-          setIfHave(gold, 'isCut', data, 'ISCUT')
-
-          if (this.$data.TOFLASH) {
-            const now = moment();
-            gold.bakedTime = now.format('YYYY-MM-DD HH:mm:ss')
-          }
-
-          console.log(gold)
-          // const response = await axios.post(Vue.rootPath + '/izone/upt', gold);
-          // this.$emit('finishEdit')
-        } catch (error) {
-          Vue.error(error);
-        }
-      },
-      async fetchInfo() {
-        axios.get(Vue.rootPath + '/izone/biliInfo?url=' + this.$data.URL)
-          .then(res => {
-            const videoName = res.data.data.title
-            const videoUp = res.data.data.up
-
-            this.$data.NAME = videoName
-            this.$data.UP = videoUp
-
-            // const that: any = this
-            // that.dateEvaluate(videoName)
-            // that.metaInfoEvaluate(videoName)
-          })
-          .catch(err => {
-            Vue.error(err)
-          })
-      },
-    },
-    mounted() {
-      this.loadPropsToDatas()
     }
-  })
-  export default class Gold extends Vue {
-    @Prop() private sqlId!: number;
-    @Prop() private itemType!: string;
+  },
+  computed: {
+    rdd() {
+      return this.$store.state.rdd
+    },
+    memberStr() {
+      let arr = this.$props.members.split('&')
+      arr = arr.sort(() => {
+        return Math.random() > 0.5 ? -1 : 1
+      })
+      let re = ''
 
-    @Prop() private mainUrl!: string;
-    @Prop() private date!: string;
-    @Prop() private name!: string;
+      arr.forEach((i: string) => {
+        re += Vue.members[i]
+      })
+      return re
+    },
+    isNew() {
+      return !this.$props.isRaw && now.diff(this.$props.bakedTime, 'hour') < 36
+    }
+  },
+  components: {
+    PopOutInput,
+    PopOut,
+    btnList
+  },
+  methods: {
+    reset() {
+      const that: any = this
+      that.loadPropsToDatas()
+    },
+    changeTag(nVal) {
+      this.$data.TAG = nVal
+    },
+    changeSite(nVal) {
+      this.$data.SITE = nVal
+    },
+    loadPropsToDatas() {
+      this.$data.DATE = this.$props.date
+      this.$data.NAME = this.$props.name
+      this.$data.URL = this.$props.mainUrl
 
-    @Prop() private site!: string;
-    @Prop() private up!: string;
-    @Prop() private bakedTime!: string;
+      this.$data.ISCUT = this.$props.isCut
+      this.$data.ISRAW = this.$props.isRaw
 
-    @Prop() private ep!: number;
-    @Prop() private part!: number;
-    @Prop() private index!: number;
+      this.$data.PART = this.$props.part
+      this.$data.EP = this.$props.ep
+      this.$data.INDEX = this.$props.index
 
-    @Prop() private tag!: string;
-    @Prop() private members!: string;
+      this.$data.TAG = this.$props.tag
+      this.$data.SITE = this.$props.site
+      this.$data.UP = this.$props.up
+      this.$data.MEMBERARR = !!this.$props.members ? this.$props.members.split('&') : []
 
-    @Prop() private isRaw!: boolean;
-    @Prop() private isCut!: boolean;
+      this.$data.ITEMTYPE = this.$props.itemType
+    },
+    record(url) {
+      this.$record('跳转', this.$props.name, url, this.$props.sqlId)
+    },
+    async revise() {
+      try {
+        const data = this.$data
+        const prop = this.$props
+        const gold: any = {
+          id: prop.sqlId,
+          itemType: data.ITEMTYPE,
+          mainUrl: data.URL,
+          name: data.NAME,
+          tag: data.TAG,
+          site: data.SITE,
+          date: data.DATE,
+          up: data.UP,
+          index: data.INDEX,
+          members: data.MEMBERARR.join('&')
+        }
+        setIfHave(gold, 'ep', data, 'EP')
+        setIfHave(gold, 'part', data, 'PART')
+        setIfHave(gold, 'isRaw', data, 'ISRAW')
+        setIfHave(gold, 'isCut', data, 'ISCUT')
 
-    // setting
-    @Prop() private inClamp!: boolean;
+        if (this.$data.TOFLASH) {
+          const nowmoment = moment();
+          gold.bakedTime = nowmoment.format('YYYY-MM-DD HH:mm:ss')
+        }
 
-    @Prop() private tags!: {};
-    @Prop() private sites!: [];
+        const response = await axios.post(Vue.rootPath + '/izone/upt', gold);
+        // this.$emit('finishEdit')
+      } catch (error) {
+        Vue.error(error);
+      }
+    },
+    async fetchInfo() {
+      axios.get(Vue.rootPath + '/izone/biliInfo?url=' + this.$data.URL)
+        .then(res => {
+          const videoName = res.data.data.title
+          const videoUp = res.data.data.up
+
+          this.$data.NAME = videoName
+          this.$data.UP = videoUp
+
+          // const that: any = this
+          // that.dateEvaluate(videoName)
+          // that.metaInfoEvaluate(videoName)
+        })
+        .catch(err => {
+          Vue.error(err)
+        })
+    },
+  },
+  mounted() {
+    this.loadPropsToDatas()
   }
+})
+export default class Gold extends Vue {
+  @Prop() private sqlId!: number;
+  @Prop() private itemType!: string;
+
+  @Prop() private mainUrl!: string;
+  @Prop() private date!: string;
+  @Prop() private name!: string;
+
+  @Prop() private site!: string;
+  @Prop() private up!: string;
+  @Prop() private bakedTime!: string;
+
+  @Prop() private ep!: number;
+  @Prop() private part!: number;
+  @Prop() private index!: number;
+
+  @Prop() private tag!: string;
+  @Prop() private members!: string;
+
+  @Prop() private isRaw!: boolean;
+  @Prop() private isCut!: boolean;
+
+  // setting
+  @Prop() private inClamp!: boolean;
+
+  @Prop() private tags!: {};
+  @Prop() private sites!: [];
+}
 </script>
