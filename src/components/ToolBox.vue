@@ -2,11 +2,6 @@
   <div class='shovel' v-if="rdd">
     <!-- 你正在修改这个条目 -->
     <div>
-      <button @click="wholeInspection">🐞全体检查！</button>
-      <a target="_blank" href="/static/izone/InsepectionResult.json">查看结果</a>
-    </div>
-
-    <div>
       <input type="button" value="添加一个默认项" @click="addItem">
       <input type="button" value='刷新数据' @click="$emit('flash')">
     </div>
@@ -71,15 +66,6 @@ const now = moment()
       } catch (error) {
         Vue.error(error);
       }
-    },
-    async wholeInspection() {
-      axios.get(Vue.rootPath + '/izone/wholeInspection')
-      .then(res => {
-        Vue.log(res)
-      })
-      .catch(err => {
-        Vue.error(err)
-      })
     }
   }
 })

@@ -4,6 +4,10 @@
       <div class='dashboard'>
         <button @click="handlePart = 'Setting'">设置</button>
         <button @click="handlePart = 'Manage'">管理纸条</button>
+        <div>
+          <button @click="wholeInspection">🐞全体检查！</button>
+          <a target="_blank" href="/static/izone/InsepectionResult.json">查看结果</a>
+        </div>
       </div>
       <template v-if='handlePart === "Setting"'>
         <div>{{announcement}}</div>
@@ -37,7 +41,7 @@
           <label class='item Ceremony' :class="{'itemActived': filter === 'Ceremony'}" for="Ceremony">
             <input id='Ceremony' name='filter' v-model="filter" type="radio" value='Ceremony' />典礼</label>
         </form>
-        <Book :filter='filter'/>
+        <Book :filter='filter' />
       </template>
     </header>
     <footer>- 暂由RDD个人维护 -</footer>
@@ -78,6 +82,15 @@
       }
     },
     methods: {
+      async wholeInspection() {
+        axios.get(Vue.rootPath + '/izoneAdmin/wholeInspection')
+          .then(res => {
+            Vue.log(res)
+          })
+          .catch(err => {
+            Vue.error(err)
+          })
+      },
       fetchAnnouncement() {
         axios.get(Vue.rootPath + '/util/getVal?key=izoniAnnouncement')
           .then(re => {

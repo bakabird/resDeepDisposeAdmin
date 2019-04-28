@@ -259,7 +259,7 @@
         this.$emit('finishEdit')
       },
       async remove(posterName) {
-        var input = prompt(`准备删除「${posterName}」？`, "再此重复该纸条的名称")
+        const input = prompt(`准备删除「${posterName}」？`, "再此重复该纸条的名称")
         if (input != null && input === posterName) {
           const response = await axios.post(Vue.rootPath + '/izone/remove', {
             id: this.$props.sqlId
