@@ -8,10 +8,11 @@
         </div>
         <template v-for="(i,idx) in PostersSorted">
             <Poster v-if="i.itemType === 'note'" :noShell="i.date === '66-66-66'" :itemType='i.itemType' :tags='Tags'
+                :onHead='idx === 0' :onFloor='idx === PostersSorted.length - 1'
                 :sites='Sites' :inClamp='i.inClamp !== -1' :key="i.id + '_poster_' + idx" :sqlId="i.id"
                 :mainUrl='i.mainUrl' :date="i.date" :name="i.name" :site="i.site" :up="i.up" :tag="i.tag" :ep="i.ep"
                 :part="i.part" :index="i.index" :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut"
-                :members="i.members" :flashSignal='flashSignal' @finishEdit='$emit("finishEdit")'/>
+                :members="i.members" :flashSignal='flashSignal' @finishEdit='$emit("finishEdit")' @moveUp='moveUp(idx)' @moveDown='moveDown(idx)'/>
             <div :key="i.id + '_goldCushion_' + idx" v-if="i.itemType === 'cushion' && clampOpened[i.inClamp]"
                 @click="clampOpened[i.inClamp] = false" class='bar cushion'>合上夹子</div>
             <Clamp v-if="i.itemType === 'clamp'" @triggle="clampOpened[i.id] = !clampOpened[i.id]"
@@ -26,6 +27,7 @@
 
     import Poster from './Poster.vue'
     import Clamp from './Clamp.vue'
+    import axios from 'axios'
 
 
     import moment from 'moment'
@@ -40,7 +42,26 @@
             }
         },
         methods: {
-
+            async moveUp(idx){
+                // 找到上一个
+                const me = this.PostersSorted[idx]
+                const faceUp = this.PostersSorted[idx - 1]
+                await axios.post(Vue.rootPath + '/izone/update',{
+                    id: me.id,
+                    index: faceUp.index + 1
+                })
+                this.$emit('finishEdit')
+            },
+            async moveDown(idx){
+                // 找到下一个
+                const me = this.PostersSorted[idx]
+                const buttDown = this.PostersSorted[idx + 1]
+                await axios.post(Vue.rootPath + '/izone/update',{
+                    id: me.id,
+                    index: buttDown.index - 1
+                })
+                this.$emit('finishEdit')
+            }
         },
         computed: {
             dateDescription() {

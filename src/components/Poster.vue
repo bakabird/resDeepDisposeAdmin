@@ -87,8 +87,8 @@
       </template>
     </table>
     <div class='elevator'>
-      <div>⬆</div>
-      <div :class="{'unuseable': index === 0}">⬇</div>
+      <div :class="{'unuseable': onHead}" @click="moveUp">⬆</div>
+      <div :class="{'unuseable': onFloor}" @click="moveDown">⬇</div>
     </div>
   </div>
 </template>
@@ -154,7 +154,6 @@
       }
     },
     computed: {
-
       isNew() {
         return !this.$props.isRaw && now.diff(this.$props.bakedTime, 'hour') < 36
       }
@@ -174,6 +173,12 @@
       btnList,
     },
     methods: {
+      moveUp(){
+        if(!this.$props.onHead) this.$emit('moveUp')
+      },
+      moveDown(){
+        if(!this.$props.onFloor) this.$emit('moveDown')
+      },
       reset() {
         const that: any = this
         that.loadPropsToDatas()
@@ -295,5 +300,9 @@
 
     @Prop() private tags!: {};
     @Prop() private sites!: [];
+
+    // setting
+    @Prop() private onHead!: boolean;
+    @Prop() private onFloor!: boolean;
   }
 </script>
