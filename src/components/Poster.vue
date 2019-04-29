@@ -42,7 +42,7 @@
           <td :class="{'changed': tag !== TAG}" colspan="2">
             <PopOutTagEditor v-model='TAG' :tags='tags' />
           </td>
-          <td :class="{'changed': date !== date}" colspan="2">
+          <td :class="{'changed': date !== DATE}" colspan="2">
             <PopOutInput v-model="DATE" />
           </td>
         </tr>
@@ -51,7 +51,7 @@
           <th class='th_memberstr' colspan="7">MemberStr</th>
         </tr>
         <tr>
-          <td :class="{'changed': members !== MEMBERS}" colspan="6">
+          <td :class="{'changed': members !== MEMBERS}" colspan="7">
             <PopOutMembersEditor v-model="MEMBERS" />
           </td>
         </tr>

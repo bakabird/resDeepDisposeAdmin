@@ -43,7 +43,7 @@ export default Vue.extend({
     },
     computed:{
         members_arr(){
-            return this.$props.members.split('&')
+            return this.$props.members === '' ? [] : this.$props.members.split('&')
         },
         member_emoji_str() {
             const random_members_arr = this.members_arr.sort(() => {
