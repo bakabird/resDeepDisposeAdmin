@@ -121,6 +121,13 @@
     }
   }
 
+  function checkThen(source, pattern, whenSucess) {
+    const checkRlt = source.match(pattern)
+    if (!!checkRlt) {
+      whenSucess(checkRlt)
+    }
+  }
+
 
   @Component({
     data() {
@@ -173,18 +180,17 @@
       btnList,
     },
     methods: {
-      moveUp(){
-        if(!this.$props.onHead) this.$emit('moveUp')
+      // MOVE FUNCTION
+      moveUp() {
+        if (!this.$props.onHead) this.$emit('moveUp')
       },
-      moveDown(){
-        if(!this.$props.onFloor) this.$emit('moveDown')
+      moveDown() {
+        if (!this.$props.onFloor) this.$emit('moveDown')
       },
+      // RESET
       reset() {
         const that: any = this
         that.loadPropsToDatas()
-      },
-      changeSite(nVal) {
-        this.$data.SITE = nVal
       },
       loadPropsToDatas() {
         this.$data.DATE = this.$props.date
@@ -207,6 +213,43 @@
       },
       record(url) {
         this.$record('跳转', this.$props.name, url, this.$props.sqlId)
+      },
+      dateEvaluate(vname) {
+        // 190417
+        const dateCheck1 = '(18|19|20|21)(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|30|31)'
+        // 2019.04.17
+        const dateCheck2 = '20(18|19|20|21).(0[1-9]|1[0-2]).(0[1-9]|[1-2][0-9]|30|31)'
+
+        checkThen(vname, dateCheck1, (checkRlt) => {
+          this.$data.DATE = `20${checkRlt[1]}-${checkRlt[2]}-${checkRlt[3]}`
+        })
+        checkThen(vname, dateCheck2, (checkRlt) => {
+          this.$data.DATE = `20${checkRlt[1]}-${checkRlt[2]}-${checkRlt[3]}`
+        })
+      },
+      siteEvaluate(url){
+        const bilibili = 'bilibili.com'
+        checkThen(url, bilibili, ()=>{
+          this.$data.SITE = 'B站'
+        })
+      },
+      otherMetaInfoEvaluate(vname,vup) {
+        const kkuraRaido = '今夜 咲良树下'
+        checkThen(vname, kkuraRaido, (checkRlt) => {
+          this.$data.TAG = '樱花电台'
+          this.$data.MEMBERS = '樱'
+        })
+
+        const hitomiRadio = 'World Get You'
+        checkThen(vname, hitomiRadio, (checkRlt) => {
+          this.$data.TAG = '仁美电台'
+          this.$data.MEMBERS = '仁'
+        })
+
+        const tsks = '凤凰天使TSKS韩剧社官方账号'
+        checkThen(vup, tsks, ()=>{
+          this.$data.TAG = '综艺'
+        })
       },
       async revise() {
         try {
@@ -244,9 +287,10 @@
             this.$data.NAME = videoName
             this.$data.UP = videoUp
 
-            // const that: any = this
-            // that.dateEvaluate(videoName)
-            // that.metaInfoEvaluate(videoName)
+            const that: any = this
+            that.dateEvaluate(videoName)
+            that.siteEvaluate(this.$data.URL)
+            that.otherMetaInfoEvaluate(videoName,videoUp)
           })
           .catch(err => {
             Vue.error(err)

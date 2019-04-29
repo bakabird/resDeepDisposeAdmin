@@ -35,7 +35,12 @@ export default Vue.extend({
         autofocus(className) {
             if (this.$props.type !== 'boolean' && this.$props.type !== 'checkbox') {
                 const that: any = this.$el.querySelector(`.${className}`)
-                that.select()
+                if(this.$props.type === 'number'){
+                    that.focus()
+                    that.select()
+                }else{
+                    that.select()
+                }
             }
         },
     },
