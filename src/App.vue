@@ -1,14 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <div class='dashboard'>
-        <button @click="handlePart = 'Setting'">设置</button>
-        <button @click="handlePart = 'Manage'">管理纸条</button>
-        <div>
-          <button @click="wholeInspection">🐞全体检查！</button>
-          <a target="_blank" href="/static/izone/InsepectionResult.json">查看结果</a>
-        </div>
-      </div>
+      <DashBoard @switchPart='switchPart'/>
       <template v-if='handlePart === "Setting"'>
         <div>{{announcement}}</div>
         <div v-if="rdd">
@@ -17,7 +10,7 @@
         </div>
       </template>
 
-      <template v-if='handlePart === "Manage"'>
+      <div v-show='handlePart === "Manage"'>
         <!-- <div>个人维护，更新不及时见谅</div> -->
         <form class='filter'>
           <label class='mainItem Latest' :class="{'itemActived': filter === 'Latest'}" for="Latest">
@@ -42,7 +35,7 @@
             <input id='Ceremony' name='filter' v-model="filter" type="radio" value='Ceremony' />典礼</label>
         </form>
         <Book :filter='filter' />
-      </template>
+      </div>
     </header>
     <footer>- 暂由RDD个人维护 -</footer>
   </div>
@@ -53,7 +46,9 @@
     Component,
     Vue
   } from 'vue-property-decorator';
+
   import Book from './components/Book.vue';
+  import DashBoard from './components/DashBoard.vue'
 
   import store from 'store'
   import axios from 'axios'
@@ -69,7 +64,8 @@
       }
     },
     components: {
-      Book
+      Book,
+      DashBoard
     },
     watch: {
       filter(to, from) {
@@ -82,14 +78,8 @@
       }
     },
     methods: {
-      async wholeInspection() {
-        axios.get(Vue.rootPath + '/izoneAdmin/wholeInspection')
-          .then(res => {
-            Vue.log(res)
-          })
-          .catch(err => {
-            Vue.error(err)
-          })
+      switchPart(newPart :string){
+        this.$data.handlePart = newPart
       },
       fetchAnnouncement() {
         axios.get(Vue.rootPath + '/util/getVal?key=izoniAnnouncement')
@@ -105,7 +95,7 @@
         const that: any = this
         axios.post(Vue.rootPath + '/util/setVal', {
             key: 'izoniAnnouncement',
-            value: this.$data.newAnnouncement
+            string: this.$data.newAnnouncement
           })
           .then(re => {
             that.fetchAnnouncement()

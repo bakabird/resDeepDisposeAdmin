@@ -1,13 +1,15 @@
 <template>
   <div class='shovel' v-if="rdd">
     <!-- 你正在修改这个条目 -->
-    <div>
-      <input type="button" value="添加一个默认项" @click="addItem">
-      <input type="button" value='刷新数据' @click="$emit('flash')">
+    <div class="btnGroup">
+      <input class="actionBtn" type="button" value="添加一个默认项" @click="addItem">
+      <input class="actionBtn" type="button" value='刷新数据' @click="$emit('flash')">
     </div>
 
     <Criteria v-if="editCriteria" :criteriaString='criteriaString' @revise='updateCriteria' @hide='editCriteria = false'/>
-    <button v-else @click="editCriteria = true">对分类规则进行调整</button>
+    <div class='btnGroup' v-else>
+      <button class="showUpBtn"  @click="editCriteria = true">对分类规则进行调整</button>
+    </div>
   </div>
 </template>
 
@@ -46,7 +48,7 @@ const now = moment()
         JSON.parse(newCriteriaString)
         axios.post(Vue.rootPath + '/util/setVal', {
           key: 'izoniCriteria',
-          value: newCriteriaString
+          string: newCriteriaString
         }).then((re) => {
           Vue.log('修改完成')
         }).catch(err => {

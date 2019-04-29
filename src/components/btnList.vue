@@ -1,6 +1,6 @@
 <template>
-  <div class="btnList">
-    <input type="button" v-for="(i) in filtedValues" :key="name + i" :value="i" @click="$emit('biubiubiu',i)">
+  <div class="btnList btnGroup">
+    <input class='actionBtn' type="button" v-for="(i) in filtedValues" :key="name + i" :value="i" @click="$emit('biubiubiu',i)">
     <input v-if="values.length > limitNumber" class="trigger" type="button" :value="limit ? '>>>>' : '<<<<'" @click="limit = !limit">
   </div>
 </template>

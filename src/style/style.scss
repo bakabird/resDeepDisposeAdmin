@@ -1,15 +1,12 @@
 @import "filter";
-@import "introduction";
 // @import "button";
 
 @import "bar";
 @import "poster";
-@import "molecule";
 @import "clamp";
 
 @import "shovel";
 @import "book";
-@import "plate";
 
 
 @import "dashboard";
@@ -47,5 +44,37 @@ footer{
   margin:25px auto 15px;
 }
 
+.btnGroup{
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
 
+.actionBtn{
+  background: #ffc9c9;
+  flex: 1;
+  border: none;
+  height: 3em;
+  border: 1px solid #fff;
+  // margin-top: 20px;
+  color: #b34348;
+}
+.actionBtn:hover{
+  background: #E4555B;
+  color: #fff;
+}
+
+.showUpBtn{
+  background: #fafafa;
+  flex: 1;
+  border: none;
+  height: 5em;
+  border: 1px dashed #ff6363;
+  margin-top: 20px;
+  color: #ff6363;
+}
+
+#newCriteriaString{
+  font-size: 12px;
+}
 

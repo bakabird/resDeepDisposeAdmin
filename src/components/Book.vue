@@ -118,7 +118,7 @@ function statisticsSort(stat) {
       return this.getCurrentPosters()
     },
     criteriaString() {
-      return JSON.stringify(this.criteria)
+      return JSON.stringify(this.criteria,null,2)
     },
     Tags() {
       const newTags = statisticsSort(attrStatistics(this.Posters, 'tag'))

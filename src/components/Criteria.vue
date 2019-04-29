@@ -1,11 +1,13 @@
 <template>
     <div>
         <textarea v-model="newCriteriaString" name="newCriteriaString" id="newCriteriaString" cols="30"
-            rows="5"></textarea>
+            rows="10"></textarea>
         <div>
-            <button @click="paintNewCriteria">更新图像</button>
-            <button @click="$emit('revise',newCriteriaString)">提交修改</button>
-            <button @click="$emit('hide')">隐藏</button>
+            <div class='btnGroup'>
+                <button class='actionBtn' @click="paintNewCriteria">更新图像</button>
+                <button class='actionBtn' @click="$emit('revise',newCriteriaString)">提交修改</button>
+                <button class='actionBtn' @click="$emit('hide')">隐藏</button>
+            </div>
             <table>
                 <tr>
                     <th>
