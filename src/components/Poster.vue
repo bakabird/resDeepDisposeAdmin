@@ -100,11 +100,11 @@
     Vue
   } from 'vue-property-decorator';
   import btnList from './btnList.vue'
-  import PopOut from './PopOut.vue'
-  import PopOutInput from './PopOutInput.vue'
-  import PopOutTagEditor from './PopOutTagEditor.vue'
-  import PopOutSiteEditor from './PopOutSiteEditor.vue'
-  import PopOutMembersEditor from './PopOutMembersEditor.vue'
+  import PopOut from './PopOut/PopOut.vue'
+  import PopOutInput from './PopOut/PopOutInput.vue'
+  import PopOutTagEditor from './PopOut/PopOutTagEditor.vue'
+  import PopOutSiteEditor from './PopOut/PopOutSiteEditor.vue'
+  import PopOutMembersEditor from './PopOut/PopOutMembersEditor.vue'
 
   import moment from 'moment'
   import axios from 'axios'

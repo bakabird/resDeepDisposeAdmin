@@ -13,7 +13,7 @@
 </template>
 <script>
     import PopOut from './PopOut.vue'
-    import btnList from './btnList.vue'
+    import btnList from '../btnList.vue'
     export default {
         components: {
             PopOut,
