@@ -272,14 +272,14 @@
             isCut: data.ISCUT
           }
 
-          const response = await axios.post(Vue.rootPath + '/izone/upt', gold);
+          const response = await axios.post(Vue.rootPath + '/izoneAdmin/upt', gold);
           this.$emit('finishEdit')
         } catch (error) {
           Vue.error(error);
         }
       },
       async fetchInfo() {
-        axios.get(Vue.rootPath + '/izone/biliInfo?url=' + this.$data.URL)
+        axios.get(Vue.rootPath + '/izoneAdmin/biliInfo?url=' + this.$data.URL)
           .then(res => {
             const videoName = res.data.data.title
             const videoUp = res.data.data.up
@@ -297,7 +297,7 @@
           })
       },
       async bake() {
-        const rlt = await axios.post(Vue.rootPath + '/izone/bake', {
+        const rlt = await axios.post(Vue.rootPath + '/izoneAdmin/bake', {
           id: this.$props.sqlId
         })
         this.$emit('finishEdit')
@@ -305,7 +305,7 @@
       async remove(posterName) {
         const input = prompt(`准备删除「${posterName}」？`, "再此重复该纸条的名称")
         if (input != null && input === posterName) {
-          const response = await axios.post(Vue.rootPath + '/izone/remove', {
+          const response = await axios.post(Vue.rootPath + '/izoneAdmin/remove', {
             id: this.$props.sqlId
           });
           this.$emit('finishEdit')

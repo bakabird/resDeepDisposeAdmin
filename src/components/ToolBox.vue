@@ -61,7 +61,7 @@ const now = moment()
     },
     async addItem() {
       try {
-        const response = await axios.post(Vue.rootPath + '/izone/new');
+        const response = await axios.post(Vue.rootPath + '/izoneAdmin/new');
         if (response.status === 200) {
           this.$emit('flash')
         }

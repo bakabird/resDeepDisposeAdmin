@@ -1,10 +1,10 @@
 <template>
     <div class='dashboard'>
-        <button @click="$emit('switchPart','Setting')">设置</button>
-        <button @click="$emit('switchPart','Manage')">管理纸条</button>
+        <button class="actionBtn" @click="$emit('switchPart','Setting')">设置</button>
+        <button class="actionBtn" @click="$emit('switchPart','Manage')">管理纸条</button>
         <div>
-            <button @click="wholeInspection">🐞全体检查！</button>
-            <a target="_blank" href="/static/izone/InsepectionResult.json">查看结果</a>
+            <button class="actionBtn" @click="wholeInspection">🐞全体检查！</button>
+            <!-- <a target="_blank" href="/static/izone/InsepectionResult.json">查看结果</a> -->
         </div>
     </div>
 </template>

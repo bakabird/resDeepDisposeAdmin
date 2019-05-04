@@ -172,7 +172,7 @@
             gold.bakedTime = now.format('YYYY-MM-DD HH:mm:ss')
           }
 
-          const response = await axios.post(Vue.rootPath + '/izone/upt', gold);
+          const response = await axios.post(Vue.rootPath + '/izoneAdmin/upt', gold);
           this.$emit('finishEdit')
         } catch (error) {
           Vue.error(error);
@@ -211,7 +211,7 @@
         })
       },
       async fetchInfo() {
-        axios.get(Vue.rootPath + '/izone/biliInfo?url=' + this.$data.URL)
+        axios.get(Vue.rootPath + '/izoneAdmin/biliInfo?url=' + this.$data.URL)
           .then(res => {
             const videoName = res.data.data.title
             const videoUp = res.data.data.up

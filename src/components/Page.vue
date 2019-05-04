@@ -46,7 +46,7 @@
                 // 找到上一个
                 const me = this.PostersSorted[idx]
                 const faceUp = this.PostersSorted[idx - 1]
-                await axios.post(Vue.rootPath + '/izone/update',{
+                await axios.post(Vue.rootPath + '/izoneAdmin/update',{
                     id: me.id,
                     index: faceUp.index + 1
                 })
@@ -56,7 +56,7 @@
                 // 找到下一个
                 const me = this.PostersSorted[idx]
                 const buttDown = this.PostersSorted[idx + 1]
-                await axios.post(Vue.rootPath + '/izone/update',{
+                await axios.post(Vue.rootPath + '/izoneAdmin/update',{
                     id: me.id,
                     index: buttDown.index - 1
                 })

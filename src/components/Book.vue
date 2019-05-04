@@ -213,7 +213,7 @@ export default class Book extends Vue {
   public flashData() {
     axios.get(Vue.rootPath + '/izone/all')
       .then((re) => {
-        this.setAllPosters(re.data.data)
+        this.setAllPosters(re.data.data.posters)
         this.headData()
         Vue.nextTick(()=>{
           this.$data.flashSignal += 1
@@ -226,7 +226,7 @@ export default class Book extends Vue {
   public headData() {
     axios.get(Vue.rootPath + '/izone/fresh')
       .then((re) => {
-        this.setFreshPosters(re.data.data)
+        this.setFreshPosters(re.data.data.posters)
       })
       .catch((err) => {
         Vue.error(err)
