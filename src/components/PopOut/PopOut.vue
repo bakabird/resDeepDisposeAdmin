@@ -35,5 +35,25 @@ export default Vue.extend({
     },
 })
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+.PopOutBlock{
+    position: fixed;
+    z-index: 100000;
+    bottom: 0;
+    left:0;
+    right: 0;
+    top: 0;
+    background: #0002;
+    .PopOutBody{
+        z-index: 200000;
+        display: inline-block;
+        margin: 0 auto;
+        margin-top: 20vh;
+        background: #ededed;
+        border-radius: 7px;
+        border: 1px solid #9f9f9f;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+}
 </style>

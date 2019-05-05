@@ -169,3 +169,123 @@
         }
     }
 </script>
+
+<style lang="scss">
+
+@import "../color";
+
+.bar {
+    position: relative;
+    border-bottom: 2px solid #fff;
+    background: $normal_bgcolor;
+
+    table {
+        border: 1px solid #ffb4b4;
+        border-radius: 3px;
+        width: 100%;
+
+        .btn{
+            border: none;
+            // background: #e4555b80;
+            // color: #753838;
+            background: #ffe4e580;
+            color: #cb5959;
+            border-radius: 4px;
+            transition: .42s;
+        }
+        .btn:hover{
+            background: #e4555bcc;
+            color: #fff;
+        }
+
+        .name{
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .th_url {
+            background: #8aad7533;
+            color: #a79898;
+        }
+        .th_url:hover{
+            background: #5f8a47e6;
+            color: #ffd1cc;
+        }
+
+        .th_type {
+            background: #7589ad33;
+            color: #a7a698;
+        }
+
+        .th_iscut {
+            background: #a475ad33;
+            color: #b3b292;
+        }
+
+        .th_part {
+            background: #ad757533;
+            color: #9992b3;
+        }
+
+        .th_ep {
+            background: #ad9f7533;
+            color: #a0b392;
+        }
+
+        .th_tag {
+            background: #adac7533;
+            color: #92b3b2;
+        }
+
+        .th_site {
+            background: #75ad7c33;
+            color: #9e92b3;
+        }
+
+        .th_up {
+            background: #85a1ae33;
+            color: #b3b292;
+        }
+
+        .th_memberstr {
+            background: #b17da933;
+            color: #b292b3;
+        }
+
+        .th_date{
+            background: #c5828233;
+            color: #92b3b2;
+        }
+    }
+}
+
+.title {
+    display: block;
+    line-height: 2em;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.titleMeta {
+    font-size: 12px;
+    opacity: .6;
+}
+
+.meta {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 12px;
+}
+
+// 时间相关
+
+.tomorrow {
+    opacity: .5;
+}
+
+.theDayAfterTomorrow {
+    opacity: .25;
+}
+
+</style>

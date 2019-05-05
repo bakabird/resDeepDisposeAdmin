@@ -51,3 +51,16 @@
         }
     }
 </script>
+
+<style lang="scss">
+
+#newCriteriaString{
+  font-size: 12px;
+}
+
+#newCriteriaString{
+  width: 100%;
+  font-size: 13px;
+}
+
+</style>

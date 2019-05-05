@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <DashBoard @switchPart='switchPart'/>
+      <DashBoard @switchPart='switchPart' />
       <template v-if='handlePart === "Setting"'>
         <div>{{announcement}}</div>
         <div v-if="rdd">
@@ -78,7 +78,7 @@
       }
     },
     methods: {
-      switchPart(newPart :string){
+      switchPart(newPart: string) {
         this.$data.handlePart = newPart
       },
       fetchAnnouncement() {
@@ -111,3 +111,66 @@
   })
   export default class App extends Vue {}
 </script>
+<style lang="scss">
+  @import "color";
+  @import "filter";
+
+  #app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+  }
+
+  html {
+    background: #fcfffd;
+    // color: rgb(243, 211, 213);
+
+    #app {
+      color: #E4555B;
+    }
+  }
+
+  header {
+    font-size: 12px;
+    margin-top: 12px;
+  }
+
+  footer {
+    margin-top: 30px;
+    font-size: 12px;
+    // color: #e6afb1;
+  }
+
+  .btnGroup {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+
+  .actionBtn {
+    background: #ffc9c9;
+    flex: 1;
+    border: none;
+    height: 3em;
+    border: 1px solid #fff;
+    // margin-top: 20px;
+    color: #b34348;
+  }
+
+  .actionBtn:hover {
+    background: #E4555B;
+    color: #fff;
+  }
+
+  .showUpBtn {
+    background: #fafafa;
+    flex: 1;
+    border: none;
+    height: 5em;
+    border: 1px dashed #ff6363;
+    margin-top: 20px;
+    color: #ff6363;
+  }
+</style>

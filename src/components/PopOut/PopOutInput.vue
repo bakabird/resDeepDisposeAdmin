@@ -57,3 +57,22 @@ export default Vue.extend({
     }
 })
 </script>
+<style lang="scss">
+.popout_input_text{
+    max-width: 95vw;
+    width: 200px;
+    height: 2em;
+    border-radius: 10px;
+    font-size: 1.3em;
+}
+.popout_input_longtext{
+    max-width: 95ww;
+    width: 400px;
+    height: 2em;
+    border-radius: 10px;
+    font-size: 1.3em;
+}
+.popout_input_number{
+    width: 60px;
+}
+</style>

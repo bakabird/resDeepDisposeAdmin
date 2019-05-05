@@ -18,7 +18,7 @@
             重载
           </td>
           <td class='btn' @click="revise">
-            修改
+            修改 {{sqlId}}
           </td>
           <td class='btn' @click="bake">
             回锅
@@ -217,14 +217,14 @@
       dateEvaluate(vname) {
         // 190417
         const dateCheck1 = '(18|19|20|21)(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|30|31)'
+        checkThen(vname, dateCheck1, (checkRlt) => {
+          this.$data.DATE = `${checkRlt[1]}-${checkRlt[2]}-${checkRlt[3]}`
+        })
+
         // 2019.04.17
         const dateCheck2 = '20(18|19|20|21).(0[1-9]|1[0-2]).(0[1-9]|[1-2][0-9]|30|31)'
-
-        checkThen(vname, dateCheck1, (checkRlt) => {
-          this.$data.DATE = `20${checkRlt[1]}-${checkRlt[2]}-${checkRlt[3]}`
-        })
         checkThen(vname, dateCheck2, (checkRlt) => {
-          this.$data.DATE = `20${checkRlt[1]}-${checkRlt[2]}-${checkRlt[3]}`
+          this.$data.DATE = `${checkRlt[1]}-${checkRlt[2]}-${checkRlt[3]}`
         })
       },
       siteEvaluate(url){
@@ -350,3 +350,52 @@
     @Prop() private onFloor!: boolean;
   }
 </script>
+<style lang="scss">
+@import "../color";
+
+
+
+
+
+.poster {
+  .changed{
+    background: #7eff3066;
+  }
+  &.new{
+    color: $new_color;
+    background: $new_bgcolor;
+    .meta{
+      color: $new_meta;
+    }
+  }
+  &.raw{
+    background: $raw_bgcolor;
+    .meta{
+      color: $raw_meta;
+    }
+    .link{
+      color: $raw_color;
+    }
+  }
+}
+
+.elevator {
+  position: absolute;
+  right: -50px;
+  top: 0px;
+  width: 26px;
+  height: 38px;
+  div{
+    background: #fdebea;
+  }
+  div:hover{
+    background: #ffcece;
+    color: #1abeff;
+  }
+  div.unuseable{
+    background: #f5f5f5;
+    color: #e4e1e1;
+  }
+}
+
+</style>

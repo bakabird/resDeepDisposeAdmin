@@ -249,3 +249,21 @@ export default class Book extends Vue {
   }
 }
 </script>
+<style lang="scss">
+.mine {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.date {
+  color: #a58a78;
+  background: #f5eee887;
+}
+
+.date {
+  font-size: 12px;
+  width: 30%;
+  margin: .7em auto 1em;
+}
+
+</style>
