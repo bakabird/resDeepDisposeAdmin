@@ -1,13 +1,10 @@
 <template>
-    <div class="bar clamp" :class="{'clamp-open': hasOpen}" @click='triggle'>
-        <div class="title">
+    <div class="bar clamp" :class="{'clamp-open': hasOpen}">
+        <div class="title" @click='openClamp'>
             {{name}}
             <span class='part' v-if="!!part">Part {{part}}</span>
             <span class='ep' v-else-if="!!ep">EP {{ep}}</span>
         </div>
-        <!-- <div class="meta">
-            <div class="tag">{{tag}}</div>
-        </div> -->
     </div>
 </template>
 <script>
@@ -19,13 +16,10 @@
             }
         },
         methods: {
-            triggle() {
-                if (this.$props.hasOpen) {
-                    this.$record('关闭夹子', this.$props.name, "" + this.$props.ep + this.$props.part)
-                } else {
-                    this.$record('打开夹子', this.$props.name, "" + this.$props.ep + this.$props.part)
+            openClamp() {
+                if (!this.$props.hasOpen) {
+                    this.$emit('triggle')
                 }
-                this.$emit('triggle')
             }
         },
         props: {
@@ -60,38 +54,13 @@
 @import "../color";
 
 .clamp {
-    .meta {
-        .tag {
-            flex: 1;
-        }
+    .title {
+        display: block;
+        line-height: 2em;
+        font-size: 2em;
+        font-weight: bold;
+        text-decoration: none;
     }
 }
 
-.cushion {
-  background: $clamp_open_bgcolor;
-  color: $clamp_open_color;
-  height: 40px;
-  line-height: 40px;
-  font-weight: bold;
-}
-
-.inClamp{
-    border-left: 10px solid $clamp_open_bgcolor;
-    border-right: 10px solid $clamp_open_bgcolor;
-    border-bottom: none;
-}
-
-.clamp {
-    background: $clamp_bgcolor;
-    color: $clamp_color;
-
-    .cell {
-        color: $clamp_color;
-    }
-    &.clamp-open {
-        background: $clamp_open_bgcolor;
-        color: $clamp_open_color;
-        border-bottom: none;
-    }
-}
 </style>

@@ -1,10 +1,11 @@
 <template>
-  <div class="bar poster" :class="{ new:!!isNew, raw:!!isRaw, inClamp: inClamp}">
+  <div class="bar"
+    :class="{ poster: itemType === 'note' ,new:!!isNew, raw:!!isRaw, inClamp: inClamp, clamp: itemType === 'clamp'}">
     <table>
       <!-- ZERO LINE -->
       <tr>
         <template v-if='!edit'>
-          <td class='name' v-if='!edit' @click="edit = true">
+          <td class='name' v-if='!edit' @click="startEdit">
             {{name}}
             <span class='part' v-if="!!part">Part {{part}}</span>
             <span class='ep' v-else-if="!!ep">EP {{ep}}</span>
@@ -180,6 +181,12 @@
       btnList,
     },
     methods: {
+      startEdit() {
+        this.$data.edit = true
+        if (this.$props.itemType === 'clamp') {
+          this.$emit('openClamp')
+        }
+      },
       // MOVE FUNCTION
       moveUp() {
         if (!this.$props.onHead) this.$emit('moveUp')
@@ -227,13 +234,13 @@
           this.$data.DATE = `${checkRlt[1]}-${checkRlt[2]}-${checkRlt[3]}`
         })
       },
-      siteEvaluate(url){
+      siteEvaluate(url) {
         const bilibili = 'bilibili.com'
-        checkThen(url, bilibili, ()=>{
+        checkThen(url, bilibili, () => {
           this.$data.SITE = 'B站'
         })
       },
-      otherMetaInfoEvaluate(vname,vup) {
+      otherMetaInfoEvaluate(vname, vup) {
         const kkuraRaido = '今夜 咲良树下'
         checkThen(vname, kkuraRaido, (checkRlt) => {
           this.$data.TAG = '樱花电台'
@@ -247,7 +254,7 @@
         })
 
         const tsks = '凤凰天使TSKS韩剧社官方账号'
-        checkThen(vup, tsks, ()=>{
+        checkThen(vup, tsks, () => {
           this.$data.TAG = '综艺'
         })
       },
@@ -290,7 +297,7 @@
             const that: any = this
             that.dateEvaluate(videoName)
             that.siteEvaluate(this.$data.URL)
-            that.otherMetaInfoEvaluate(videoName,videoUp)
+            that.otherMetaInfoEvaluate(videoName, videoUp)
           })
           .catch(err => {
             Vue.error(err)
@@ -351,51 +358,169 @@
   }
 </script>
 <style lang="scss">
-@import "../color";
+  @import "../color";
 
 
+  .bar {
+    position: relative;
+    border-bottom: 2px solid #fff;
+    background: $normal_bgcolor;
 
+    .changed {
+      background: #7eff3066;
+    }
+    .part,.ep{
+      font-size: 12px;
+    }
 
+    table {
+      border: 1px solid #ffb4b4;
+      border-radius: 3px;
+      width: 100%;
 
-.poster {
-  .changed{
-    background: #7eff3066;
-  }
-  &.new{
-    color: $new_color;
-    background: $new_bgcolor;
-    .meta{
-      color: $new_meta;
+      .btn {
+        border: none;
+        // background: #e4555b80;
+        // color: #753838;
+        background: #ffe4e580;
+        color: #cb5959;
+        border-radius: 4px;
+        transition: .42s;
+      }
+
+      .btn:hover {
+        background: #e4555bcc;
+        color: #fff;
+      }
+
+      .name {
+        font-size: 2em;
+        font-weight: bold;
+      }
+
+      .th_url {
+        background: #8aad7533;
+        color: #a79898;
+      }
+
+      .th_url:hover {
+        background: #5f8a47e6;
+        color: #ffd1cc;
+      }
+
+      .th_type {
+        background: #7589ad33;
+        color: #a7a698;
+      }
+
+      .th_iscut {
+        background: #a475ad33;
+        color: #b3b292;
+      }
+
+      .th_part {
+        background: #ad757533;
+        color: #9992b3;
+      }
+
+      .th_ep {
+        background: #ad9f7533;
+        color: #a0b392;
+      }
+
+      .th_tag {
+        background: #adac7533;
+        color: #92b3b2;
+      }
+
+      .th_site {
+        background: #75ad7c33;
+        color: #9e92b3;
+      }
+
+      .th_up {
+        background: #85a1ae33;
+        color: #b3b292;
+      }
+
+      .th_memberstr {
+        background: #b17da933;
+        color: #b292b3;
+      }
+
+      .th_date {
+        background: #c5828233;
+        color: #92b3b2;
+      }
     }
   }
-  &.raw{
-    background: $raw_bgcolor;
-    .meta{
-      color: $raw_meta;
-    }
-    .link{
-      color: $raw_color;
-    }
-  }
-}
 
-.elevator {
-  position: absolute;
-  right: -50px;
-  top: 0px;
-  width: 26px;
-  height: 38px;
-  div{
-    background: #fdebea;
-  }
-  div:hover{
-    background: #ffcece;
-    color: #1abeff;
-  }
-  div.unuseable{
-    background: #f5f5f5;
-    color: #e4e1e1;
-  }
-}
 
+  .poster {
+    &.new {
+      color: $new_color;
+      background: $new_bgcolor;
+
+      .meta {
+        color: $new_meta;
+      }
+    }
+
+    &.raw {
+      background: $raw_bgcolor;
+
+      .meta {
+        color: $raw_meta;
+      }
+
+      .link {
+        color: $raw_color;
+      }
+    }
+  }
+
+
+  .inClamp {
+    border-left: 20px solid #fff;
+    border-right: 20px solid #fff;
+    border-bottom: 2px solid #fff;
+  }
+
+  .clamp {
+    background: $clamp_bgcolor;
+    color: $clamp_color;
+
+    .cell {
+      color: $clamp_color;
+    }
+
+    &.clamp-open {
+      background: $clamp_open_bgcolor;
+      color: $clamp_open_color;
+      border-bottom: none;
+    }
+  }
+
+  .elevator {
+    position: absolute;
+    right: -50px;
+    top: 0px;
+    width: 26px;
+    height: 38px;
+
+    div {
+      background: #fdebea;
+      color: rgb(228, 85, 91);
+    }
+
+    div:hover {
+      background: #ffcece;
+      color: #1abeff;
+    }
+
+    div.unuseable {
+      background: #f5f5f5;
+      color: #e4e1e1;
+    }
+  }
 </style>
