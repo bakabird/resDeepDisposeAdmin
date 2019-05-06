@@ -90,8 +90,8 @@ function statisticsSort(stat) {
 @Component({
   data() {
     return {
-      allPosters: [],
-      freshPosters: [],
+      allPosters: store.get('allPosters') || [],
+      freshPosters: store.get('freshPosters') || [],
       criteria: store.get('criteria') || {},
       flashSignal: 0
     }
@@ -194,9 +194,11 @@ export default class Book extends Vue {
   //    including: Golds Sites Tag & Page
   public setFreshPosters(posters) {
     this.$data.freshPosters = this.processPosters(posters)
+    store.set('freshPosters',this.$data.freshPosters)
   }
   public setAllPosters(posters) {
     this.$data.allPosters = this.processPosters(posters)
+    store.set('allPosters',this.$data.allPosters)
   }
   public processPosters(posters) {
     // the gold will be date-sequential after sort
@@ -210,11 +212,23 @@ export default class Book extends Vue {
     return posterHasEditMark
   }
   // fetch date from api
-  public flashData() {
+  public makesureData(){
+    axios.post(Vue.rootPath + '/izone/needToFetch',{
+      version: store.get('version') || -1
+    }).then(re => {
+      if(re.data.data || !this.$data.allPosters || !this.$data.freshPosters || this.$data.allPosters.length === 0 || this.$data.freshPosters.length === 0){
+        this.flashData()
+      }
+    })
+  }
+  public flashData(continueFetchFreshData = true) {
     axios.get(Vue.rootPath + '/izone/all')
       .then((re) => {
         this.setAllPosters(re.data.data.posters)
-        this.headData()
+        store.set('version',re.data.data.version)
+        if(continueFetchFreshData){
+          this.freshData()
+        }
         Vue.nextTick(()=>{
           this.$data.flashSignal += 1
         })
@@ -223,10 +237,13 @@ export default class Book extends Vue {
         Vue.error(err)
       })
   }
-  public headData() {
+  public freshData() {
     axios.get(Vue.rootPath + '/izone/fresh')
       .then((re) => {
         this.setFreshPosters(re.data.data.posters)
+        if(store.get('version') !== re.data.data.version){
+          this.flashData(false)
+        }
       })
       .catch((err) => {
         Vue.error(err)
@@ -244,7 +261,7 @@ export default class Book extends Vue {
   }
   // startFrom here
   public mounted() {
-    this.flashData();
+    this.makesureData();
     this.fetchCriteria()
   }
 }
