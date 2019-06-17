@@ -1,11 +1,10 @@
 <template>
   <div class="mine">
-    <ToolBox @flash="flashData" :criteriaString='criteriaString' :curTags="tagsClassified" />
-    <template v-for="Page in PagesFiltered">
-      <div class='dateCard' :key="Page[0].date">
-        <Page @edit='toEdit' :flashSignal='flashSignal' @finishEdit='flashData' :PageContent='Page' :Sites='Sites' :Tags='tagsClassified' />
-      </div>
-    </template>
+    <ToolBox @flash="delayFetchPages" :criteriaString='criteriaString' :curTags="tagsClassified" />
+    <div v-for="Page in Pages" class='dateCard' :key="Page[0].date">
+      <Page @edit='toEdit' :flashSignal='flashSignal' @finishEdit='delayFetchPages' :PageContent='Page' :Sites='sites' :Tags='tagsClassified' />
+    </div>
+    <input class="pageAction" :disabled='size === total' type="button" :value="size === total ? '卷轴已经展开完毕' : '展开所有卷轴'" @click="turnPage">
   </div>
 </template>
 
@@ -19,250 +18,165 @@ import Page from './Page.vue'
 import ToolBox from './ToolBox.vue';
 
 import axios from 'axios'
-import store from 'store'
 import isEqual from 'lodash.isequal'
 import moment from 'moment'
-
-function sortIndex(a, b) {
-  return b.index - a.index
-}
-
-function sortRaw(a, b) {
-  return a.isRaw - b.isRaw
-}
-
-function isOneOf(itm, arr) {
-  for (const i of arr) {
-    if (itm === i) {
-      return true
-    }
-  }
-  return false
-}
-
-
-// 排序
-function strSum(str: string) {
-  const strarr = str.split('')
-  let i = 0
-  strarr.forEach((a) => {
-    i = i + a.charCodeAt(0)
-  })
-  return i;
-}
-
-function sortByDateAndOther(a: any, b: any) {
-  const Adate = parseInt(a.date.split('-').join(''), 10) * 1000
-  const Bdate = parseInt(b.date.split('-').join(''), 10) * 1000
-  const Astr = strSum(a.name) / 1000
-  const Bstr = strSum(b.name) / 1000
-  const AScore = Adate + Astr + a.ep + a.part
-  const BScore = Bdate + Bstr + b.ep + b.part
-  return BScore - AScore;
-}
-
-// 分析
-function attrStatistics(sample, attrName) {
-  // 将某个由多个对象组成数组，对该数组中对象的某个属性的值进行数量统计
-  const statistics = {}
-  for (const itm of sample) {
-    const itmAttrValue = itm[attrName]
-    if (statistics.hasOwnProperty(itmAttrValue)) {
-      statistics[itmAttrValue]++
-    } else {
-      statistics[itmAttrValue] = 0
-    }
-  }
-  return statistics
-}
-
-function statisticsSort(stat) {
-  // 按照数量统计进行排序，返回一个有顺序的值数组
-  const sort = Object.keys(stat)
-  sort.sort((a: string, b: string) => {
-    return stat[b] - stat[a]
-  })
-  return sort
-}
-
-
+import paging from './paging'
 
 @Component({
-  data() {
-    return {
-      allPosters: store.get('allPosters') || [],
-      freshPosters: store.get('freshPosters') || [],
-      criteria: store.get('criteria') || {},
-      flashSignal: 0
-    }
-  },
-  methods: {
-    toEdit(posterNo) {
-      const that: any = this
-      const Posters = that.getCurrentPosters()
-      const newPosters = Object.assign({}, Posters[posterNo], {
-        edit: true
-      })
-      Vue.set(Posters, posterNo, newPosters)
-    },
-    getCurrentPosters() {
-      if (this.$props.filter === 'Latest') {
-        return this.$data.freshPosters
-      } else {
-        return this.$data.allPosters
-      }
-    }
-  },
-  computed: {
-    Posters() {
-      return this.getCurrentPosters()
-    },
-    criteriaString() {
-      return JSON.stringify(this.criteria,null,2)
-    },
-    Tags() {
-      const newTags = statisticsSort(attrStatistics(this.Posters, 'tag'))
-      return isEqual(this.$data.Tags, newTags) ? this.$data.Tags : newTags
-    },
-    Sites() {
-      const newSites = statisticsSort(attrStatistics(this.Posters, 'site'))
-      return isEqual(this.$data.Sites, newSites) ? this.$data.Sites : newSites
-    },
-    tagsClassified() {
-      const criteria = this.criteria
-      const tags = this.Tags
-      const keys = Object.keys(criteria)
-
-      let include = []
-      const re: any = {}
-      for (const key of keys) {
-        re[key] = tags.filter(i => isOneOf(i, criteria[key]))
-        include = [...include, ...criteria[key]]
-      }
-
-      re.Other = tags.filter(i => !isOneOf(i, include))
-      Vue.log(re)
-      return re
-    },
-    Pages() {
-      // make up goldchain according to the date of the gold
-      const newPages: any = []
-      const now = moment();
-      let i = -1;
-      let lastDate = ''
-      this.Posters.map((poster: any) => {
-        if (lastDate === poster.date) {
-          newPages[i].push(poster)
-        } else {
-          i++
-          lastDate = poster.date
-          newPages[i] = [poster]
-        }
-      })
-      return isEqual(this.$data.Pages, newPages) ? this.$data.Pages : newPages;
-    },
-    PagesFiltered() {
-      // 预先添加日期为66-66-66的条目;
-      Vue.log('密集计算打卡点')
-      const pages = this.Pages
-      const pagesFiltered = []
-      for (let page of pages) {
-        const date = page[0].date
-        if (date !== '66-66-66' && this.filter !== 'No' && this.filter !== 'Latest') {
-          page = page.filter(i => (isOneOf(i.tag, this.$data.criteria[this.filter] || [])))
-        }
-        page = page.sort(sortIndex)
-        page = page.sort(sortRaw)
-        if (page.length !== 0) {
-          pagesFiltered.push(page)
-        }
-      }
-
-      // if(!this.$props.insideClamp) chain = chain.filter(i => i.inClamp === -1)
-      return pagesFiltered
-    },
-  },
   components: {
     ToolBox,
     Page
   },
 })
 export default class Book extends Vue {
-  @Prop() private filter!: string;
+  private version: number = -1
+  private size: number = 0
+  private flashSignal: number = 0
+  private total: number = 0
+  private waitForTurnPage: boolean = false
+  private criteria: object = {}
 
-  // factory for the useful date
-  //    including: Golds Sites Tag & Page
-  public setFreshPosters(posters) {
-    this.$data.freshPosters = this.processPosters(posters)
-    store.set('freshPosters',this.$data.freshPosters)
-  }
-  public setAllPosters(posters) {
-    this.$data.allPosters = this.processPosters(posters)
-    store.set('allPosters',this.$data.allPosters)
-  }
-  public processPosters(posters) {
-    // the gold will be date-sequential after sort
-    const posterSorted = posters.sort(sortByDateAndOther)
-    // add some field into the obj for edit-useage
-    const posterHasEditMark = posterSorted.map((i, idx) => {
-      i.posterNo = idx
-      i.edit = false
-      return i
-    })
-    return posterHasEditMark
-  }
-  // fetch date from api
-  public makesureData(){
-    axios.post(Vue.rootPath + '/izone/needToFetch',{
-      version: store.get('version') || -1
-    }).then(re => {
-      if(re.data.data || !this.$data.allPosters || !this.$data.freshPosters || this.$data.allPosters.length === 0 || this.$data.freshPosters.length === 0){
-        this.flashData()
+  private tags: string[] = []
+  private sites: string[] = []
+  private Pages: object[][] = []
+
+  get tagsClassified() {
+    const criteria = this.criteria
+    const tags = this.tags
+    const keys = Object.keys(criteria)
+
+    let include = []
+    const re: any = {}
+
+    for (const key in criteria) {
+      if (criteria.hasOwnProperty(key)) {
+        re[key] = tags.filter(tag => criteria[key].includes(tag))
+        include = [...include, ...criteria[key]]
       }
-    })
+    }
+    re.Other = tags.filter(tag => !include.includes(tag))
+
+    Vue.log(re)
+    return re
   }
-  public flashData(continueFetchFreshData = true) {
-    axios.get(Vue.rootPath + '/izone/all')
-      .then((re) => {
-        this.setAllPosters(re.data.data.posters)
-        store.set('version',re.data.data.version)
-        if(continueFetchFreshData){
-          this.freshData()
-        }
-        Vue.nextTick(()=>{
-          this.$data.flashSignal += 1
-        })
-      })
-      .catch((err) => {
-        Vue.error(err)
-      })
-  }
-  public freshData() {
-    axios.get(Vue.rootPath + '/izone/fresh')
-      .then((re) => {
-        this.setFreshPosters(re.data.data.posters)
-        if(store.get('version') !== re.data.data.version){
-          this.flashData(false)
-        }
-      })
-      .catch((err) => {
-        Vue.error(err)
-      })
+  get criteriaString() {
+    return JSON.stringify(this.criteria, null, 2)
   }
 
-  public fetchCriteria() {
+  private mounted() {
+    this.fetchMeta()
+    this.fetchCriteria()
+    this.fetchPages()
+  }
+  private fetchMeta() {
+    axios.get(Vue.rootPath + '/izoneAdmin/meta')
+      .then(re => {
+        if (re.data.errno === 0) {
+          const meta = re.data.data
+          this.tags = meta.Tags
+          this.sites = meta.Sites
+        }
+      })
+  }
+  private fetchCriteria() {
     axios.get(Vue.rootPath + '/util/getVal?key=izoniCriteria')
       .then(re => {
         this.$data.criteria = JSON.parse(re.data.data)
-        store.set('criteria', JSON.parse(re.data.data))
       }).catch(err => {
         Vue.error(err)
       })
   }
-  // startFrom here
-  public mounted() {
-    this.makesureData();
-    this.fetchCriteria()
+  private fetchPages(counter: number = 0) {
+    axios.post(Vue.rootPath + '/izone/page1', {
+      size: 25,
+      query: {
+        tags: ' '
+      }
+    }).then(re => {
+      if (re.data.errno === 0 ) {
+        if (this.version !== re.data.data.version) {
+          this.Pages = re.data.data.pages
+          this.size = re.data.data.size
+          this.total = re.data.data.total
+          this.version = re.data.data.version
+        } else if (counter <= 3) {
+          setTimeout(() => {
+            this.$nextTick(() => {
+              this.fetchPages(counter + 1)
+            })
+          }, 1000 * counter)
+        }
+      }
+    }).catch(err => {
+      Vue.error(err)
+    })
+  }
+  private delayFetchPages() {
+    setTimeout(() => {
+      this.$nextTick(() => {
+        this.fetchPages()
+      })
+    }, 1000)
+  }
+  private turnPage() {
+    if (!this.waitForTurnPage) {
+        this.waitForTurnPage = true
+        axios.post(Vue.rootPath + `/izone/page`, {
+            from: this.size,
+            size: this.total,
+            query: {
+              tags: ' '
+            },
+            version: this.version
+        }).then(re => {
+            const {
+                pages,
+                version,
+                size,
+                total
+            } = re.data.data
+            if (version === this.version) {
+                Vue.log(`merge local pages on updatePage`)
+                const oldPages = this.Pages.map(page => page.map(poster => poster))
+                this.Pages = this.PagesMerger(oldPages, pages)
+                this.size = this.size + size
+            } else {
+                Vue.log(`replace local pages on updatePage`)
+                this.Pages = []
+                this.Pages = pages
+                this.size = this.size
+            }
+            this.total = total
+
+            this.waitForTurnPage = false
+        }).catch(err => {
+            Vue.error(err)
+        })
+    }
+  }
+  private PagesMerger(opages, npages) {
+      if (npages.length !== 0) {
+          const opLastPage = opages.pop()
+          npages.reverse()
+          const npFirstPage = npages.pop()
+          npages.reverse()
+          if (opLastPage[0].date === npFirstPage[0].date) {
+              const mergePage = paging(opLastPage.concat(npFirstPage))[0]
+              return [...opages, mergePage, ...npages]
+          } else {
+              return [...opages, opLastPage, npFirstPage, ...npages]
+          }
+      } else {
+          return opages
+      }
+  }
+  private toEdit(posterNo) {
+    const that: any = this
+    const Posters = that.getCurrentPosters()
+    const newPosters = Object.assign({}, Posters[posterNo], {
+      edit: true
+    })
+    Vue.set(Posters, posterNo, newPosters)
   }
 }
 </script>
@@ -282,5 +196,4 @@ export default class Book extends Vue {
   width: 30%;
   margin: .7em auto 1em;
 }
-
 </style>

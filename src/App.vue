@@ -11,30 +11,7 @@
       </template>
 
       <div v-show='handlePart === "Manage"'>
-        <!-- <div>个人维护，更新不及时见谅</div> -->
-        <form class='filter'>
-          <label class='mainItem Latest' :class="{'itemActived': filter === 'Latest'}" for="Latest">
-            <input id='Latest' name='filter' v-model="filter" type='radio' value='Latest' />最近更新</label>
-          <!-- sec line -->
-          <label class='item No' :class="{'itemActived': filter === 'No'}" for="No">
-            <input id='No' name='filter' v-model="filter" type='radio' value='No' />全部</label>
-          <label class='item Variety' :class="{'itemActived': filter === 'Variety'}" for="Variety">
-            <input id='Variety' name='filter' v-model="filter" type='radio' value='Variety' />综艺</label>
-          <label class='item GroupVariety' :class="{'itemActived': filter === 'GroupVariety'}" for="GroupVariety"><input
-              id='GroupVariety' name='filter' v-model="filter" type='radio' value='GroupVariety' />团综</label>
-          <label class='item Stage' :class="{'itemActived': filter === 'Stage'}" for="Stage">
-            <input id='Stage' name='filter' v-model="filter" type='radio' value='Stage' />表演</label>
-          <!-- trd line -->
-          <label class='item Live' :class="{'itemActived': filter === 'Live'}" for="Live">
-            <input id='Live' name='filter' v-model="filter" type="radio" value='Live' />直播</label>
-          <label class='item Album' :class="{'itemActived': filter === 'Album'}" for="Album">
-            <input id='Album' name='filter' v-model="filter" type='radio' value='Album' />专辑</label>
-          <label class='item Radio' :class="{'itemActived': filter === 'Radio'}" for="Radio">
-            <input id='Radio' name='filter' v-model="filter" type='radio' value='Radio' />电台</label>
-          <label class='item Ceremony' :class="{'itemActived': filter === 'Ceremony'}" for="Ceremony">
-            <input id='Ceremony' name='filter' v-model="filter" type="radio" value='Ceremony' />典礼</label>
-        </form>
-        <Book :filter='filter' />
+        <Book/>
       </div>
     </header>
     <footer>- 暂由RDD个人维护 -</footer>
@@ -50,48 +27,40 @@
   import Book from './components/Book.vue';
   import DashBoard from './components/DashBoard.vue'
 
-  import store from 'store'
   import axios from 'axios'
 
   @Component({
-    data() {
-      return {
-        hasComforted: false,
-        filter: 'No',
-        announcement: store.get('announcement') || '',
-        newAnnouncement: '',
-        handlePart: 'Manage',
-      }
-    },
     components: {
       Book,
       DashBoard
-    },
-    watch: {
-      filter(to, from) {
-        this.$record('过滤器切换(to,from)', to, from)
-      }
-    },
-    computed: {
-      rdd() {
+    }
+  })
+  export default class App extends Vue {
+      private hasComforted: boolean = false
+      private announcement: string = ''
+      private newAnnouncement: string = ''
+      private handlePart: string = 'Manage'
+
+      get rdd() {
         return this.$store.state.rdd
       }
-    },
-    methods: {
-      switchPart(newPart: string) {
+
+      private mounted() {
+        this.fetchAnnouncement()
+      }
+      private switchPart(newPart: string) {
         this.$data.handlePart = newPart
-      },
-      fetchAnnouncement() {
+      }
+      private fetchAnnouncement() {
         axios.get(Vue.rootPath + '/util/getVal?key=izoniAnnouncement')
           .then(re => {
             this.$data.announcement = re.data.data
-            store.set('announcement', re.data.data)
           }).catch(err => {
             this.$data.announcement = 'ErrorCode:42'
             Vue.error(err)
           })
-      },
-      setAnnouncement() {
+      }
+      private setAnnouncement() {
         const that: any = this
         axios.post(Vue.rootPath + '/util/setVal', {
             key: 'izoniAnnouncement',
@@ -103,13 +72,7 @@
             Vue.error(err)
           })
       }
-    },
-    mounted() {
-      document.getElementsByTagName('html')[0].className = 'rose'
-      this.fetchAnnouncement()
-    }
-  })
-  export default class App extends Vue {}
+  }
 </script>
 <style lang="scss">
   @import "color";
@@ -162,6 +125,30 @@
   .actionBtn:hover {
     background: #E4555B;
     color: #fff;
+  }
+
+  .pageAction {
+    background: #ffc9c9;
+    flex: 1;
+    border: none;
+    width: 100%;
+    height: 3em;
+    border: 1px solid #fff;
+    margin-top: 20px;
+    color: #b34348;
+    &:disabled{
+      background: #eaeaea;
+      color: #888888;
+    }
+  }
+
+  .pageAction:hover {
+    background: #E4555B;
+    color: #fff;
+    &:disabled{
+      background: #eaeaea;
+      color: #888888;
+    }
   }
 
   .showUpBtn {

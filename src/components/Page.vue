@@ -6,170 +6,156 @@
         <div class="date" v-if="PostersSorted.length !== 0">
             {{dateDescription}} {{ PostersSorted[0].date != '66-66-66' ? PostersSorted[0].date : '' }}
         </div>
-        <template v-for="(i,idx) in PostersSorted">
-            <Poster v-if="i.itemType === 'note' || i.itemType === 'clamp'" :noShell="i.date === '66-66-66'" :itemType='i.itemType' :tags='Tags'
-                @openClamp='clampOpened[i.id] = true'
-                :onHead='idx === 0' :onFloor='idx === PostersSorted.length - 1'
-                :sites='Sites' :inClamp='i.inClamp !== -1' :key="i.id + '_poster_' + idx" :sqlId="i.id"
-                :mainUrl='i.mainUrl' :date="i.date" :name="i.name" :site="i.site" :up="i.up" :tag="i.tag" :ep="i.ep"
-                :part="i.part" :index="i.index" :bakedTime="i.bakedTime" :isRaw="i.isRaw" :isCut="i.isCut"
-                :members="i.members" :flashSignal='flashSignal' @finishEdit='$emit("finishEdit")' @moveUp='moveUp(idx)' @moveDown='moveDown(idx)'/>
+        <template v-for="(poster,idx) in PostersSorted">
+            <Poster v-if="poster.itemType === 'note' || poster.itemType === 'clamp'"
+                :noShell="poster.date === '66-66-66'" :itemType='poster.itemType' :tags='Tags'
+                @openClamp='clampOpened[poster.id] = true' :onHead='idx === 0'
+                :onFloor='idx === PostersSorted.length - 1' :sites='Sites' :inClamp='poster.inClamp !== -1'
+                :key="poster.id + '_poster_' + idx" :sqlId="poster.id" :mainUrl='poster.mainUrl' :date="poster.date"
+                :name="poster.name" :site="poster.site" :up="poster.up" :tag="poster.tag" :ep="poster.ep"
+                :part="poster.part" :bakedTime="poster.bakedTime" :isRaw="poster.isRaw"
+                :isCut="poster.isCut" :members="poster.members" :flashSignal='flashSignal'
+                @finishEdit='$emit("finishEdit")' @moveUp='moveUp(idx)' @moveDown='moveDown(idx)' />
         </template>
     </div>
 </template>
-<script>
-    import Vue from 'vue'
 
+<script lang='ts'>
+    import {
+        Component,
+        Vue,
+        Prop
+    } from 'vue-property-decorator';
     import Poster from './Poster.vue'
+
     import axios from 'axios'
-
-
     import moment from 'moment'
 
-    export default {
-        name: 'page',
-        data() {
-            return {
-                clampOpened: {
-
-                },
-            }
-        },
-        methods: {
-            async moveUp(idx){
-                // 找到上一个
-                const me = this.PostersSorted[idx]
-                const faceUp = this.PostersSorted[idx - 1]
-                await axios.post(Vue.rootPath + '/izoneAdmin/update',{
-                    id: me.id,
-                    index: faceUp.index + 1
-                })
-                this.$emit('finishEdit')
-            },
-            async moveDown(idx){
-                // 找到下一个
-                const me = this.PostersSorted[idx]
-                const buttDown = this.PostersSorted[idx + 1]
-                await axios.post(Vue.rootPath + '/izoneAdmin/update',{
-                    id: me.id,
-                    index: buttDown.index - 1
-                })
-                this.$emit('finishEdit')
-            }
-        },
-        computed: {
-            dateDescription() {
-                const posters = this.PageContent
-                const date = posters[0].date
-                let dateDescription = ''
-                if (date !== '66-66-66') {
-                    const validDate = '20' + date
-                    dateDescription = moment(validDate).fromNow()
-                    if (moment(validDate).isSame(moment().subtract(2, 'day'), 'day')) {
-                        dateDescription = '前天'
-                    } else if (moment(validDate).isSame(moment().subtract(1, 'day'), 'day')) {
-                        dateDescription = '昨天'
-                    } else if (moment(validDate).isSame(moment(), 'day')) {
-                        dateDescription = '今天'
-                    } else if (moment(validDate).isSame(moment().add(1, 'day'), 'day')) {
-                        dateDescription = '明天'
-                    } else if (moment(validDate).isSame(moment().add(2, 'day'), 'day')) {
-                        dateDescription = '后天'
-                    } else if (moment(validDate).isAfter(moment(), 'day')) {
-                        dateDescription = '未来'
-                    } else {
-                        dateDescription = ''
-                    }
-                } else {
-                    dateDescription = '置顶'
-                }
-                return dateDescription
-            },
-            clampMarkBook() {
-                const posters = this.PageContent
-                const newClampMarkBook = {}
-                posters.map(poster => {
-                    const inClamp = poster.inClamp
-                    if (inClamp !== -1) {
-                        newClampMarkBook[inClamp] = newClampMarkBook[inClamp] || []
-                        newClampMarkBook[inClamp].push(poster)
-                    }
-                })
-                return newClampMarkBook
-            },
-            PostersSorted() {
-                let pageSorted = []
-                const pagePosters = this.PageContent
-                const pagePostersWithoutPostersInClamp = this.PageContent.filter((poster) => {
-                    return poster.inClamp === -1;
-                })
-                const clampMarkBook = this.clampMarkBook
-                const clampOpened = this.clampOpened
-
-                for (const poster of pagePostersWithoutPostersInClamp) {
-                    pageSorted.push(poster)
-                    if (poster.itemType === 'clamp') {
-                        const id = poster.id
-                        const postersInTheClamp = clampMarkBook[id]
-                        if (clampOpened[id]) {
-                            pageSorted = [...pageSorted, ...postersInTheClamp]
-                        }
-                    }
-                }
-
-                return pageSorted
-            },
-            rdd() {
-                return this.$store.state.rdd
-            },
-        },
+    @Component({
         components: {
-            Poster,
-        },
-        mounted() {
+            Poster
+        }
+    })
+    export default class Page extends Vue {
+        private clampOpened: object = {}
+        @Prop() private PageContent!: [] 
+        @Prop() private Sites!: []
+        @Prop() private Tags!: []
+        @Prop() private flashSignal!: number;
+
+        get dateDescription() {
+            const posters:any = this.PageContent
+            const date = posters[0].date
+            let dateDescription = ''
+            if (date !== '66-66-66') {
+                const validDate = '20' + date
+                dateDescription = moment(validDate).fromNow()
+                if (moment(validDate).isSame(moment().subtract(2, 'day'), 'day')) {
+                    dateDescription = '前天'
+                } else if (moment(validDate).isSame(moment().subtract(1, 'day'), 'day')) {
+                    dateDescription = '昨天'
+                } else if (moment(validDate).isSame(moment(), 'day')) {
+                    dateDescription = '今天'
+                } else if (moment(validDate).isSame(moment().add(1, 'day'), 'day')) {
+                    dateDescription = '明天'
+                } else if (moment(validDate).isSame(moment().add(2, 'day'), 'day')) {
+                    dateDescription = '后天'
+                } else if (moment(validDate).isAfter(moment(), 'day')) {
+                    dateDescription = '未来'
+                } else {
+                    dateDescription = ''
+                }
+            } else {
+                dateDescription = '置顶'
+            }
+            return dateDescription
+        }
+        get clampMarkBook() {
+            const posters:any = this.PageContent
+            const newClampMarkBook = {}
+            posters.map(poster => {
+                const inClamp = poster.inClamp
+                if (inClamp !== '') {
+                    newClampMarkBook[inClamp] = newClampMarkBook[inClamp] || []
+                    newClampMarkBook[inClamp].push(poster)
+                }
+            })
+            return newClampMarkBook
+        }
+        get PostersSorted() {
+            let pageSorted = []
+            const pagePosters = this.PageContent
+            const pagePostersWithoutPostersInClamp = this.PageContent.filter((poster:any) => {
+                return poster.inClamp === ''
+            })
+            const clampMarkBook = this.clampMarkBook
+            const clampOpened = this.clampOpened
+
+            for (const _poster of pagePostersWithoutPostersInClamp) {
+                const poster:any = _poster
+                pageSorted.push(poster)
+                if (poster.itemType === 'clamp') {
+                    const id = poster.id
+                    const postersInTheClamp = clampMarkBook[id]
+                    if (clampOpened[id]) {
+                        pageSorted = [...pageSorted, ...postersInTheClamp]
+                    }
+                }
+            }
+
+            return pageSorted
+        }
+        get rdd() {
+            return this.$store.state.rdd
+        }
+
+        private mounted() {
             const clampOpened = {}
             this.$props.PageContent.map(poster => {
-                const inClamp = poster.inClamp
-                clampOpened[inClamp] = clampOpened[inClamp] || false
+                if (poster.inClamp !== '') {
+                    const inClamp = poster.inClamp
+                    clampOpened[inClamp] = clampOpened[inClamp] || false
+                }
             })
             this.$data.clampOpened = clampOpened
-        },
-        props: {
-            PageContent: {
-                type: Array,
-                default: () => {
-                    return []
-                }
-            },
-            Sites: {
-                type: Array,
-                default: () => {
-                    return []
-                }
-            },
-            Tags: {
-                type: Object,
-                default: () => {
-                    return {}
-                }
-            },
-            flashSignal: {
-                type: Number
-            }
         }
+
+        // MOVE FUNCTION -x *****
+        private async moveUp(idx) {
+            // 找到上一个
+            const me = this.PostersSorted[idx]
+            const faceUp = this.PostersSorted[idx - 1]
+            await axios.post(Vue.rootPath + '/izoneAdmin/update', {
+                id: me.id,
+                index: faceUp.index + 1
+            })
+            this.$emit('finishEdit')
+        }
+        private async moveDown(idx) {
+            // 找到下一个
+            const me = this.PostersSorted[idx]
+            const buttDown = this.PostersSorted[idx + 1]
+            await axios.post(Vue.rootPath + '/izoneAdmin/update', {
+                id: me.id,
+                index: buttDown.index - 1
+            })
+            this.$emit('finishEdit')
+        }
+        // MOVE FUNCTION +x *****
+
     }
 </script>
 
+
 <style lang="scss">
+    @import "../color";
 
-@import "../color";
+    // 时间相关
+    .tomorrow {
+        opacity: .5;
+    }
 
-// 时间相关
-.tomorrow {
-    opacity: .5;
-}
-.theDayAfterTomorrow {
-    opacity: .25;
-}
-
+    .theDayAfterTomorrow {
+        opacity: .25;
+    }
 </style>

@@ -23,47 +23,47 @@
 import Vue from 'vue'
 import PopOut from './PopOut.vue'
 export default Vue.extend({
-    data(){
+    data() {
         return {
             members_emoji_table: Vue.members
         }
     },
-    methods:{
-        dealCheck(name,checked){
-            let new_members_arr = []
-            if(checked && !this.members_arr.includes(name)){
-                new_members_arr = [...this.members_arr,name]
-            }else if(!checked && this.members_arr.includes(name)){
-                new_members_arr = this.members_arr.filter(i => {
+    methods: {
+        dealCheck(name, checked) {
+            let newMemberArr = []
+            if (checked && !this.members_arr.includes(name)) {
+                newMemberArr = [...this.members_arr, name]
+            } else if (!checked && this.members_arr.includes(name)) {
+                newMemberArr = this.members_arr.filter(i => {
                     return i !== name
                 })
             }
-            this.$emit('change',new_members_arr.join('&'))
+            this.$emit('change', newMemberArr.join('&'))
         }
     },
-    computed:{
-        members_arr(){
+    computed: {
+        members_arr() {
             return this.$props.members === '' ? [] : this.$props.members.split('&')
         },
         member_emoji_str() {
-            const random_members_arr = this.members_arr.sort(() => {
+            const randomMembersArr = this.members_arr.sort(() => {
                 return Math.random() > 0.5 ? -1 : 1
             })
             let re = ''
-            random_members_arr.forEach((i: string) => {
+            randomMembersArr.forEach((i: string) => {
                 re += this.members_emoji_table[i] || ''
             })
             return re === '' ? '无' : re
         }
     },
-    components:{
+    components: {
         PopOut
     },
-    model:{
+    model: {
         prop: 'members',
         event: 'change'
     },
-    props:{
+    props: {
         members: String
     }
 })

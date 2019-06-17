@@ -9,22 +9,22 @@
     </div>
 </template>
 <script lang="ts">
-    import Vue from 'vue'
-    import axios from 'axios'
+import Vue from 'vue'
+import axios from 'axios'
 
-    export default Vue.extend({
-        methods:{
-            async wholeInspection() {
-                axios.get(Vue.rootPath + '/izoneAdmin/wholeInspection')
-                .then(res => {
-                    Vue.log(res)
-                })
-                .catch(err => {
-                    Vue.error(err)
-                })
-            },
-        }
-    })
+export default Vue.extend({
+    methods: {
+        async wholeInspection() {
+            axios.get(Vue.rootPath + '/izoneAdmin/wholeInspection')
+            .then(res => {
+                Vue.log(res)
+            })
+            .catch(err => {
+                Vue.error(err)
+            })
+        },
+    }
+})
 </script>
 <style lang="scss">
 .dashboard{

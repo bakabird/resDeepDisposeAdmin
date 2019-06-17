@@ -61,9 +61,13 @@ const now = moment()
     },
     async addItem() {
       try {
-        const response = await axios.post(Vue.rootPath + '/izoneAdmin/new');
-        if (response.status === 200) {
-          this.$emit('flash')
+        const re = await axios.post(Vue.rootPath + '/izoneAdmin/new');
+        if (re.data.errno === 0) {
+          // setTimeout(()=>{
+          //   this.$nextTick(()=>{
+              this.$emit('flash')
+          //   })
+          // },1100)
         }
       } catch (error) {
         Vue.error(error);

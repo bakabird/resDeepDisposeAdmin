@@ -12,7 +12,7 @@
                 <template v-if='type === "checkbox"'>
                     <template v-for="(val,key) in range">
                         <label :for='key' :key='"label_" + key'>{{val}}</label>
-                        <input type='radio' :key='"radio_" + key' :id='key' v-model='bindVal' :value='key' />
+                        <input type='radio' :key='"radio_" + key' :id='key' v-model='radioVal' :value='key' />
                     </template>
                 </template>
                 <input v-if='type === "date"' class='popout_input popout_input_text' v-bind:value="bindVal" v-on:change="$emit('change', $event.target.value)" type="date">
@@ -27,6 +27,11 @@ import Vue from 'vue'
 import PopOut from './PopOut.vue'
 
 export default Vue.extend({
+    data(){
+        return {
+            radioVal: ""
+        }
+    },
     model: {
         prop: 'bindVal',
         event: 'change'
@@ -35,14 +40,22 @@ export default Vue.extend({
         autofocus(className) {
             if (this.$props.type !== 'boolean' && this.$props.type !== 'checkbox') {
                 const that: any = this.$el.querySelector(`.${className}`)
-                if(this.$props.type === 'number'){
+                if (this.$props.type === 'number') {
                     that.focus()
                     that.select()
-                }else{
+                } else {
                     that.select()
                 }
             }
-        },
+        }
+    },
+    watch:{
+        radioVal(nVal){
+            this.$emit('change', nVal)
+        }
+    },
+    mounted(){
+        this.$data.radioVal = this.$props.bindVal
     },
     props: {
         bindVal: [String, Number],
