@@ -4,7 +4,7 @@
     <div v-for="Page in Pages" class='dateCard' :key="Page[0].date">
       <Page @edit='toEdit' :flashSignal='flashSignal' @finishEdit='delayFetchPages' :PageContent='Page' :Sites='sites' :Tags='tagsClassified' />
     </div>
-    <input class="pageAction" :disabled='size === total' type="button" :value="size === total ? '卷轴已经展开完毕' : '展开所有卷轴'" @click="turnPage">
+    <input class="pageAction" :disabled='size === total' type="button" :value="size === total ? '卷轴已经展开完毕' : '展开卷轴'" @click="turnPage">
   </div>
 </template>
 
