@@ -1,6 +1,7 @@
 <template>
   <div class="bar"
-    :class="{ poster: itemType === 'note' ,new:!!isNew, raw:!!isRaw, inClamp: inClamp, clamp: itemType === 'clamp'}">
+    :class="{ poster: itemType === 'note' ,new:!!isNew, raw:!!isRaw, invalid: !!invalid,
+      inClamp: inClamp, clamp: itemType === 'clamp'}">
     <table>
       <!-- ZERO LINE -->
       <tr>
@@ -155,6 +156,7 @@ export default class Poster extends Vue {
 
   @Prop() private isRaw!: boolean;
   @Prop() private isCut!: boolean;
+  @Prop() private invalid!: boolean;
 
   // setting
   @Prop() private flashSignal!: number;
@@ -397,8 +399,6 @@ export default class Poster extends Vue {
 
       .btn {
         border: none;
-        // background: #e4555b80;
-        // color: #753838;
         background: #ffe4e580;
         color: #cb5959;
         border-radius: 4px;
@@ -483,8 +483,22 @@ export default class Poster extends Vue {
       }
     }
 
+    &.invalid {
+      background: $invalid_bgcolor;
+      color: $invalid_color;
+
+      .meta {
+        color: $invalid_color;
+      }
+
+      .link {
+        color: $invalid_color;
+      }
+    }
+
     &.raw {
       background: $raw_bgcolor;
+      color: $raw_meta;
 
       .meta {
         color: $raw_meta;

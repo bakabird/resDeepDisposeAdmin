@@ -13,8 +13,9 @@
                 :onFloor='idx === PostersSorted.length - 1' :sites='Sites' :inClamp='poster.inClamp !== -1'
                 :key="poster.id + '_poster_' + idx" :sqlId="poster.id" :mainUrl='poster.mainUrl' :date="poster.date"
                 :name="poster.name" :site="poster.site" :up="poster.up" :tag="poster.tag" :ep="poster.ep"
-                :part="poster.part" :bakedTime="poster.bakedTime" :isRaw="poster.isRaw"
-                :isCut="poster.isCut" :members="poster.members" :flashSignal='flashSignal'
+                :part="poster.part" :bakedTime="poster.bakedTime" 
+                :isRaw="poster.isRaw" :isCut="poster.isCut" :invalid="poster.invalid"
+                :members="poster.members" :flashSignal='flashSignal'
                 @finishEdit='$emit("finishEdit")' @moveUp='moveUp(idx)' @moveDown='moveDown(idx)' />
         </template>
     </div>
