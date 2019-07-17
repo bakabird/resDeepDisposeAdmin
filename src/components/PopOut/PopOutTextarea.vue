@@ -1,11 +1,11 @@
 <template>
     <div>
-        <PopOut @pop='autofocus("popout_input")'>
+        <PopOut>
             <template slot="face">
                 {{title}}
             </template>
             <template slot="body">
-                <input type="text" v-model="textareaModel">
+                <textarea class="popout_textarea" v-on:change="$emit('input',$event.target.value)" v-bind:value="text"></textarea>
             </template>
         </PopOut>
     </div>
@@ -21,7 +21,7 @@
     })
     export default class PopOutTextarea extends Vue {
         @Prop({default: "在此处输入你的表面值"}) title!:string
-        @Model("change",{type: String}) textareaModel!: string
+        @Model("input",{type: String}) text!: string
     }
 </script>
 
@@ -42,5 +42,11 @@
 }
 .popout_input_number{
     width: 60px;
+}
+.popout_textarea{
+    width: 60vw;
+    min-width: 640px;
+    height: 50vh;
+    min-height: 200px;
 }
 </style>

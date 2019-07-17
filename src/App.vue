@@ -8,6 +8,7 @@
         <button @click="setAnnouncement">修改公告</button>
       </template>
       <ClipBoard />
+      <AdminClipBoard />
       <div v-show='handlePart === "Manage"'>
         <Book/>
       </div>
@@ -25,6 +26,7 @@
   import IZONIVue from "./IZONIVue"
   import Book from './components/Book.vue'
   import DashBoard from './components/DashBoard.vue'
+  import AdminClipBoard from "./components/AdminClipBoard.vue"
   import ClipBoard from "./components/ClipBoard.vue"
 
   import axios from 'axios'
@@ -32,7 +34,8 @@
   @Component({
     components: {
       Book,
-      DashBoard, ClipBoard
+      DashBoard, 
+      ClipBoard, AdminClipBoard
     }
   })
   export default class App extends Mixins(IZONIVue) {
