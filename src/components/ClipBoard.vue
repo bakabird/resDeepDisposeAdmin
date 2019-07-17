@@ -17,72 +17,72 @@
     </div>
 </template>
 <script lang='ts'>
-    import { Component, Vue, Mixins } from 'vue-property-decorator';
-    import { IZONEClipBoard } from "../DistInterface";
-    import IZONIVue from '../IZONIVue';
-    import PopOutTextarea from "./PopOut/PopOutTextarea.vue"
-    import axios from "axios"
+import { Component, Vue, Mixins } from 'vue-property-decorator';
+import { IZONEClipBoard } from "../DistInterface";
+import IZONIVue from '../IZONIVue';
+import PopOutTextarea from "./PopOut/PopOutTextarea.vue"
+import axios from "axios"
 
-    @Component({components:{PopOutTextarea}})
-    export default class ClipBoard extends Mixins(IZONIVue) {
-        private clipBoardString: string = "{}"
-        private hoving: boolean = false
+@Component({components: {PopOutTextarea}})
+export default class ClipBoard extends Mixins(IZONIVue) {
+    private clipBoardString: string = "{}"
+    private hoving: boolean = false
 
-        get clipBoardWidth():number{
-            if(!!this.clipBoard){
-                const clipBoardUseareas = Object.keys(this.clipBoard)
-                return clipBoardUseareas.length * 75
-            }else{
-                return 0
-            }
-        }
-        get clipBoardWidthPx():string{
-            return this.clipBoardWidth + 'px'
-        }
-        get clipBoard():IZONEClipBoard{
-            return JSON.parse(this.clipBoardString)
-        }
-
-        private mounted():void{
-            this.fetchIZONEClipBoard()
-        }
-        private copy(copyWord:string){
-            const input = document.createElement('input')
-            input.type = "text"
-            input.value = copyWord
-            document.body.append(input)
-            input.select()
-            document.execCommand("Copy")
-            document.body.removeChild(input)
-        }
-        private async fetchIZONEClipBoard():Promise<void>{
-            try{
-                const res = await axios.get(this.ROOTPATH  + "/util/getVal",{
-                    params:{
-                        key: 'IZONEClipBoard'
-                    }
-                })
-                if(res.data && res.data.data !== ""){
-                    const clipBoard = JSON.parse(res.data.data)
-                    this.clipBoardString = res.data.data
-                }else{
-                    this.clipBoardString = "{}"
-                }
-            }catch(err){
-                console.error(err)
-            }
-        }
-        private async reviseClipBoard(){
-            try{
-                const res = await axios.post(this.ROOTPATH + "/util/setVal",{
-                    key: 'IZONEClipBoard',
-                    string: JSON.stringify(JSON.parse(this.clipBoardString),null,2)
-                })
-            }catch(err){
-                console.error(err)
-            }
+    get clipBoardWidth(): number {
+        if (!!this.clipBoard) {
+            const clipBoardUseareas = Object.keys(this.clipBoard)
+            return clipBoardUseareas.length * 75
+        } else {
+            return 0
         }
     }
+    get clipBoardWidthPx(): string {
+        return this.clipBoardWidth + 'px'
+    }
+    get clipBoard(): IZONEClipBoard {
+        return JSON.parse(this.clipBoardString)
+    }
+
+    private mounted(): void {
+        this.fetchIZONEClipBoard()
+    }
+    private copy(copyWord: string) {
+        const input = document.createElement('input')
+        input.type = "text"
+        input.value = copyWord
+        document.body.append(input)
+        input.select()
+        document.execCommand("Copy")
+        document.body.removeChild(input)
+    }
+    private async fetchIZONEClipBoard(): Promise<void> {
+        try {
+            const res = await axios.get(this.ROOTPATH  + "/util/getVal", {
+                params: {
+                    key: 'IZONEClipBoard'
+                }
+            })
+            if (res.data && res.data.data !== "") {
+                const clipBoard = JSON.parse(res.data.data)
+                this.clipBoardString = res.data.data
+            } else {
+                this.clipBoardString = "{}"
+            }
+        } catch (err) {
+            this.$ERROR(err)
+        }
+    }
+    private async reviseClipBoard() {
+        try {
+            const res = await axios.post(this.ROOTPATH + "/util/setVal", {
+                key: 'IZONEClipBoard',
+                string: JSON.stringify(JSON.parse(this.clipBoardString), null, 2)
+            })
+        } catch (err) {
+            this.$ERROR(err)
+        }
+    }
+}
 </script>
 <style lang="scss" scoped>
 .clip_board{

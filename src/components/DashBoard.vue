@@ -9,22 +9,22 @@
     </div>
 </template>
 <script lang='ts'>
-    import axios from 'axios'
-    import { Component, Vue, Mixins } from 'vue-property-decorator';
-    import IZONIVue from '../IZONIVue';
+import axios from 'axios'
+import { Component, Vue, Mixins } from 'vue-property-decorator';
+import IZONIVue from '../IZONIVue';
 
-    @Component({})
-    export default class DashBoard extends Mixins(IZONIVue) {
-        async wholeInspection() {
-            axios.get(this.ROOTPATH + '/izoneAdmin/wholeInspection')
-            .then(res => {
-                this.$LOG(res)
-            })
-            .catch(err => {
-                this.$ERROR(err)
-            })
-        }
+@Component({})
+export default class DashBoard extends Mixins(IZONIVue) {
+    public async wholeInspection() {
+        axios.get(this.ROOTPATH + '/izoneAdmin/wholeInspection')
+        .then(res => {
+            this.$LOG(res)
+        })
+        .catch(err => {
+            this.$ERROR(err)
+        })
     }
+}
 </script>
 <style lang="scss">
 .dashboard{

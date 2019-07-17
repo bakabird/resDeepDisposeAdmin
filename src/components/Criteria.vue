@@ -26,21 +26,21 @@
     </div>
 </template>
 <script lang='ts'>
-    import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 
-    @Component({})
-    export default class Criteria extends Vue {
-        newCriteriaString:String = '{}'
-        criteria:Object = {}
-        @Prop({type: String, required:true}) criteriaString: string
-        paintNewCriteria():void{
-            this.criteria = JSON.parse(this.$data.newCriteriaString)
-        }
-        mounted(){
-            this.$data.newCriteriaString = this.$props.criteriaString
-            this.paintNewCriteria()
-        }
+@Component({})
+export default class Criteria extends Vue {
+    public newCriteriaString: string = '{}'
+    public criteria: object = {}
+    @Prop({type: String, required: true}) public criteriaString: string
+    public paintNewCriteria(): void {
+        this.criteria = JSON.parse(this.$data.newCriteriaString)
     }
+    public mounted() {
+        this.$data.newCriteriaString = this.$props.criteriaString
+        this.paintNewCriteria()
+    }
+}
 </script>
 
 <style lang="scss">

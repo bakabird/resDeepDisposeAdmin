@@ -242,7 +242,7 @@ export default class Poster extends Mixins(IZONIVue) {
     const that: any = this
     that.loadPropsToDatas()
   }
-  private copy(){
+  private copy() {
     const input = document.createElement('input')
     input.type = "text"
     input.value = this.sqlId
@@ -290,9 +290,9 @@ export default class Poster extends Mixins(IZONIVue) {
       }
 
       const response = await axios.post(this.ROOTPATH + '/izoneAdmin/upt', gold);
-      if(response.data.errno === 0){
+      if (response.data.errno === 0) {
         this.$emit('finishEdit')
-      }else{
+      } else {
         alert(`[${response.data.errno}]${response.data.errmsg}`)
       }
     } catch (error) {
@@ -303,9 +303,9 @@ export default class Poster extends Mixins(IZONIVue) {
     const rlt = await axios.post(this.ROOTPATH + '/izoneAdmin/bake', {
       id: this.$props.sqlId
     })
-    if(rlt.data.errno == 0){
+    if (rlt.data.errno === 0) {
       this.$emit('finishEdit')
-    }else{
+    } else {
         alert(`[${rlt.data.errno}]${rlt.data.errmsg}`)
       }
   }

@@ -1,3 +1,3 @@
-export interface  IZONEClipBoard{
-    [use_area:string]: string[]
+export interface  IZONEClipBoard {
+    [usearea: string]: string[]
 }

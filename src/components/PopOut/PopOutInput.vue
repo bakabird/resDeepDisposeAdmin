@@ -23,35 +23,35 @@
     </div>
 </template>
 <script lang='ts'>
-    import { Component, Vue, Mixins, Model, Watch, Prop } from 'vue-property-decorator';
-    import PopOut from './PopOut.vue'
-    import IZONIVue from '../../IZONIVue';
+import { Component, Vue, Mixins, Model, Watch, Prop } from 'vue-property-decorator';
+import PopOut from './PopOut.vue'
+import IZONIVue from '../../IZONIVue';
 
-    @Component({components:{PopOut}})
-    export default class PopOutInput extends Mixins(IZONIVue) {
-        radioVal:string = ""
-        @Model("change",{type:[String, Number]}) readonly bindVal!: string | number
-        @Prop({type: String,default: 'text'}) readonly type!: string
-        @Prop(Object) readonly range!: object
-        @Watch("radioVal")
-        onRadioValWatch(nVal){
-            this.$emit('change', nVal)
-        }
-        mounted(){
-            this.$data.radioVal = this.$props.bindVal
-        }
-        autofocus(className) {
-            if (this.$props.type !== 'boolean' && this.$props.type !== 'checkbox') {
-                const that: any = this.$el.querySelector(`.${className}`)
-                if (this.$props.type === 'number') {
-                    that.focus()
-                    that.select()
-                } else {
-                    that.select()
-                }
+@Component({components: {PopOut}})
+export default class PopOutInput extends Mixins(IZONIVue) {
+    public radioVal: string = ""
+    @Model("change", {type: [String, Number]}) public readonly bindVal!: string | number
+    @Prop({type: String, default: 'text'}) public readonly type!: string
+    @Prop(Object) public readonly range!: object
+    @Watch("radioVal")
+    public onRadioValWatch(nVal) {
+        this.$emit('change', nVal)
+    }
+    public mounted() {
+        this.$data.radioVal = this.$props.bindVal
+    }
+    public autofocus(className) {
+        if (this.$props.type !== 'boolean' && this.$props.type !== 'checkbox') {
+            const that: any = this.$el.querySelector(`.${className}`)
+            if (this.$props.type === 'number') {
+                that.focus()
+                that.select()
+            } else {
+                that.select()
             }
         }
     }
+}
 </script>
 <style lang="scss">
 .popout_input_text{

@@ -30,24 +30,24 @@ import IZONIVue from '../IZONIVue';
     Page
   },
 })
-export default class Book extends Mixins(IZONIVue){
-  version: number = -1
-  size: number = 0
-  flashSignal: number = 0
-  total: number = 0
-  waitForTurnPage: boolean = false
-  criteria: object = {}
+export default class Book extends Mixins(IZONIVue) {
+  public version: number = -1
+  public size: number = 0
+  public flashSignal: number = 0
+  public total: number = 0
+  public waitForTurnPage: boolean = false
+  public criteria: object = {}
 
-  tags: string[] = []
-  sites: string[] = []
-  Pages: object[][] = []
+  public tags: string[] = []
+  public sites: string[] = []
+  public Pages: object[][] = []
 
   get tagsClassified() {
     const criteria = this.criteria
     const tags = this.tags
     const keys = Object.keys(criteria)
 
-    let include:any = []
+    let include: any = []
     const re: any = {}
 
     for (const key in criteria) {
@@ -65,12 +65,12 @@ export default class Book extends Mixins(IZONIVue){
     return JSON.stringify(this.criteria, null, 2)
   }
 
-  mounted() {
+  public mounted() {
     this.fetchMeta()
     this.fetchCriteria()
     this.fetchPages()
   }
-  fetchMeta() {
+  public fetchMeta() {
     axios.get(this.ROOTPATH + '/izoneAdmin/meta')
       .then(re => {
         if (re.data.errno === 0) {
@@ -80,7 +80,7 @@ export default class Book extends Mixins(IZONIVue){
         }
       })
   }
-  fetchCriteria() {
+  public fetchCriteria() {
     axios.get(this.ROOTPATH + '/util/getVal?key=izoniCriteria')
       .then(re => {
         this.$data.criteria = JSON.parse(re.data.data)
@@ -88,7 +88,7 @@ export default class Book extends Mixins(IZONIVue){
         this.$ERROR(err)
       })
   }
-  fetchPages(counter: number = 0) {
+  public fetchPages(counter: number = 0) {
     axios.post(this.ROOTPATH + '/izone/page1', {
       size: 25,
       query: {
@@ -113,14 +113,14 @@ export default class Book extends Mixins(IZONIVue){
       this.$ERROR(err)
     })
   }
-  delayFetchPages() {
+  public delayFetchPages() {
     setTimeout(() => {
       this.$nextTick(() => {
         this.fetchPages()
       })
     }, 1000)
   }
-  turnPage() {
+  public turnPage() {
     if (!this.waitForTurnPage) {
         this.waitForTurnPage = true
         axios.post(this.ROOTPATH + `/izone/page`, {
@@ -156,7 +156,7 @@ export default class Book extends Mixins(IZONIVue){
         })
     }
   }
-  PagesMerger(opages, npages) {
+  public PagesMerger(opages, npages) {
       if (npages.length !== 0) {
           const opLastPage = opages.pop()
           npages.reverse()
@@ -172,7 +172,7 @@ export default class Book extends Mixins(IZONIVue){
           return opages
       }
   }
-  toEdit(posterNo) {
+  public toEdit(posterNo) {
     const that: any = this
     const Posters = that.getCurrentPosters()
     const newPosters = Object.assign({}, Posters[posterNo], {

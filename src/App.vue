@@ -18,60 +18,60 @@
 </template>
 
 <script lang="ts">
-  import {
-    Component,
-    Vue,
-    Mixins
-  } from 'vue-property-decorator';
-  import IZONIVue from "./IZONIVue"
-  import Book from './components/Book.vue'
-  import DashBoard from './components/DashBoard.vue'
-  import AdminClipBoard from "./components/AdminClipBoard.vue"
-  import ClipBoard from "./components/ClipBoard.vue"
+import {
+  Component,
+  Vue,
+  Mixins
+} from 'vue-property-decorator';
+import IZONIVue from "./IZONIVue"
+import Book from './components/Book.vue'
+import DashBoard from './components/DashBoard.vue'
+import AdminClipBoard from "./components/AdminClipBoard.vue"
+import ClipBoard from "./components/ClipBoard.vue"
 
-  import axios from 'axios'
-  
-  @Component({
-    components: {
-      Book,
-      DashBoard, 
-      ClipBoard, AdminClipBoard
-    }
-  })
-  export default class App extends Mixins(IZONIVue) {
-      hasComforted: boolean = false
-      announcement: string = ''
-      newAnnouncement: string = ''
-      handlePart: string = 'Manage'
+import axios from 'axios'
 
-      mounted() {
-        this.fetchAnnouncement()
-      }
-      switchPart(newPart: string) {
-        this.$data.handlePart = newPart
-      }
-      fetchAnnouncement() {
-        axios.get(this.ROOTPATH + '/util/getVal?key=izoniAnnouncement')
-          .then(re => {
-            this.$data.announcement = re.data.data
-          }).catch(err => {
-            this.$data.announcement = 'ErrorCode:42'
-            this.$ERROR(err)
-          })
-      }
-      setAnnouncement() {
-        const that: any = this
-        axios.post(this.ROOTPATH + '/util/setVal', {
-            key: 'izoniAnnouncement',
-            string: this.$data.newAnnouncement
-          })
-          .then(re => {
-            that.fetchAnnouncement()
-          }).catch(err => {
-            this.$ERROR(err)
-          })
-      }
+@Component({
+  components: {
+    Book,
+    DashBoard,
+    ClipBoard, AdminClipBoard
   }
+})
+export default class App extends Mixins(IZONIVue) {
+    public hasComforted: boolean = false
+    public announcement: string = ''
+    public newAnnouncement: string = ''
+    public handlePart: string = 'Manage'
+
+    public mounted() {
+      this.fetchAnnouncement()
+    }
+    public switchPart(newPart: string) {
+      this.$data.handlePart = newPart
+    }
+    public fetchAnnouncement() {
+      axios.get(this.ROOTPATH + '/util/getVal?key=izoniAnnouncement')
+        .then(re => {
+          this.$data.announcement = re.data.data
+        }).catch(err => {
+          this.$data.announcement = 'ErrorCode:42'
+          this.$ERROR(err)
+        })
+    }
+    public setAnnouncement() {
+      const that: any = this
+      axios.post(this.ROOTPATH + '/util/setVal', {
+          key: 'izoniAnnouncement',
+          string: this.$data.newAnnouncement
+        })
+        .then(re => {
+          that.fetchAnnouncement()
+        }).catch(err => {
+          this.$ERROR(err)
+        })
+    }
+}
 </script>
 <style lang="scss">
   @import "color";

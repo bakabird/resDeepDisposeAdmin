@@ -3,10 +3,10 @@ import { Mixins, Vue, Component } from "vue-property-decorator"
 // You can declare a mixin as the same style as components.
 @Component
 export default class IZONIVue extends Vue {
-    ISDEV: boolean = process.env.NODE_ENV === 'development'
-    ROOTPATH: string = process.env.NODE_ENV === 'development' ? 'http://localhost:8360' : '';
-    
-    MEMBERSTABLE: {
+    public ISDEV: boolean = process.env.NODE_ENV === 'development'
+    public ROOTPATH: string = process.env.NODE_ENV === 'development' ? 'http://localhost:8360' : '';
+
+    public MEMBERSTABLE: {
         [memberName: string]: string
     } = {
         圆: '🐰',
@@ -22,19 +22,19 @@ export default class IZONIVue extends Vue {
         珉: '🐸',
         燕: '💃',
     }
-    $LOG(firstArg: any, ...restArg: any): void {
+    public $LOG(firstArg: any, ...restArg: any): void {
         if (this.ISDEV) {
             // tslint:disable-next-line
             console.log(firstArg, ...restArg)
         }
     }
-    $ERROR(firstArg: any, ...restArg: any): void {
+    public $ERROR(firstArg: any, ...restArg: any): void {
         if (this.ISDEV) {
             // tslint:disable-next-line
             console.error(firstArg, ...restArg)
         }
     }
-    $RECORD = (a: any, b: any, c: any, d: any) => {
+    public $RECORD = (a: any, b: any, c: any, d: any) => {
         const _hmt: any = (window as any)._hmt;
         _hmt.push(['_trackEvent', a, b, c, d]);
     }

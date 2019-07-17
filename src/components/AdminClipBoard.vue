@@ -17,72 +17,72 @@
     </div>
 </template>
 <script lang='ts'>
-    import { Component, Vue, Mixins } from 'vue-property-decorator';
-    import { IZONEClipBoard } from "../DistInterface";
-    import IZONIVue from '../IZONIVue';
-    import PopOutTextarea from "./PopOut/PopOutTextarea.vue"
-    import axios from "axios"
+import { Component, Vue, Mixins } from 'vue-property-decorator';
+import { IZONEClipBoard } from "../DistInterface";
+import IZONIVue from '../IZONIVue';
+import PopOutTextarea from "./PopOut/PopOutTextarea.vue"
+import axios from "axios"
 
-    @Component({components:{PopOutTextarea}})
-    export default class AdminClipBoard extends Mixins(IZONIVue) {
-        private adminClipBoardString: string = "{}"
-        private adminHoving: boolean = false
+@Component({components: {PopOutTextarea}})
+export default class AdminClipBoard extends Mixins(IZONIVue) {
+    private adminClipBoardString: string = "{}"
+    private adminHoving: boolean = false
 
-        get adminClipBoardWidth():number{
-            if(!!this.adminClipBoard){
-                const clipBoardUseareas = Object.keys(this.adminClipBoard)
-                return clipBoardUseareas.length * 75
-            }else{
-                return 0
-            }
-        }
-        get adminClipBoardWidthPx():string{
-            return this.adminClipBoardWidth + 'px'
-        }
-        get adminClipBoard():IZONEClipBoard{
-            return JSON.parse(this.adminClipBoardString)
-        }
-
-        private mounted():void{
-            this.fetchIZONEAdminClipBoard()
-        }
-        private copy(copyWord:string){
-            const input = document.createElement('input')
-            input.type = "text"
-            input.value = copyWord
-            document.body.append(input)
-            input.select()
-            document.execCommand("Copy")
-            document.body.removeChild(input)
-        }
-        private async fetchIZONEAdminClipBoard():Promise<void>{
-            try{
-                const res = await axios.get(this.ROOTPATH  + "/util/getVal",{
-                    params:{
-                        key: 'IZONEAdminClipBoard'
-                    }
-                })
-                if(res.data && res.data.data !== ""){
-                    const adminClipBoard = JSON.parse(res.data.data)
-                    this.adminClipBoardString = res.data.data
-                }else{
-                    this.adminClipBoardString = "{}"
-                }
-            }catch(err){
-                console.error(err)
-            }
-        }
-        private async reviseClipBoard(){
-            try{
-                const res = await axios.post(this.ROOTPATH + "/util/setVal",{
-                    key: 'IZONEAdminClipBoard',
-                    string: JSON.stringify(JSON.parse(this.adminClipBoardString),null,2)
-                })
-            }catch(err){
-                console.error(err)
-            }
+    get adminClipBoardWidth(): number {
+        if (!!this.adminClipBoard) {
+            const clipBoardUseareas = Object.keys(this.adminClipBoard)
+            return clipBoardUseareas.length * 75
+        } else {
+            return 0
         }
     }
+    get adminClipBoardWidthPx(): string {
+        return this.adminClipBoardWidth + 'px'
+    }
+    get adminClipBoard(): IZONEClipBoard {
+        return JSON.parse(this.adminClipBoardString)
+    }
+
+    private mounted(): void {
+        this.fetchIZONEAdminClipBoard()
+    }
+    private copy(copyWord: string) {
+        const input = document.createElement('input')
+        input.type = "text"
+        input.value = copyWord
+        document.body.append(input)
+        input.select()
+        document.execCommand("Copy")
+        document.body.removeChild(input)
+    }
+    private async fetchIZONEAdminClipBoard(): Promise<void> {
+        try {
+            const res = await axios.get(this.ROOTPATH  + "/util/getVal", {
+                params: {
+                    key: 'IZONEAdminClipBoard'
+                }
+            })
+            if (res.data && res.data.data !== "") {
+                const adminClipBoard = JSON.parse(res.data.data)
+                this.adminClipBoardString = res.data.data
+            } else {
+                this.adminClipBoardString = "{}"
+            }
+        } catch (err) {
+            this.$ERROR(err)
+        }
+    }
+    private async reviseClipBoard() {
+        try {
+            const res = await axios.post(this.ROOTPATH + "/util/setVal", {
+                key: 'IZONEAdminClipBoard',
+                string: JSON.stringify(JSON.parse(this.adminClipBoardString), null, 2)
+            })
+        } catch (err) {
+            this.$ERROR(err)
+        }
+    }
+}
 </script>
 <style lang="scss" scoped>
 .clip_board{

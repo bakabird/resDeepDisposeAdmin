@@ -12,21 +12,21 @@
     </div>
 </template>
 <script lang='ts'>
-    import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 
-    @Component({})
-    export default class PopOut extends Vue {
-        private popoutttt: boolean = false
-        private show(){
-            this.popoutttt = true
-            Vue.nextTick(() => {
-                this.$emit('pop')
-            })
-        }
-        private hide(){
-            this.popoutttt = false
-        }
+@Component({})
+export default class PopOut extends Vue {
+    private popoutttt: boolean = false
+    private show() {
+        this.popoutttt = true
+        Vue.nextTick(() => {
+            this.$emit('pop')
+        })
     }
+    private hide() {
+        this.popoutttt = false
+    }
+}
 </script>
 <style lang="scss">
 .PopOutBlock{

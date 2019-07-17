@@ -11,18 +11,18 @@
     </div>
 </template>
 <script lang='ts'>
-    import { Component, Vue, PropSync, Prop, Model } from 'vue-property-decorator'
-    import PopOut from './PopOut.vue'
+import { Component, Vue, PropSync, Prop, Model } from 'vue-property-decorator'
+import PopOut from './PopOut.vue'
 
-    @Component({ 
-        components:{
-            PopOut
-        } 
-    })
-    export default class PopOutTextarea extends Vue {
-        @Prop({default: "在此处输入你的表面值"}) title!:string
-        @Model("input",{type: String}) text!: string
+@Component({
+    components: {
+        PopOut
     }
+})
+export default class PopOutTextarea extends Vue {
+    @Prop({default: "在此处输入你的表面值"}) public title!: string
+    @Model("input", {type: String}) public text!: string
+}
 </script>
 
 <style lang="scss">
