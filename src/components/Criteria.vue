@@ -25,27 +25,18 @@
         </div>
     </div>
 </template>
-<script>
-    export default {
-        data() {
-            return {
-                newCriteriaString: '{}',
-                criteria: {}
-            }
-        },
-        computed: {},
-        props: {
-            criteriaString: {
-                type: String,
-                required: true
-            }
-        },
-        methods: {
-            paintNewCriteria() {
-                this.criteria = JSON.parse(this.$data.newCriteriaString)
-            }
-        },
-        mounted() {
+<script lang='ts'>
+    import { Component, Vue, Prop } from 'vue-property-decorator';
+
+    @Component({})
+    export default class Criteria extends Vue {
+        newCriteriaString:String = '{}'
+        criteria:Object = {}
+        @Prop({type: String, required:true}) criteriaString: string
+        paintNewCriteria():void{
+            this.criteria = JSON.parse(this.$data.newCriteriaString)
+        }
+        mounted(){
             this.$data.newCriteriaString = this.$props.criteriaString
             this.paintNewCriteria()
         }

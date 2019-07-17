@@ -12,7 +12,8 @@
 import {
   Component,
   Prop,
-  Vue
+  Vue,
+  Mixins
 } from 'vue-property-decorator';
 import Page from './Page.vue'
 import ToolBox from './ToolBox.vue';
@@ -21,6 +22,7 @@ import axios from 'axios'
 import isEqual from 'lodash.isequal'
 import moment from 'moment'
 import paging from './paging'
+import IZONIVue from '../IZONIVue';
 
 @Component({
   components: {
@@ -28,24 +30,24 @@ import paging from './paging'
     Page
   },
 })
-export default class Book extends Vue {
-  private version: number = -1
-  private size: number = 0
-  private flashSignal: number = 0
-  private total: number = 0
-  private waitForTurnPage: boolean = false
-  private criteria: object = {}
+export default class Book extends Mixins(IZONIVue){
+  version: number = -1
+  size: number = 0
+  flashSignal: number = 0
+  total: number = 0
+  waitForTurnPage: boolean = false
+  criteria: object = {}
 
-  private tags: string[] = []
-  private sites: string[] = []
-  private Pages: object[][] = []
+  tags: string[] = []
+  sites: string[] = []
+  Pages: object[][] = []
 
   get tagsClassified() {
     const criteria = this.criteria
     const tags = this.tags
     const keys = Object.keys(criteria)
 
-    let include = []
+    let include:any = []
     const re: any = {}
 
     for (const key in criteria) {
@@ -56,20 +58,20 @@ export default class Book extends Vue {
     }
     re.Other = tags.filter(tag => !include.includes(tag))
 
-    Vue.log(re)
+    this.$LOG(re)
     return re
   }
   get criteriaString() {
     return JSON.stringify(this.criteria, null, 2)
   }
 
-  private mounted() {
+  mounted() {
     this.fetchMeta()
     this.fetchCriteria()
     this.fetchPages()
   }
-  private fetchMeta() {
-    axios.get(Vue.rootPath + '/izoneAdmin/meta')
+  fetchMeta() {
+    axios.get(this.ROOTPATH + '/izoneAdmin/meta')
       .then(re => {
         if (re.data.errno === 0) {
           const meta = re.data.data
@@ -78,16 +80,16 @@ export default class Book extends Vue {
         }
       })
   }
-  private fetchCriteria() {
-    axios.get(Vue.rootPath + '/util/getVal?key=izoniCriteria')
+  fetchCriteria() {
+    axios.get(this.ROOTPATH + '/util/getVal?key=izoniCriteria')
       .then(re => {
         this.$data.criteria = JSON.parse(re.data.data)
       }).catch(err => {
-        Vue.error(err)
+        this.$ERROR(err)
       })
   }
-  private fetchPages(counter: number = 0) {
-    axios.post(Vue.rootPath + '/izone/page1', {
+  fetchPages(counter: number = 0) {
+    axios.post(this.ROOTPATH + '/izone/page1', {
       size: 25,
       query: {
         tags: ' '
@@ -108,20 +110,20 @@ export default class Book extends Vue {
         }
       }
     }).catch(err => {
-      Vue.error(err)
+      this.$ERROR(err)
     })
   }
-  private delayFetchPages() {
+  delayFetchPages() {
     setTimeout(() => {
       this.$nextTick(() => {
         this.fetchPages()
       })
     }, 1000)
   }
-  private turnPage() {
+  turnPage() {
     if (!this.waitForTurnPage) {
         this.waitForTurnPage = true
-        axios.post(Vue.rootPath + `/izone/page`, {
+        axios.post(this.ROOTPATH + `/izone/page`, {
             from: this.size,
             size: this.total,
             query: {
@@ -136,12 +138,12 @@ export default class Book extends Vue {
                 total
             } = re.data.data
             if (version === this.version) {
-                Vue.log(`merge local pages on updatePage`)
+                this.$LOG(`merge local pages on updatePage`)
                 const oldPages = this.Pages.map(page => page.map(poster => poster))
                 this.Pages = this.PagesMerger(oldPages, pages)
                 this.size = this.size + size
             } else {
-                Vue.log(`replace local pages on updatePage`)
+                this.$LOG(`replace local pages on updatePage`)
                 this.Pages = []
                 this.Pages = pages
                 this.size = this.size
@@ -150,11 +152,11 @@ export default class Book extends Vue {
 
             this.waitForTurnPage = false
         }).catch(err => {
-            Vue.error(err)
+            this.$ERROR(err)
         })
     }
   }
-  private PagesMerger(opages, npages) {
+  PagesMerger(opages, npages) {
       if (npages.length !== 0) {
           const opLastPage = opages.pop()
           npages.reverse()
@@ -170,7 +172,7 @@ export default class Book extends Vue {
           return opages
       }
   }
-  private toEdit(posterNo) {
+  toEdit(posterNo) {
     const that: any = this
     const Posters = that.getCurrentPosters()
     const newPosters = Object.assign({}, Posters[posterNo], {

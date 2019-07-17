@@ -25,19 +25,21 @@
     import {
         Component,
         Vue,
-        Prop
+        Prop,
+        Mixins
     } from 'vue-property-decorator';
     import Poster from './Poster.vue'
 
     import axios from 'axios'
     import moment from 'moment'
+    import IZONIVue from '../IZONIVue';
 
     @Component({
         components: {
             Poster
         }
     })
-    export default class Page extends Vue {
+    export default class Page extends Mixins(IZONIVue) {
         private clampOpened: object = {}
         @Prop() private PageContent!: [] 
         @Prop() private Sites!: []
@@ -84,7 +86,7 @@
             return newClampMarkBook
         }
         get PostersSorted() {
-            let pageSorted = []
+            let pageSorted:any = []
             const pagePosters = this.PageContent
             const pagePostersWithoutPostersInClamp = this.PageContent.filter((poster:any) => {
                 return poster.inClamp === ''
@@ -106,9 +108,6 @@
 
             return pageSorted
         }
-        get rdd() {
-            return this.$store.state.rdd
-        }
 
         private mounted() {
             const clampOpened = {}
@@ -122,21 +121,21 @@
         }
 
         // MOVE FUNCTION -x *****
-        private async moveUp(idx) {
+        private async moveUp(idx :number) {
             // 找到上一个
-            const me = this.PostersSorted[idx]
-            const faceUp = this.PostersSorted[idx - 1]
-            await axios.post(Vue.rootPath + '/izoneAdmin/update', {
+            const me:any = this.PostersSorted[idx]
+            const faceUp:any = this.PostersSorted[idx - 1]
+            await axios.post(this.ROOTPATH + '/izoneAdmin/update', {
                 id: me.id,
                 index: faceUp.index + 1
             })
             this.$emit('finishEdit')
         }
-        private async moveDown(idx) {
+        private async moveDown(idx :number) {
             // 找到下一个
-            const me = this.PostersSorted[idx]
-            const buttDown = this.PostersSorted[idx + 1]
-            await axios.post(Vue.rootPath + '/izoneAdmin/update', {
+            const me:any = this.PostersSorted[idx]
+            const buttDown:any = this.PostersSorted[idx + 1]
+            await axios.post(this.ROOTPATH + '/izoneAdmin/update', {
                 id: me.id,
                 index: buttDown.index - 1
             })

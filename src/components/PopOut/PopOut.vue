@@ -11,29 +11,22 @@
         </div>
     </div>
 </template>
-<script lang="ts">
-import Vue from 'vue'
-export default Vue.extend({
-    data() {
-        return {
-            popoutttt: false
-        }
-    },
-    methods: {
-        show() {
+<script lang='ts'>
+    import { Component, Vue } from 'vue-property-decorator';
+
+    @Component({})
+    export default class PopOut extends Vue {
+        private popoutttt: boolean = false
+        private show(){
             this.popoutttt = true
             Vue.nextTick(() => {
                 this.$emit('pop')
             })
-        },
-        hide() {
+        }
+        private hide(){
             this.popoutttt = false
         }
-    },
-    props: {
-
-    },
-})
+    }
 </script>
 <style lang="scss">
 .PopOutBlock{

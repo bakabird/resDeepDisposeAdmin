@@ -19,33 +19,19 @@
         </template>
     </PopOut>
 </template>
-<script lang="ts">
-import Vue from 'vue'
-import PopOut from './PopOut.vue'
-export default Vue.extend({
-    data() {
-        return {
-            members_emoji_table: Vue.members
-        }
-    },
-    methods: {
-        dealCheck(name, checked) {
-            let newMemberArr = []
-            if (checked && !this.members_arr.includes(name)) {
-                newMemberArr = [...this.members_arr, name]
-            } else if (!checked && this.members_arr.includes(name)) {
-                newMemberArr = this.members_arr.filter(i => {
-                    return i !== name
-                })
-            }
-            this.$emit('change', newMemberArr.join('&'))
-        }
-    },
-    computed: {
-        members_arr() {
+<script lang='ts'>
+    import { Component, Mixins, Model } from 'vue-property-decorator';
+    import PopOut from "./PopOut.vue"
+    import IZONIVue from '../../IZONIVue';
+
+    @Component({ components:{ PopOut } })
+    export default class PopOutMembersEditor extends Mixins(IZONIVue) {
+        members_emoji_table = this.MEMBERSTABLE
+        @Model("change",{type: String}) readonly members!: string
+        get members_arr() :[any]{
             return this.$props.members === '' ? [] : this.$props.members.split('&')
-        },
-        member_emoji_str() {
+        }
+        get member_emoji_str() :string{
             const randomMembersArr = this.members_arr.sort(() => {
                 return Math.random() > 0.5 ? -1 : 1
             })
@@ -55,16 +41,17 @@ export default Vue.extend({
             })
             return re === '' ? '无' : re
         }
-    },
-    components: {
-        PopOut
-    },
-    model: {
-        prop: 'members',
-        event: 'change'
-    },
-    props: {
-        members: String
+
+        dealCheck(name: string, checked: boolean) {
+            let newMemberArr:any = []
+            if (checked && !this.members_arr.includes(name)) {
+                newMemberArr = [...this.members_arr, name]
+            } else if (!checked && this.members_arr.includes(name)) {
+                newMemberArr = this.members_arr.filter(i => {
+                    return i !== name
+                })
+            }
+            this.$emit('change', newMemberArr.join('&'))
+        }
     }
-})
 </script>

@@ -4,12 +4,10 @@
       <DashBoard @switchPart='switchPart' />
       <template v-if='handlePart === "Setting"'>
         <div>{{announcement}}</div>
-        <div v-if="rdd">
-          <input type="text" v-model="newAnnouncement">
-          <button @click="setAnnouncement">修改公告</button>
-        </div>
+        <input type="text" v-model="newAnnouncement">
+        <button @click="setAnnouncement">修改公告</button>
       </template>
-
+      <ClipBoard />
       <div v-show='handlePart === "Manage"'>
         <Book/>
       </div>
@@ -21,55 +19,53 @@
 <script lang="ts">
   import {
     Component,
-    Vue
+    Vue,
+    Mixins
   } from 'vue-property-decorator';
-
-  import Book from './components/Book.vue';
+  import IZONIVue from "./IZONIVue"
+  import Book from './components/Book.vue'
   import DashBoard from './components/DashBoard.vue'
+  import ClipBoard from "./components/ClipBoard.vue"
 
   import axios from 'axios'
-
+  
   @Component({
     components: {
       Book,
-      DashBoard
+      DashBoard, ClipBoard
     }
   })
-  export default class App extends Vue {
-      private hasComforted: boolean = false
-      private announcement: string = ''
-      private newAnnouncement: string = ''
-      private handlePart: string = 'Manage'
+  export default class App extends Mixins(IZONIVue) {
+      hasComforted: boolean = false
+      announcement: string = ''
+      newAnnouncement: string = ''
+      handlePart: string = 'Manage'
 
-      get rdd() {
-        return this.$store.state.rdd
-      }
-
-      private mounted() {
+      mounted() {
         this.fetchAnnouncement()
       }
-      private switchPart(newPart: string) {
+      switchPart(newPart: string) {
         this.$data.handlePart = newPart
       }
-      private fetchAnnouncement() {
-        axios.get(Vue.rootPath + '/util/getVal?key=izoniAnnouncement')
+      fetchAnnouncement() {
+        axios.get(this.ROOTPATH + '/util/getVal?key=izoniAnnouncement')
           .then(re => {
             this.$data.announcement = re.data.data
           }).catch(err => {
             this.$data.announcement = 'ErrorCode:42'
-            Vue.error(err)
+            this.$ERROR(err)
           })
       }
-      private setAnnouncement() {
+      setAnnouncement() {
         const that: any = this
-        axios.post(Vue.rootPath + '/util/setVal', {
+        axios.post(this.ROOTPATH + '/util/setVal', {
             key: 'izoniAnnouncement',
             string: this.$data.newAnnouncement
           })
           .then(re => {
             that.fetchAnnouncement()
           }).catch(err => {
-            Vue.error(err)
+            this.$ERROR(err)
           })
       }
   }

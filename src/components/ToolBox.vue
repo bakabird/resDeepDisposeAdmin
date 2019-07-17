@@ -1,80 +1,75 @@
 <template>
-  <div class='shovel' v-if="rdd">
+  <div class='shovel'>
     <!-- 你正在修改这个条目 -->
     <div class="btnGroup">
       <input class="actionBtn" type="button" value="添加一个默认项" @click="addItem">
       <input class="actionBtn" type="button" value='刷新数据' @click="$emit('flash')">
     </div>
 
-    <Criteria v-if="editCriteria" :criteriaString='criteriaString' @revise='updateCriteria' @hide='editCriteria = false'/>
+    <Criteria v-if="editCriteria" :criteriaString='criteriaString' @revise='updateCriteria'
+      @hide='editCriteria = false' />
     <div class='btnGroup' v-else>
-      <button class="showUpBtn"  @click="editCriteria = true">对分类规则进行调整</button>
+      <button class="showUpBtn" @click="editCriteria = true">对分类规则进行调整</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import axios from 'axios'
-import cloneDeep from 'lodash.clonedeep';
-import Criteria from './Criteria.vue'
-import moment from 'moment'
+  import {
+    Component,
+    Prop,
+    Vue,
+    Mixins,
+  } from 'vue-property-decorator';
+  import axios from 'axios'
+  import cloneDeep from 'lodash.clonedeep';
+  import Criteria from './Criteria.vue'
+  import moment from 'moment'
+  import IZONIVue from '../IZONIVue';
 
-const now = moment()
+  const now = moment()
 
-@Component({
-  data() {
-    return {
-      editCriteria: false
+
+  @Component({
+    components: {
+      Criteria
     }
-  },
-  computed: {
-    rdd() {
-      return this.$store.state.rdd
-    }
-  },
-  components: {
-    Criteria
-  },
-  props: {
-    criteriaString: {
-        type: String,
-        required: true
-    }
-  },
-  methods: {
+  })
+  export default class ToolBox extends Mixins(IZONIVue) {
+    editCriteria: boolean = false
+    @Prop({
+      type: String,
+      required: true
+    }) criteriaString: string;
+
     updateCriteria(newCriteriaString) {
       try {
         JSON.parse(newCriteriaString)
-        axios.post(Vue.rootPath + '/util/setVal', {
+        axios.post(this.ROOTPATH + '/util/setVal', {
           key: 'izoniCriteria',
           string: newCriteriaString
         }).then((re) => {
-          Vue.log('修改完成')
+          this.$LOG('修改完成')
         }).catch(err => {
-          Vue.error(err)
+          this.$ERROR(err)
         })
       } catch (err) {
-        Vue.error(err)
+        this.$ERROR(err)
       }
-
-    },
+    }
     async addItem() {
       try {
-        const re = await axios.post(Vue.rootPath + '/izoneAdmin/new');
+        const re = await axios.post(this.ROOTPATH + '/izoneAdmin/new');
         if (re.data.errno === 0) {
           // setTimeout(()=>{
           //   this.$nextTick(()=>{
-              this.$emit('flash')
+          this.$emit('flash')
           //   })
           // },1100)
         }
       } catch (error) {
-        Vue.error(error);
+        this.$ERROR(error);
       }
     }
   }
-})
-export default class Shovel extends Vue {
-}
 </script>

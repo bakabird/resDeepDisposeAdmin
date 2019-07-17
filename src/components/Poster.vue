@@ -103,7 +103,8 @@ import {
   Component,
   Prop,
   Vue,
-  Watch
+  Watch,
+  Mixins
 } from 'vue-property-decorator';
 import btnList from './btnList.vue'
 import PopOut from './PopOut/PopOut.vue'
@@ -115,6 +116,7 @@ import PopOutMembersEditor from './PopOut/PopOutMembersEditor.vue'
 
 import moment from 'moment'
 import axios from 'axios'
+import IZONIVue from '../IZONIVue';
 
 const now = moment();
 
@@ -136,7 +138,7 @@ function checkThen(source, pattern, whenSucess) {
     btnList,
   }
 })
-export default class Poster extends Vue {
+export default class Poster extends Mixins(IZONIVue) {
   @Prop() private sqlId!: string
   @Prop() private itemType!: string
 
@@ -250,7 +252,7 @@ export default class Poster extends Vue {
     document.body.removeChild(input)
   }
   private async fetchInfo() {
-    axios.get(Vue.rootPath + '/izoneAdmin/biliInfo?url=' + this.$data.URL)
+    axios.get(this.ROOTPATH + '/izoneAdmin/biliInfo?url=' + this.$data.URL)
       .then(res => {
         const videoName = res.data.data.title
         const videoUp = res.data.data.up
@@ -264,7 +266,7 @@ export default class Poster extends Vue {
         that.otherMetaInfoEvaluate(videoName, videoUp)
       })
       .catch(err => {
-        Vue.error(err)
+        this.$ERROR(err)
       })
   }
   private async revise() {
@@ -287,18 +289,18 @@ export default class Poster extends Vue {
         isCut: data.ISCUT
       }
 
-      const response = await axios.post(Vue.rootPath + '/izoneAdmin/upt', gold);
+      const response = await axios.post(this.ROOTPATH + '/izoneAdmin/upt', gold);
       if(response.data.errno === 0){
         this.$emit('finishEdit')
       }else{
         alert(`[${response.data.errno}]${response.data.errmsg}`)
       }
     } catch (error) {
-      Vue.error(error);
+      this.$ERROR(error);
     }
   }
   private async bake() {
-    const rlt = await axios.post(Vue.rootPath + '/izoneAdmin/bake', {
+    const rlt = await axios.post(this.ROOTPATH + '/izoneAdmin/bake', {
       id: this.$props.sqlId
     })
     if(rlt.data.errno == 0){
@@ -310,7 +312,7 @@ export default class Poster extends Vue {
   private async remove(posterName) {
     const input = prompt(`准备删除「${posterName}」？`, "再此重复该纸条的名称")
     if (input != null && input === posterName) {
-      const response = await axios.post(Vue.rootPath + '/izoneAdmin/remove', {
+      const response = await axios.post(this.ROOTPATH + '/izoneAdmin/remove', {
         id: this.$props.sqlId
       });
       this.$emit('finishEdit')
@@ -368,9 +370,9 @@ export default class Poster extends Vue {
   // MOVE FUNCTION +x
 
   // Util FUNCTION -x
-  private record(url) {
-    if (Vue.isDev) {
-      this.$record('跳转', this.$props.name, url, this.$props.sqlId)
+  private record(url: string) {
+    if (this.ISDEV) {
+      this.$RECORD('跳转', this.$props.name, url, this.$props.sqlId)
     }
   }
   // Util FUNCTION +x

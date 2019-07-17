@@ -22,21 +22,24 @@
         </PopOut>
     </div>
 </template>
-<script lang="ts">
-import Vue from 'vue'
-import PopOut from './PopOut.vue'
+<script lang='ts'>
+    import { Component, Vue, Mixins, Model, Watch, Prop } from 'vue-property-decorator';
+    import PopOut from './PopOut.vue'
+    import IZONIVue from '../../IZONIVue';
 
-export default Vue.extend({
-    data(){
-        return {
-            radioVal: ""
+    @Component({components:{PopOut}})
+    export default class PopOutInput extends Mixins(IZONIVue) {
+        radioVal:string = ""
+        @Model("change",{type:[String, Number]}) readonly bindVal!: string | number
+        @Prop({type: String,default: 'text'}) readonly type!: string
+        @Prop(Object) readonly range!: object
+        @Watch("radioVal")
+        onRadioValWatch(nVal){
+            this.$emit('change', nVal)
         }
-    },
-    model: {
-        prop: 'bindVal',
-        event: 'change'
-    },
-    methods: {
+        mounted(){
+            this.$data.radioVal = this.$props.bindVal
+        }
         autofocus(className) {
             if (this.$props.type !== 'boolean' && this.$props.type !== 'checkbox') {
                 const that: any = this.$el.querySelector(`.${className}`)
@@ -48,27 +51,7 @@ export default Vue.extend({
                 }
             }
         }
-    },
-    watch:{
-        radioVal(nVal){
-            this.$emit('change', nVal)
-        }
-    },
-    mounted(){
-        this.$data.radioVal = this.$props.bindVal
-    },
-    props: {
-        bindVal: [String, Number],
-        type: {
-            type: String,
-            default: 'text'
-        },
-        range: Object
-    },
-    components: {
-        PopOut
     }
-})
 </script>
 <style lang="scss">
 .popout_input_text{

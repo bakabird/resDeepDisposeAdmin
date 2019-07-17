@@ -8,23 +8,23 @@
         </div>
     </div>
 </template>
-<script lang="ts">
-import Vue from 'vue'
-import axios from 'axios'
+<script lang='ts'>
+    import axios from 'axios'
+    import { Component, Vue, Mixins } from 'vue-property-decorator';
+    import IZONIVue from '../IZONIVue';
 
-export default Vue.extend({
-    methods: {
+    @Component({})
+    export default class DashBoard extends Mixins(IZONIVue) {
         async wholeInspection() {
-            axios.get(Vue.rootPath + '/izoneAdmin/wholeInspection')
+            axios.get(this.ROOTPATH + '/izoneAdmin/wholeInspection')
             .then(res => {
-                Vue.log(res)
+                this.$LOG(res)
             })
             .catch(err => {
-                Vue.error(err)
+                this.$ERROR(err)
             })
-        },
+        }
     }
-})
 </script>
 <style lang="scss">
 .dashboard{
