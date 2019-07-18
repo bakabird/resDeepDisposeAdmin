@@ -5,11 +5,11 @@
             <button class="submitBtn" @click="reviseClipBoard">提交修改</button>
         </div>
         <div class="clipboard_body">
-            <div class="clipboard_usearea_column" v-for="(words, usearea) in adminClipBoard" :key="'clip_board_usearea_'+usearea">
+            <div class="clipboard_usearea_column" v-for="(words, usearea) in adminClipBoard" :key="'admin_clip_board_usearea_'+usearea">
                 <div class="clipboard_usearea">
                     {{usearea}}
                 </div>
-                <div class="clipboard_word" v-for="word in words" :key="'clip_board_usearea_'+usearea+'_word_'+word" @click="copy(word)">
+                <div class="clipboard_word" v-for="word in words" :key="'admin_clip_board_usearea_'+usearea+'_word_'+word" @click="copy(word)">
                     {{word}}
                 </div>
             </div>

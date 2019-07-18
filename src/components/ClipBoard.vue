@@ -9,7 +9,7 @@
                 <div class="clipboard_usearea">
                     {{usearea}}
                 </div>
-                <div class="clipboard_word" v-for="word in words" :key="'clip_board_usearea_'+usearea+'_word_'+word" @click="copy(word)">
+                <div class="clipboard_word" v-for="(word,index) in words" :key="'clip_board_usearea_'+usearea+'_word_'+word+'_index_'+index" @click="copy(word)">
                     {{word}}
                 </div>
             </div>

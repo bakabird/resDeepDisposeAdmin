@@ -5,7 +5,7 @@
         </template>
         <template slot='body'>
             <div class="members">
-                <template v-for="(emoji,name) in membersEmojiTable">
+                <template v-for="(emoji,name) in MEMBERSTABLE">
                     <label :for="`${name}`" :key="name + 'label'">{{emoji}}</label>
                     <input type="checkbox" :value="name" :checked='members_arr.includes(name)' @change="dealCheck(name,$event.target.checked)" :id='`${name}`' :key="name + 'input'">
                 </template>
@@ -26,7 +26,6 @@ import IZONIVue from '../../IZONIVue';
 
 @Component({ components: { PopOut } })
 export default class PopOutMembersEditor extends Mixins(IZONIVue) {
-    public membersEmojiTable = this.MEMBERSTABLE
     @Model("change", {type: String}) public readonly members!: string
     get members_arr(): [any] {
         return this.$props.members === '' ? [] : this.$props.members.split('&')
@@ -36,9 +35,9 @@ export default class PopOutMembersEditor extends Mixins(IZONIVue) {
             return Math.random() > 0.5 ? -1 : 1
         })
         let re = ''
-        randomMembersArr.forEach((i: string) => {
-            re += this.membersEmojiTable[i] || ''
-        })
+        for (const memberStr of randomMembersArr) {
+            re += this.MEMBERSTABLE[memberStr] || ''
+        }
         return re === '' ? '无' : re
     }
 

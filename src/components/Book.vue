@@ -58,7 +58,7 @@ export default class Book extends Mixins(IZONIVue) {
     }
     re.Other = tags.filter(tag => !include.includes(tag))
 
-    this.$LOG(re)
+    // this.$LOG(re)
     return re
   }
   get criteriaString() {
