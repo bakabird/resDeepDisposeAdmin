@@ -125,7 +125,7 @@ export default class Page extends Mixins(IZONIVue) {
         // 找到上一个
         const me: any = this.PostersSorted[idx]
         const faceUp: any = this.PostersSorted[idx - 1]
-        await axios.post(this.ROOTPATH + '/izoneAdmin/update', {
+        await axios.post(this.ROOTPATH + '/izoneAdmin/reviseIndex', {
             id: me.id,
             index: faceUp.index + 1
         })
@@ -135,7 +135,7 @@ export default class Page extends Mixins(IZONIVue) {
         // 找到下一个
         const me: any = this.PostersSorted[idx]
         const buttDown: any = this.PostersSorted[idx + 1]
-        await axios.post(this.ROOTPATH + '/izoneAdmin/update', {
+        await axios.post(this.ROOTPATH + '/izoneAdmin/reviseIndex', {
             id: me.id,
             index: buttDown.index - 1
         })

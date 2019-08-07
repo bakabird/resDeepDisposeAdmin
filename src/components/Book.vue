@@ -4,7 +4,6 @@
     <div v-for="Page in Pages" class='dateCard' :key="Page[0].date">
       <Page @edit='toEdit' :flashSignal='flashSignal' @finishEdit='delayFetchPages' :PageContent='Page' :Sites='sites' :Tags='tagsClassified' />
     </div>
-    <input class="pageAction" :disabled='size === total' type="button" :value="size === total ? '卷轴已经展开完毕' : '展开卷轴'" @click="turnPage">
   </div>
 </template>
 
@@ -31,16 +30,6 @@ import IZONIVue from '../IZONIVue';
   },
 })
 export default class Book extends Mixins(IZONIVue) {
-  public version: number = -1
-  public size: number = 0
-  public flashSignal: number = 0
-  public total: number = 0
-  public waitForTurnPage: boolean = false
-  public criteria: object = {}
-
-  public tags: string[] = []
-  public sites: string[] = []
-  public Pages: object[][] = []
 
   get tagsClassified() {
     const criteria = this.criteria
@@ -64,11 +53,22 @@ export default class Book extends Mixins(IZONIVue) {
   get criteriaString() {
     return JSON.stringify(this.criteria, null, 2)
   }
+  public version: number = -1
+  public size: number = 0
+  public flashSignal: number = 0
+  public total: number = 0
+  public waitForTurnPage: boolean = false
+  public criteria: object = {}
+
+  public tags: string[] = []
+  public sites: string[] = []
+  public Pages: object[][] = []
 
   public mounted() {
     this.fetchMeta()
     this.fetchCriteria()
     this.fetchPages()
+    window.onscroll = this.turnPageCheck.bind(this)
   }
   public fetchMeta() {
     axios.get(this.ROOTPATH + '/izoneAdmin/meta')
@@ -102,6 +102,8 @@ export default class Book extends Mixins(IZONIVue) {
           this.total = re.data.data.total
           this.version = re.data.data.version
         } else if (counter <= 3) {
+          // 一旦执行了fetchPages，就乐观地希望能够获得一个新版本的数据
+          // 因此一旦未能成果获得新版本数据，因此等待一会后会再尝试一次，总共4次
           setTimeout(() => {
             this.$nextTick(() => {
               this.fetchPages(counter + 1)
@@ -125,7 +127,7 @@ export default class Book extends Mixins(IZONIVue) {
         this.waitForTurnPage = true
         axios.post(this.ROOTPATH + `/izone/page`, {
             from: this.size,
-            size: this.total,
+            size: 25,
             query: {
               tags: ' '
             },
@@ -158,6 +160,7 @@ export default class Book extends Mixins(IZONIVue) {
   }
   public PagesMerger(opages, npages) {
       if (npages.length !== 0) {
+          // PS: page can contain a lot of posters
           const opLastPage = opages.pop()
           npages.reverse()
           const npFirstPage = npages.pop()
@@ -179,6 +182,15 @@ export default class Book extends Mixins(IZONIVue) {
       edit: true
     })
     Vue.set(Posters, posterNo, newPosters)
+  }
+  private turnPageCheck() {
+      const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+
+      if (scrollTop + clientHeight >= scrollHeight * 0.8 && this.size < this.total) {
+          this.turnPage()
+      }
   }
 }
 </script>
