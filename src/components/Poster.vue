@@ -342,8 +342,12 @@
           isCut: data.ISCUT,
           isCollect: data.ISCOLLECT
         }
-
-        const response = await axios.post(this.ROOTPATH + '/izoneAdmin/upt', gold);
+        let response
+        if(prop.itemType != data.ITEMTYPE){
+          response = await axios.post(this.ROOTPATH + '/izoneAdmin/update', gold);
+        }else{
+          response = await axios.post(this.ROOTPATH + '/izoneAdmin/revise', gold);
+        }
         if (response.data.errno === 0) {
           this.$emit('finishEdit')
         } else {
