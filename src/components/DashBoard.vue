@@ -16,7 +16,7 @@ import IZONIVue from '../IZONIVue';
 @Component({})
 export default class DashBoard extends Mixins(IZONIVue) {
     public async wholeInspection() {
-        axios.get(this.ROOTPATH + '/izoneAdmin/wholeInspection')
+        axios.get(this.ROOTPATH + '/izoneAdmin/cheackInvalid')
         .then(res => {
             this.$LOG(res)
         })

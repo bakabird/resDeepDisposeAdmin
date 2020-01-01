@@ -492,6 +492,7 @@
       .name {
         font-size: 2em;
         font-weight: bold;
+        padding-left: 28px;
       }
 
       .th_url {
